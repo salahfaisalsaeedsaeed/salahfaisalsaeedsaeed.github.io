@@ -19,6 +19,7 @@ jobs:
         run: |
           import collections
           import json
+          import re
           import urllib.parse
           import urllib.request
 
@@ -26,10 +27,7 @@ jobs:
           PROJECT = "6a90545d002d8d1ed109"
           DATABASE = "6a919743003b7658ee49"
           BUCKET = "academic_media"
-          TABLES = [
-              "assets", "publications", "projects", "awards", "credentials",
-              "experiences", "recommendations", "institutional_evidence", "media"
-          ]
+          TABLES = ["assets","publications","projects","awards","credentials","experiences","recommendations","institutional_evidence","media"]
 
           def get_json(url):
               req = urllib.request.Request(url, headers={"X-Appwrite-Project": PROJECT, "Accept": "application/json"})
@@ -37,20 +35,20 @@ jobs:
                   return json.load(response)
 
           def table_rows(table):
-              query = json.dumps({"method": "limit", "values": [250]}, separators=(",", ":"))
-              url = f"{ENDPOINT}/tablesdb/{DATABASE}/tables/{table}/rows?" + urllib.parse.urlencode({"queries[]": query, "total": "false"})
+              query = json.dumps({"method":"limit","values":[250]}, separators=(",", ":"))
+              url = f"{ENDPOINT}/tablesdb/{DATABASE}/tables/{table}/rows?" + urllib.parse.urlencode({"queries[]":query,"total":"false"})
               data = get_json(url)
               return data.get("rows") or data.get("documents") or []
 
           def storage_files():
               files = []
               for page in range(10):
-                  params = [("queries[]", json.dumps({"method":"limit","values":[100]}, separators=(",", ":")))]
+                  params = [("queries[]",json.dumps({"method":"limit","values":[100]},separators=(",", ":")))]
                   if page:
-                      params.append(("queries[]", json.dumps({"method":"offset","values":[page * 100]}, separators=(",", ":"))))
-                  params.append(("total", "false"))
+                      params.append(("queries[]",json.dumps({"method":"offset","values":[page*100]},separators=(",", ":"))))
+                  params.append(("total","false"))
                   url = f"{ENDPOINT}/storage/buckets/{BUCKET}/files?" + urllib.parse.urlencode(params)
-                  batch = get_json(url).get("files", [])
+                  batch = get_json(url).get("files",[])
                   files.extend(batch)
                   if len(batch) < 100:
                       break
@@ -63,56 +61,68 @@ jobs:
               except Exception as exc:
                   tables[table] = []
                   print(f"TABLE_ERROR|{table}|{type(exc).__name__}|{exc}")
-
           try:
               files = storage_files()
           except Exception as exc:
               files = []
               print(f"STORAGE_ERROR|{type(exc).__name__}|{exc}")
 
-          originals = [f for f in files if not str(f.get("$id", "")).startswith("d_")]
-          derivatives = [f for f in files if str(f.get("$id", "")).startswith("d_")]
+          asset_rows = tables["assets"]
+          asset_ids = {row.get("$id") for row in asset_rows if row.get("$id")}
+          explicit_file_ids = [row.get("file_id") for row in asset_rows if row.get("file_id")]
+          storage_ids = {f.get("$id") for f in files if f.get("$id")}
+
+          def derivative_marker(file_id):
+              value = str(file_id or "")
+              match = re.match(r"^d_([^_]+)_", value)
+              return match.group(1) if match else ""
+
+          groups = collections.defaultdict(list)
+          for f in files:
+              marker = derivative_marker(f.get("$id"))
+              if marker:
+                  groups[marker].append(f)
 
           print("AUDIT_SUMMARY_BEGIN")
           for table in TABLES:
               print(f"COUNT|{table}|{len(tables[table])}")
-          print(f"COUNT|storage_files_total|{len(files)}")
-          print(f"COUNT|storage_originals|{len(originals)}")
-          print(f"COUNT|storage_derivatives|{len(derivatives)}")
-          asset_types = collections.Counter(row.get("asset_type") or "(blank)" for row in tables["assets"])
-          media_types = collections.Counter(row.get("media_type") or "(blank)" for row in tables["assets"])
-          print("COUNT|asset_types|" + json.dumps(asset_types, ensure_ascii=False, separators=(",", ":")))
-          print("COUNT|media_types|" + json.dumps(media_types, ensure_ascii=False, separators=(",", ":")))
+          print(f"COUNT|storage_derivative_files|{len(files)}")
+          print(f"COUNT|storage_logical_groups|{len(groups)}")
+          print("COUNT|asset_types|" + json.dumps(collections.Counter(row.get("asset_type") or "(blank)" for row in asset_rows),ensure_ascii=False,separators=(",", ":")))
+          print("COUNT|media_types|" + json.dumps(collections.Counter(row.get("media_type") or "(blank)" for row in asset_rows),ensure_ascii=False,separators=(",", ":")))
           print("AUDIT_SUMMARY_END")
 
-          print("ORIGINAL_STORAGE_BEGIN")
-          for f in originals:
-              print("ORIGINAL_STORAGE|" + json.dumps({
-                  "id": f.get("$id"), "name": f.get("name"), "mimeType": f.get("mimeType"), "sizeOriginal": f.get("sizeOriginal")
-              }, ensure_ascii=False, separators=(",", ":")))
-          print("ORIGINAL_STORAGE_END")
+          print("DERIVATIVE_GROUPS_BEGIN")
+          for marker, batch in sorted(groups.items()):
+              matching_assets = [row for row in asset_rows if str(row.get("$id", "")).startswith(marker)]
+              payload = {
+                  "marker": marker,
+                  "derived_files": len(batch),
+                  "sample_names": [f.get("name") for f in batch[:3]],
+                  "asset_ids": [row.get("$id") for row in matching_assets],
+                  "asset_titles": [row.get("title") for row in matching_assets],
+                  "asset_types": [row.get("asset_type") for row in matching_assets],
+              }
+              print("GROUP|" + json.dumps(payload,ensure_ascii=False,separators=(",", ":")))
+          print("DERIVATIVE_GROUPS_END")
 
           fields = {
-              "assets": ["$id","title","file_id","media_type","asset_type","visibility","description","alt_text","thumbnail_file_id","sort_order"],
-              "publications": ["$id","title","status","year","asset_id","doi_url","featured","sort_order"],
-              "projects": ["$id","slug","title","category","cover_asset_id","asset_ids","featured","sort_order"],
-              "awards": ["$id","title","category","year","asset_id","featured","description","sort_order"],
-              "credentials": ["$id","title","category","year","asset_id","supporting_asset_ids","description","sort_order"],
-              "experiences": ["$id","slug","title","organization","evidence_asset_ids","sort_order"],
-              "recommendations": ["$id","slug","title","recommender_name","institution","asset_id","sort_order"],
-              "institutional_evidence": ["$id","title","institution","evidence_type","event_date","description","source_url","asset_id","sort_order"],
-              "media": ["$id","title","category","description","caption","asset_id","sort_order"],
+              "assets":["$id","title","file_id","media_type","asset_type","visibility","description","alt_text","thumbnail_file_id","sort_order"],
+              "publications":["$id","title","status","year","asset_id","doi_url","featured","sort_order"],
+              "projects":["$id","slug","title","category","cover_asset_id","asset_ids","featured","sort_order"],
+              "awards":["$id","title","category","year","asset_id","featured","description","sort_order"],
+              "credentials":["$id","title","category","year","asset_id","supporting_asset_ids","description","sort_order"],
+              "experiences":["$id","slug","title","organization","evidence_asset_ids","sort_order"],
+              "recommendations":["$id","slug","title","recommender_name","institution","asset_id","sort_order"],
+              "institutional_evidence":["$id","title","institution","evidence_type","event_date","description","source_url","asset_id","sort_order"],
+              "media":["$id","title","category","description","caption","asset_id","sort_order"],
           }
           for table in TABLES:
               print(f"TABLE_BEGIN|{table}")
               for row in tables[table]:
-                  payload = {key: row.get(key) for key in fields[table] if row.get(key) not in (None, "", [], {})}
-                  print(f"ROW|{table}|" + json.dumps(payload, ensure_ascii=False, separators=(",", ":")))
+                  payload = {key:row.get(key) for key in fields[table] if row.get(key) not in (None,"",[],{})}
+                  print(f"ROW|{table}|" + json.dumps(payload,ensure_ascii=False,separators=(",", ":")))
               print(f"TABLE_END|{table}")
-
-          asset_ids = {row.get("$id") for row in tables["assets"] if row.get("$id")}
-          storage_ids = {f.get("$id") for f in files if f.get("$id")}
-          explicit_file_ids = [row.get("file_id") for row in tables["assets"] if row.get("file_id")]
 
           refs = []
           for table in ["publications","projects","awards","credentials","experiences","recommendations","institutional_evidence","media"]:
@@ -120,31 +130,30 @@ jobs:
                   for key in ["asset_id","cover_asset_id"]:
                       value = row.get(key)
                       if value:
-                          refs.append((table, row.get("$id"), key, value))
+                          refs.append((table,row.get("$id"),key,value))
                   for key in ["asset_ids","supporting_asset_ids","evidence_asset_ids"]:
                       value = row.get(key)
-                      if isinstance(value, list):
-                          refs.extend((table, row.get("$id"), key, item) for item in value if item)
-                      elif isinstance(value, str) and value:
+                      if isinstance(value,list):
+                          refs.extend((table,row.get("$id"),key,item) for item in value if item)
+                      elif isinstance(value,str) and value:
                           try:
                               parsed = json.loads(value)
                           except Exception:
                               parsed = [item.strip() for item in value.split(",") if item.strip()]
-                          if isinstance(parsed, list):
-                              refs.extend((table, row.get("$id"), key, item) for item in parsed if item)
+                          if isinstance(parsed,list):
+                              refs.extend((table,row.get("$id"),key,item) for item in parsed if item)
 
           broken = [{"table":t,"row":r,"field":k,"asset_id":a} for t,r,k,a in refs if a not in asset_ids]
+          mapped_markers = {str(row.get("$id", ""))[:17] for row in asset_rows if row.get("$id")}
+          unmatched_groups = sorted(set(groups) - mapped_markers)
           print("CHECKS_BEGIN")
           print("CHECK|assets_with_file_id|" + str(len(explicit_file_ids)))
-          print("CHECK|assets_without_file_id|" + str(sum(1 for row in tables["assets"] if not row.get("file_id"))))
-          print("CHECK|duplicate_file_ids|" + json.dumps(sorted({fid for fid in explicit_file_ids if explicit_file_ids.count(fid) > 1}), ensure_ascii=False))
-          print("CHECK|asset_file_ids_missing_from_storage|" + json.dumps(sorted({fid for fid in explicit_file_ids if fid not in storage_ids}), ensure_ascii=False))
-          print("CHECK|original_storage_without_asset_row|" + json.dumps(sorted({f.get("$id") for f in originals if f.get("$id") not in set(explicit_file_ids)}), ensure_ascii=False))
-          print("CHECK|broken_asset_references|" + json.dumps(broken, ensure_ascii=False, separators=(",", ":")))
+          print("CHECK|assets_without_file_id|" + str(sum(1 for row in asset_rows if not row.get("file_id"))))
+          print("CHECK|duplicate_file_ids|" + json.dumps(sorted({fid for fid in explicit_file_ids if explicit_file_ids.count(fid)>1}),ensure_ascii=False))
+          print("CHECK|broken_asset_references|" + json.dumps(broken,ensure_ascii=False,separators=(",", ":")))
+          print("CHECK|unmatched_derivative_groups|" + json.dumps(unmatched_groups,ensure_ascii=False))
+          for marker in unmatched_groups:
+              batch = groups[marker]
+              print("UNMATCHED_GROUP|" + json.dumps({"marker":marker,"count":len(batch),"samples":[f.get("name") for f in batch[:5]],"ids":[f.get("$id") for f in batch[:3]]},ensure_ascii=False,separators=(",", ":")))
           print("CHECK|total_asset_references|" + str(len(refs)))
-
-          for broken_id in sorted({item[3] for item in refs if item[3] not in asset_ids}):
-              marker = str(broken_id)[:17]
-              candidates = [{"id": f.get("$id"), "name": f.get("name"), "mimeType": f.get("mimeType")} for f in files if marker and marker in str(f.get("$id", ""))]
-              print("BROKEN_ASSET_CANDIDATES|" + broken_id + "|" + json.dumps(candidates, ensure_ascii=False, separators=(",", ":")))
           print("CHECKS_END")
