@@ -58,18 +58,75 @@ async function fetchRows(tableId, {limit=100}={}){
   return data.rows || data.documents || [];
 }
 
+async function fetchPublicStorageFiles({pageSize=100,maxPages=5}={}){
+  const files=[];
+  for(let page=0;page<maxPages;page++){
+    const url=new URL(`${APPWRITE.endpoint}/storage/buckets/${APPWRITE.bucketId}/files`);
+    url.searchParams.append("queries[]",queryString("limit",[pageSize]));
+    if(page>0) url.searchParams.append("queries[]",queryString("offset",[page*pageSize]));
+    url.searchParams.set("total","false");
+    const response=await fetch(url,{headers:{"X-Appwrite-Project":APPWRITE.projectId,"Accept":"application/json"},cache:"no-store"});
+    if(!response.ok) throw new Error(`storage: HTTP ${response.status}`);
+    const data=await response.json();
+    const batch=data.files||[];
+    files.push(...batch);
+    if(batch.length<pageSize) break;
+  }
+  return files;
+}
+function mediaTypeFromFile(file,fallback=""){
+  const mime=String(file?.mimeType||"").toLowerCase();
+  if(mime==="application/pdf") return "pdf";
+  if(mime.startsWith("image/")) return "image";
+  if(mime.startsWith("video/")) return "video";
+  return fallback;
+}
+function resolveStorageFile(asset,files){
+  if(!asset?.$id || !Array.isArray(files) || !files.length) return null;
+  const marker=String(asset.$id).slice(0,17);
+  const candidates=files.filter(file=>String(file?.$id||"").includes(marker));
+  if(!candidates.length) return null;
+  const wanted=String(asset.media_type||"").toLowerCase();
+  const score=file=>{
+    const mime=String(file?.mimeType||"").toLowerCase();
+    const name=String(file?.name||"").toLowerCase();
+    let value=0;
+    if(wanted==="pdf" && (mime==="application/pdf" || name.endsWith(".pdf"))) value+=100;
+    if(wanted==="image" && mime.startsWith("image/")) value+=100;
+    if(wanted==="video" && mime.startsWith("video/")) value+=100;
+    if(mime==="application/pdf") value+=20;
+    if(mime.startsWith("image/")) value+=10;
+    if(/(?:page-?1|_001)\b/.test(name) || /_001$/.test(String(file?.$id||""))) value+=3;
+    return value;
+  };
+  return [...candidates].sort((a,b)=>score(b)-score(a))[0]||null;
+}
+
 let DATA_PROMISE;
 function loadData(){
   if(DATA_PROMISE) return DATA_PROMISE;
   DATA_PROMISE=(async()=>{
     const entries=Object.entries(APPWRITE.tables);
-    const settled=await Promise.allSettled(entries.map(([,id])=>fetchRows(id)));
+    const [tableResults,storageResult]=await Promise.all([
+      Promise.allSettled(entries.map(([,id])=>fetchRows(id))),
+      Promise.allSettled([fetchPublicStorageFiles()])
+    ]);
     const data={errors:[]};
-    settled.forEach((result,i)=>{
+    tableResults.forEach((result,i)=>{
       const [key]=entries[i];
       if(result.status==="fulfilled") data[key]=sortRows(result.value.filter(r=>!r.visibility || r.visibility==="public"));
       else { data[key]=[]; data.errors.push(`${key}: ${result.reason?.message||"unavailable"}`); }
     });
+    const storageFiles=storageResult[0]?.status==="fulfilled"?storageResult[0].value:null;
+    if(Array.isArray(storageFiles)){
+      data.assets=(data.assets||[]).map(asset=>{
+        const file=resolveStorageFile(asset,storageFiles);
+        if(!file) return {...asset,file_id:"",_storage_resolved:false};
+        return {...asset,file_id:file.$id,media_type:mediaTypeFromFile(file,asset.media_type),_storage_resolved:true};
+      }).filter(asset=>asset.file_id);
+    }else if(storageResult[0]?.status==="rejected"){
+      data.errors.push(`storage: ${storageResult[0].reason?.message||"unavailable"}`);
+    }
     data.assetMap=new Map((data.assets||[]).map(a=>[a.$id,a]));
     return data;
   })();
