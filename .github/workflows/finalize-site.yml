@@ -1,0 +1,162 @@
+name: Finalize Site Runtime
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/finalize-site.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  finalize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Patch Appwrite runtime safely
+        shell: python
+        run: |
+          from pathlib import Path
+
+          path = Path('script.js')
+          text = path.read_text(encoding='utf-8')
+
+          old = '''function storagePreviewUrl(asset, width = 1400, height = 1000) {
+            const thumbnailId = asset?.thumbnail_file_id || asset?.thumbnailFileId;
+            return thumbnailId
+              ? storageFilePreview(thumbnailId, width, height)
+              : storageFilePreview(asset?.file_id, width, height);
+          }'''
+          new = '''function storagePreviewUrl(asset, width = 1400, height = 1000) {
+            const previewId = asset?.thumbnail_file_id || asset?.thumbnailFileId || asset?._preview_file_id || asset?.file_id;
+            if (!previewId) return "";
+            return String(previewId).startsWith("d_")
+              ? storageFileView(previewId)
+              : storageFilePreview(previewId, width, height);
+          }'''
+          if old not in text:
+              raise SystemExit('storagePreviewUrl target not found')
+          text = text.replace(old, new, 1)
+
+          old = '''function enrichAssets(assetRows, storageFiles) {
+            const claimedFileIds = new Set();
+            const enriched = (assetRows || []).map(asset => {
+              const explicitId = asset.file_id || asset.storage_file_id || asset.fileId || "";
+              const file = resolveStorageFile(asset, storageFiles);
+              const resolvedId = file?.$id || explicitId;
+              if (resolvedId) claimedFileIds.add(resolvedId);
+              return {
+                ...asset,
+                file_id: resolvedId,
+                file_name: asset.file_name || asset.filename || file?.name || "",
+                media_type: mediaTypeFromFile(file, effectiveMediaType(asset)),
+                _storage_resolved: Boolean(resolvedId),
+                _storage_meta: file || null
+              };
+            });'''
+          new = '''function enrichAssets(assetRows, storageFiles) {
+            const claimedFileIds = new Set();
+            const enriched = (assetRows || []).map(asset => {
+              const explicitId = asset.file_id || asset.storage_file_id || asset.fileId || "";
+              const file = resolveStorageFile(asset, storageFiles);
+              const primaryId = explicitId || file?.$id || "";
+              const declaredType = effectiveMediaType(asset);
+              if (primaryId) claimedFileIds.add(primaryId);
+              if (file?.$id) claimedFileIds.add(file.$id);
+              return {
+                ...asset,
+                file_id: primaryId,
+                file_name: asset.file_name || asset.filename || file?.name || "",
+                media_type: declaredType !== "file" ? declaredType : mediaTypeFromFile(file, declaredType),
+                _preview_file_id: file?.$id && file.$id !== primaryId ? file.$id : "",
+                _storage_resolved: Boolean(primaryId),
+                _storage_meta: file || null
+              };
+            });'''
+          if old not in text:
+              raise SystemExit('enrichAssets target not found')
+          text = text.replace(old, new, 1)
+
+          old = '''function assetNarrative(asset, context = {}) {
+            return context.description || context.caption || context.summary || asset.description || "";
+          }'''
+          new = '''function assetNarrative(asset, context = {}) {
+            const explicit = context.description || context.caption || context.summary || asset.description;
+            if (explicit) return explicit;
+            const type = effectiveMediaType(asset);
+            if (type === "video") return "Selected video evidence documenting the academic, teaching, technical, or professional activity represented by this record.";
+            if (type === "image") return "Selected visual evidence documenting the academic, teaching, technical, or professional activity represented by this record.";
+            if (type === "presentation") return "Presentation material retained as supporting evidence for the academic or conference activity represented by this record.";
+            if (type === "pdf") return "Public supporting document linked directly to the academic or professional record in which it appears.";
+            return "Public supporting evidence linked to the academic or professional record in which it appears.";
+          }'''
+          if old not in text:
+              raise SystemExit('assetNarrative target not found')
+          text = text.replace(old, new, 1)
+
+          path.write_text(text, encoding='utf-8')
+      - name: JavaScript syntax check
+        run: node --check script.js
+      - name: Static internal-link and duplicate-id audit
+        shell: python
+        run: |
+          from pathlib import Path
+          from html.parser import HTMLParser
+          from urllib.parse import urlparse
+          import sys
+
+          root = Path('.')
+          html_files = [p for p in root.rglob('*.html') if '_original_current_files' not in p.parts]
+          failures = []
+
+          class Parser(HTMLParser):
+              def __init__(self):
+                  super().__init__()
+                  self.links=[]; self.ids=[]
+              def handle_starttag(self, tag, attrs):
+                  d=dict(attrs)
+                  if 'id' in d: self.ids.append(d['id'])
+                  if tag=='a' and d.get('href'): self.links.append(d['href'])
+
+          for page in html_files:
+              parser=Parser(); parser.feed(page.read_text(encoding='utf-8'))
+              dup={x for x in parser.ids if parser.ids.count(x)>1}
+              if dup: failures.append(f'{page}: duplicate ids {sorted(dup)}')
+              for href in parser.links:
+                  if href.startswith(('http://','https://','mailto:','tel:','#','javascript:')): continue
+                  parsed=urlparse(href)
+                  target=parsed.path
+                  if not target: continue
+                  if target.startswith('/'):
+                      fs=root / target.lstrip('/')
+                  else:
+                      fs=page.parent / target
+                  if target.endswith('/'):
+                      fs=fs/'index.html'
+                  elif fs.suffix=='':
+                      if (fs/'index.html').exists(): fs=fs/'index.html'
+                  if not fs.exists(): failures.append(f'{page}: missing internal target {href}')
+
+          stale=[]
+          for page in html_files:
+              s=page.read_text(encoding='utf-8')
+              if '/achievements/' in s: stale.append(str(page))
+          if stale: failures.append('stale /achievements/ links: '+', '.join(stale))
+
+          if failures:
+              print('\n'.join('FAIL|'+f for f in failures))
+              sys.exit(1)
+          print(f'PASS|checked {len(html_files)} HTML files')
+      - name: Commit finalized runtime
+        run: |
+          if git diff --quiet; then
+            echo "No changes required"
+            exit 0
+          fi
+          git config user.name "Salah Faisal Site Automation"
+          git config user.email "actions@users.noreply.github.com"
+          git add script.js
+          git commit -m "Preserve Appwrite originals and finalize evidence captions"
+          git push
