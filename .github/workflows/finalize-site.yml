@@ -24,40 +24,38 @@ jobs:
           path = Path('script.js')
           text = path.read_text(encoding='utf-8')
 
-          old = '''function storagePreviewUrl(asset, width = 1400, height = 1000) {
-            const thumbnailId = asset?.thumbnail_file_id || asset?.thumbnailFileId;
-            return thumbnailId
-              ? storageFilePreview(thumbnailId, width, height)
-              : storageFilePreview(asset?.file_id, width, height);
-          }'''
-          new = '''function storagePreviewUrl(asset, width = 1400, height = 1000) {
+          def replace_function(source, name, replacement):
+              marker = f'function {name}('
+              start = source.find(marker)
+              if start < 0:
+                  raise SystemExit(f'{name} target not found')
+              brace = source.find('{', start)
+              if brace < 0:
+                  raise SystemExit(f'{name} opening brace not found')
+              depth = 0
+              end = None
+              for i in range(brace, len(source)):
+                  c = source[i]
+                  if c == '{':
+                      depth += 1
+                  elif c == '}':
+                      depth -= 1
+                      if depth == 0:
+                          end = i + 1
+                          break
+              if end is None:
+                  raise SystemExit(f'{name} closing brace not found')
+              return source[:start] + replacement + source[end:]
+
+          text = replace_function(text, 'storagePreviewUrl', '''function storagePreviewUrl(asset, width = 1400, height = 1000) {
             const previewId = asset?.thumbnail_file_id || asset?.thumbnailFileId || asset?._preview_file_id || asset?.file_id;
             if (!previewId) return "";
             return String(previewId).startsWith("d_")
               ? storageFileView(previewId)
               : storageFilePreview(previewId, width, height);
-          }'''
-          if old not in text:
-              raise SystemExit('storagePreviewUrl target not found')
-          text = text.replace(old, new, 1)
+          }''')
 
-          old = '''function enrichAssets(assetRows, storageFiles) {
-            const claimedFileIds = new Set();
-            const enriched = (assetRows || []).map(asset => {
-              const explicitId = asset.file_id || asset.storage_file_id || asset.fileId || "";
-              const file = resolveStorageFile(asset, storageFiles);
-              const resolvedId = file?.$id || explicitId;
-              if (resolvedId) claimedFileIds.add(resolvedId);
-              return {
-                ...asset,
-                file_id: resolvedId,
-                file_name: asset.file_name || asset.filename || file?.name || "",
-                media_type: mediaTypeFromFile(file, effectiveMediaType(asset)),
-                _storage_resolved: Boolean(resolvedId),
-                _storage_meta: file || null
-              };
-            });'''
-          new = '''function enrichAssets(assetRows, storageFiles) {
+          text = replace_function(text, 'enrichAssets', '''function enrichAssets(assetRows, storageFiles) {
             const claimedFileIds = new Set();
             const enriched = (assetRows || []).map(asset => {
               const explicitId = asset.file_id || asset.storage_file_id || asset.fileId || "";
@@ -75,15 +73,30 @@ jobs:
                 _storage_resolved: Boolean(primaryId),
                 _storage_meta: file || null
               };
-            });'''
-          if old not in text:
-              raise SystemExit('enrichAssets target not found')
-          text = text.replace(old, new, 1)
+            });
 
-          old = '''function assetNarrative(asset, context = {}) {
-            return context.description || context.caption || context.summary || asset.description || "";
-          }'''
-          new = '''function assetNarrative(asset, context = {}) {
+            (storageFiles || []).forEach(file => {
+              if (claimedFileIds.has(file.$id)) return;
+              enriched.push({
+                $id: `storage:${file.$id}`,
+                title: humanizeFileName(file.name),
+                description: "",
+                alt_text: humanizeFileName(file.name),
+                asset_type: ["image", "video"].includes(mediaTypeFromFile(file, "file")) ? "media" : (mediaTypeFromFile(file, "file") === "presentation" ? "presentation" : "unclassified"),
+                visibility: "public",
+                file_id: file.$id,
+                file_name: file.name || "",
+                media_type: mediaTypeFromFile(file, "file"),
+                _storage_resolved: true,
+                _storage_meta: file,
+                _synthetic: true
+              });
+            });
+
+            return sortRows(enriched);
+          }''')
+
+          text = replace_function(text, 'assetNarrative', '''function assetNarrative(asset, context = {}) {
             const explicit = context.description || context.caption || context.summary || asset.description;
             if (explicit) return explicit;
             const type = effectiveMediaType(asset);
@@ -92,10 +105,7 @@ jobs:
             if (type === "presentation") return "Presentation material retained as supporting evidence for the academic or conference activity represented by this record.";
             if (type === "pdf") return "Public supporting document linked directly to the academic or professional record in which it appears.";
             return "Public supporting evidence linked to the academic or professional record in which it appears.";
-          }'''
-          if old not in text:
-              raise SystemExit('assetNarrative target not found')
-          text = text.replace(old, new, 1)
+          }''')
 
           path.write_text(text, encoding='utf-8')
       - name: JavaScript syntax check
@@ -130,10 +140,7 @@ jobs:
                   parsed=urlparse(href)
                   target=parsed.path
                   if not target: continue
-                  if target.startswith('/'):
-                      fs=root / target.lstrip('/')
-                  else:
-                      fs=page.parent / target
+                  fs=(root / target.lstrip('/')) if target.startswith('/') else (page.parent / target)
                   if target.endswith('/'):
                       fs=fs/'index.html'
                   elif fs.suffix=='':
