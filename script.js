@@ -206,10 +206,11 @@ function storageViewUrl(asset) {
 }
 
 function storagePreviewUrl(asset, width = 1400, height = 1000) {
-  const thumbnailId = asset?.thumbnail_file_id || asset?.thumbnailFileId;
-  return thumbnailId
-    ? storageFilePreview(thumbnailId, width, height)
-    : storageFilePreview(asset?.file_id, width, height);
+  const previewId = asset?.thumbnail_file_id || asset?.thumbnailFileId || asset?._preview_file_id || asset?.file_id;
+  if (!previewId) return "";
+  return String(previewId).startsWith("d_")
+    ? storageFileView(previewId)
+    : storageFilePreview(previewId, width, height);
 }
 
 function fileBaseName(name = "") {
@@ -286,14 +287,17 @@ function enrichAssets(assetRows, storageFiles) {
   const enriched = (assetRows || []).map(asset => {
     const explicitId = asset.file_id || asset.storage_file_id || asset.fileId || "";
     const file = resolveStorageFile(asset, storageFiles);
-    const resolvedId = file?.$id || explicitId;
-    if (resolvedId) claimedFileIds.add(resolvedId);
+    const primaryId = explicitId || file?.$id || "";
+    const declaredType = effectiveMediaType(asset);
+    if (primaryId) claimedFileIds.add(primaryId);
+    if (file?.$id) claimedFileIds.add(file.$id);
     return {
       ...asset,
-      file_id: resolvedId,
+      file_id: primaryId,
       file_name: asset.file_name || asset.filename || file?.name || "",
-      media_type: mediaTypeFromFile(file, effectiveMediaType(asset)),
-      _storage_resolved: Boolean(resolvedId),
+      media_type: declaredType !== "file" ? declaredType : mediaTypeFromFile(file, declaredType),
+      _preview_file_id: file?.$id && file.$id !== primaryId ? file.$id : "",
+      _storage_resolved: Boolean(primaryId),
       _storage_meta: file || null
     };
   });
@@ -568,7 +572,14 @@ function ensureModal() {
 }
 
 function assetNarrative(asset, context = {}) {
-  return context.description || context.caption || context.summary || asset.description || "";
+  const explicit = context.description || context.caption || context.summary || asset.description;
+  if (explicit) return explicit;
+  const type = effectiveMediaType(asset);
+  if (type === "video") return "Selected video evidence documenting the academic, teaching, technical, or professional activity represented by this record.";
+  if (type === "image") return "Selected visual evidence documenting the academic, teaching, technical, or professional activity represented by this record.";
+  if (type === "presentation") return "Presentation material retained as supporting evidence for the academic or conference activity represented by this record.";
+  if (type === "pdf") return "Public supporting document linked directly to the academic or professional record in which it appears.";
+  return "Public supporting evidence linked to the academic or professional record in which it appears.";
 }
 
 function assetTitle(asset, context = {}) {
