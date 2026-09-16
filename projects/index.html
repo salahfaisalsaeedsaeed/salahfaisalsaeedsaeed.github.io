@@ -21,165 +21,28 @@
 <body data-page="research-projects">
 <a class="skip-link" href="#main">Skip to main content</a>
 <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
-
-<header class="mobile-header">
-  <a href="/" class="mobile-brand"><span class="brand-mark">SF</span><span>Salah Faisal</span></a>
-  <div class="mobile-actions">
-    <button class="theme-toggle icon-only" type="button" data-theme-toggle aria-label="Switch color theme">◐</button>
-    <button class="menu-toggle" type="button" id="menuToggle" aria-controls="sidebar" aria-expanded="false" aria-label="Open navigation menu"><span></span><span></span><span></span></button>
-  </div>
-</header>
+<header class="mobile-header"><a href="/" class="mobile-brand"><span class="brand-mark">SF</span><span>Salah Faisal</span></a><div class="mobile-actions"><button class="theme-toggle icon-only" type="button" data-theme-toggle aria-label="Switch color theme">◐</button><button class="menu-toggle" type="button" id="menuToggle" aria-controls="sidebar" aria-expanded="false" aria-label="Open navigation menu"><span></span><span></span><span></span></button></div></header>
 <div class="sidebar-backdrop" id="sidebarBackdrop" hidden></div>
-
 <div class="site-layout">
-  <aside class="sidebar" id="sidebar" aria-label="Academic profile navigation">
-    <div class="sidebar-inner">
-      <a class="profile-link" href="/" aria-label="Salah Faisal Saeed Saeed home page">
-        <div class="profile-photo" id="profilePhotoWrap">
-          <img src="/myp.jpg" alt="Portrait of Salah Faisal Saeed Saeed" id="profilePhoto" />
-          <span class="profile-fallback" aria-hidden="true">SF</span>
-        </div>
-        <h1>Salah Faisal</h1>
-        <p class="profile-title">Mechatronics &amp; Robotics Engineer · STEM Educator · Researcher</p>
-        <p class="profile-location">Taiz, Yemen</p>
-      </a>
-      <div class="profile-links" aria-label="Academic profiles">
-        <a href="https://scholar.google.com/citations?hl=ar&user=kV3STigAAAAJ" target="_blank" rel="noopener">Scholar</a>
-        <a href="https://orcid.org/0009-0000-9485-7467" target="_blank" rel="noopener">ORCID</a>
-        <a href="https://www.linkedin.com/in/eng-salah-faisal-saeed-saeed-naser-925a1b2a3" target="_blank" rel="noopener">LinkedIn</a>
-      </div>
-      <nav class="side-nav" aria-label="Primary">
-        <div class="nav-group"><p class="nav-label">HOME</p><ul><li><a href="/">Home</a></li></ul></div>
-        <div class="nav-group"><p class="nav-label">PROFILE</p><ul><li><a href="/about/">About</a></li><li><a href="/education/">Education</a></li><li><a href="/research/">Research Areas</a></li></ul></div>
-        <div class="nav-group"><p class="nav-label">ACADEMIC OUTPUT</p><ul><li><a href="/publications/">Publications &amp; Works</a></li><li><a href="/projects/" class="active" aria-current="page">Research &amp; Engineering Projects</a></li></ul></div>
-        <div class="nav-group"><p class="nav-label">EXPERIENCE</p><ul><li><a href="/experience/">Academic &amp; Technical Experience</a></li><li><a href="/teaching/">Teaching &amp; Mentorship</a></li></ul></div>
-        <div class="nav-group"><p class="nav-label">PORTFOLIO</p><ul><li><a href="/media/">Featured Work &amp; Media</a></li><li><a href="/awards/">Awards &amp; Distinctions</a></li><li><a href="/credentials/">Credentials &amp; Recognition</a></li><li><a href="/recommendations/">Recommendations</a></li><li><a href="/institutional-evidence/">Institutional Announcements &amp; Evidence</a></li><li><a href="/documents/">Documents &amp; Evidence</a></li></ul></div>
-        <div class="nav-group"><p class="nav-label">CONTACT</p><ul><li><a href="/contact/">Contact</a></li></ul></div>
-      </nav>
-      <div class="sidebar-actions">
-        <a class="button button-primary cv-link" href="/Salah_Faisal_CV.pdf" target="_blank" rel="noopener">Download CV</a>
-        <button class="theme-toggle" type="button" id="themeToggle" aria-label="Switch color theme"><span aria-hidden="true">◐</span><span>Theme</span></button>
-      </div>
-    </div>
-  </aside>
-
-  <main class="content" id="main">
-    <header class="page-header reveal">
-      <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a><span>/</span><span aria-current="page">Research &amp; Engineering Projects</span></nav>
-      <p class="page-kicker">Academic Output</p>
-      <h2>Research &amp; Engineering Projects</h2>
-      <p>Selected work presented as academic case studies rather than repeated portfolio cards, with methods, evidence, results, and limitations kept in context.</p>
-    </header>
-
-    <article class="project-case-study reveal" id="graduation-project">
-      <div class="case-study-heading">
-        <div>
-          <p class="section-label">Featured B.Sc. Graduation Project</p>
-          <h3>Manipulator Robot Error Correction Using Computer Vision</h3>
-          <p>A six-degree-of-freedom robotic manipulator combined with external visual feedback to estimate pose error using YOLOv11 marker detection and OpenCV SolvePnP. The work integrates mechanical design, embedded control, computer vision, camera calibration, and geometric pose estimation in a single engineering framework.</p>
-        </div>
-        <div class="case-study-meta"><strong>Taiz University · 2025</strong>Mechatronics &amp; Robotics Engineering<br />Team graduation project</div>
-      </div>
-
-      <div class="project-stat-band" aria-label="Selected project metrics">
-        <div><strong>6-DOF</strong><span>robotic manipulator</span></div>
-        <div><strong>1,500+</strong><span>real images captured</span></div>
-        <div><strong>4,305</strong><span>images after augmentation</span></div>
-        <div><strong>95.0%</strong><span>final-epoch precision</span></div>
-        <div><strong>96.7%</strong><span>final-epoch recall</span></div>
-        <div><strong>97.0%</strong><span>mAP@0.5</span></div>
-      </div>
-
-      <section class="case-study-section">
-        <h4>Engineering workflow</h4>
-        <div class="project-method">
-          <div><strong>Mechanical design</strong>6-DOF arm modeled in SolidWorks with kinematic and workspace considerations.</div>
-          <div><strong>Dataset</strong>Real marker images captured across different viewpoints and lighting conditions.</div>
-          <div><strong>Vision model</strong>YOLOv11 trained for detection of the three fixed “+” reference markers.</div>
-          <div><strong>Calibration</strong>Camera intrinsics estimated from approximately 35 checkerboard images.</div>
-          <div><strong>Pose estimation</strong>2D detections paired with known 3D coordinates and processed with SolvePnP.</div>
-          <div><strong>Validation</strong>Detected and reprojected points compared to quantify pose-estimation error.</div>
-        </div>
-      </section>
-
-      <section class="case-study-section case-study-two-col">
-        <div>
-          <h4>System implementation</h4>
-          <dl>
-            <div><dt>Vision hardware</dt><dd>Raspberry Pi 5; Arducam HQ camera with 12.3 MP sensor and 6 mm lens mounted on Link 5.</dd></div>
-            <div><dt>Embedded control</dt><dd>ESP32, six A4988 stepper drivers, NEMA17 motors, limit/inductive sensors, emergency-stop and 12 V supply.</dd></div>
-            <div><dt>Software</dt><dd>Python, OpenCV, YOLOv11, Roboflow, Google Colab, MATLAB/engineering analysis tools, and SolidWorks.</dd></div>
-            <div><dt>Data split</dt><dd>85% training, 5% validation, and 10% testing, with rotation, noise, brightness, and shear augmentation.</dd></div>
-          </dl>
-        </div>
-        <div>
-          <h4>Measured outcomes</h4>
-          <dl>
-            <div><dt>mAP@0.5:0.95</dt><dd>84.3% at the final reported training epoch.</dd></div>
-            <div><dt>Reprojection</dt><dd>Consistently below 0.02 pixels in the reported SolvePnP verification.</dd></div>
-            <div><dt>Positioning</dt><dd>Overall positional error reported within a few millimeters in the evaluated setup.</dd></div>
-            <div><dt>Application scope</dt><dd>Potential use in pick-and-place, assembly, medical robotics, education, and research platforms.</dd></div>
-          </dl>
-        </div>
-      </section>
-
-      <div class="credibility-note">
-        <strong>Validation boundary.</strong> The report explicitly states that full real-time physical correction was not completed because of hardware constraints; correction logic was validated through simulation/offline analysis. The system also depends on fixed reference markers and line of sight, and it does not yet fuse actuator/encoder feedback with the external vision loop. The physical prototype was suitable for motion testing, while full load-handling fabrication remained future work.
-      </div>
-      <div class="case-study-actions" id="graduationProjectActions" aria-live="polite"></div>
-    </article>
-
-    <section class="section-block reveal">
-      <div class="section-title-row"><div><p class="section-label">Project Portfolio</p><h3>Additional research &amp; engineering projects</h3></div></div>
-      <div class="filter-toolbar" data-filter-target="projectsList">
-        <button class="filter-btn active" type="button" data-filter="all">All</button>
-        <button class="filter-btn" type="button" data-filter="robotics">Robotics</button>
-        <button class="filter-btn" type="button" data-filter="ev_charging">EV Charging</button>
-        <button class="filter-btn" type="button" data-filter="control_systems">Control Systems</button>
-        <button class="filter-btn" type="button" data-filter="renewable_energy">Renewable Energy</button>
-      </div>
-      <div id="projectsList" class="project-records" aria-live="polite"></div>
-    </section>
-
-    <footer class="site-footer"><p>© <span id="year"></span> Salah Faisal Saeed Saeed. Official academic profile.</p><p><a href="https://orcid.org/0009-0000-9485-7467" target="_blank" rel="noopener">ORCID</a> · <a href="https://scholar.google.com/citations?hl=ar&user=kV3STigAAAAJ" target="_blank" rel="noopener">Google Scholar</a></p></footer>
-  </main>
-</div>
-
-<button class="back-to-top" id="backToTop" type="button" aria-label="Back to top">↑</button>
-<div class="toast" id="toast" role="status" aria-live="polite"></div>
-<div class="media-modal" id="mediaModal" aria-hidden="true">
-  <div class="media-modal-backdrop" data-close-modal></div>
-  <div class="media-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="mediaModalTitle">
-    <button class="modal-close" type="button" data-close-modal aria-label="Close preview">×</button>
-    <h2 id="mediaModalTitle">Media preview</h2>
-    <div id="mediaModalBody"></div>
-  </div>
-</div>
+<aside class="sidebar" id="sidebar" aria-label="Academic profile navigation"><div class="sidebar-inner">
+<a class="profile-link" href="/" aria-label="Salah Faisal Saeed Saeed home page"><div class="profile-photo" id="profilePhotoWrap"><img src="/myp.jpg" alt="Portrait of Salah Faisal Saeed Saeed" id="profilePhoto" /><span class="profile-fallback" aria-hidden="true">SF</span></div><h1>Salah Faisal</h1><p class="profile-title">Mechatronics &amp; Robotics Engineer · STEM Educator · Researcher</p><p class="profile-location">Taiz, Yemen</p></a>
+<div class="profile-links" aria-label="Academic profiles"><a href="https://scholar.google.com/citations?hl=ar&user=kV3STigAAAAJ" target="_blank" rel="noopener">Scholar</a><a href="https://orcid.org/0009-0000-9485-7467" target="_blank" rel="noopener">ORCID</a><a href="https://www.linkedin.com/in/eng-salah-faisal-saeed-saeed-naser-925a1b2a3" target="_blank" rel="noopener">LinkedIn</a></div>
+<nav class="side-nav" aria-label="Primary"><div class="nav-group"><p class="nav-label">HOME</p><ul><li><a href="/">Home</a></li></ul></div><div class="nav-group"><p class="nav-label">PROFILE</p><ul><li><a href="/about/">About</a></li><li><a href="/education/">Education</a></li><li><a href="/research/">Research Areas</a></li></ul></div><div class="nav-group"><p class="nav-label">ACADEMIC OUTPUT</p><ul><li><a href="/publications/">Publications &amp; Works</a></li><li><a href="/projects/" class="active" aria-current="page">Research &amp; Engineering Projects</a></li></ul></div><div class="nav-group"><p class="nav-label">EXPERIENCE</p><ul><li><a href="/experience/">Academic &amp; Technical Experience</a></li><li><a href="/teaching/">Teaching &amp; Mentorship</a></li></ul></div><div class="nav-group"><p class="nav-label">PORTFOLIO</p><ul><li><a href="/media/">Featured Work &amp; Media</a></li><li><a href="/awards/">Awards &amp; Distinctions</a></li><li><a href="/credentials/">Credentials &amp; Recognition</a></li><li><a href="/recommendations/">Recommendations</a></li><li><a href="/institutional-evidence/">Institutional Announcements &amp; Evidence</a></li><li><a href="/documents/">Documents &amp; Evidence</a></li></ul></div><div class="nav-group"><p class="nav-label">CONTACT</p><ul><li><a href="/contact/">Contact</a></li></ul></div></nav>
+<div class="sidebar-actions"><a class="button button-primary cv-link" href="/Salah_Faisal_CV.pdf" target="_blank" rel="noopener">Download CV</a><button class="theme-toggle" type="button" id="themeToggle" aria-label="Switch color theme"><span aria-hidden="true">◐</span><span>Theme</span></button></div>
+</div></aside>
+<main class="content" id="main">
+<header class="page-header reveal"><nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a><span>/</span><span aria-current="page">Research &amp; Engineering Projects</span></nav><p class="page-kicker">Academic Output</p><h2>Research &amp; Engineering Projects</h2><p>Selected work presented as academic case studies rather than repeated portfolio cards, with methods, evidence, results, and limitations kept in context.</p></header>
+<article class="project-case-study reveal" id="graduation-project">
+<div class="case-study-heading"><div><p class="section-label">Featured B.Sc. Graduation Project</p><h3>Manipulator Robot Error Correction Using Computer Vision</h3><p>A six-degree-of-freedom robotic manipulator combined with external visual feedback to estimate pose error using YOLOv11 marker detection and OpenCV SolvePnP. The work integrates mechanical design, embedded control, computer vision, camera calibration, and geometric pose estimation in a single engineering framework.</p></div><div class="case-study-meta"><strong>Taiz University · 2025</strong>Mechatronics &amp; Robotics Engineering<br />Team graduation project</div></div>
+<div class="project-stat-band" aria-label="Selected project metrics"><div><strong>6-DOF</strong><span>robotic manipulator</span></div><div><strong>50</strong><span>training epochs</span></div><div><strong>4,305</strong><span>images in the augmented training pipeline</span></div><div><strong>95.0%</strong><span>final-epoch precision</span></div><div><strong>96.7%</strong><span>final-epoch recall</span></div><div><strong>97.0%</strong><span>mAP@0.5</span></div></div>
+<section class="case-study-section"><h4>Engineering workflow</h4><div class="project-method"><div><strong>Mechanical design</strong>6-DOF arm modeled in SolidWorks with kinematic and workspace considerations.</div><div><strong>Dataset</strong>Real marker images captured across different viewpoints and lighting conditions.</div><div><strong>Vision model</strong>YOLOv11 trained for detection of the three fixed “+” reference markers.</div><div><strong>Calibration</strong>Camera intrinsics estimated from approximately 35 checkerboard images.</div><div><strong>Pose estimation</strong>2D detections paired with known 3D coordinates and processed with SolvePnP.</div><div><strong>Validation</strong>Detected and reprojected points compared to quantify pose-estimation error.</div></div></section>
+<section class="case-study-section case-study-two-col"><div><h4>System implementation</h4><dl><div><dt>Vision hardware</dt><dd>Raspberry Pi 5; Arducam HQ camera with 12.3 MP sensor and 6 mm lens mounted on Link 5.</dd></div><div><dt>Embedded control</dt><dd>ESP32, six A4988 stepper drivers, NEMA17 motors, limit/inductive sensors, emergency-stop and 12 V supply.</dd></div><div><dt>Software</dt><dd>Python, OpenCV, YOLOv11, Roboflow, Google Colab, MATLAB/engineering analysis tools, and SolidWorks.</dd></div><div><dt>Data split</dt><dd>85% training, 5% validation, and 10% testing, with rotation, noise, brightness, and shear augmentation.</dd></div></dl></div><div><h4>Measured outcomes</h4><dl><div><dt>mAP@0.5:0.95</dt><dd>84.3% at the final reported training epoch.</dd></div><div><dt>Reprojection</dt><dd>Consistently below 0.02 pixels in the reported SolvePnP verification.</dd></div><div><dt>Positioning</dt><dd>Overall positional error reported within a few millimeters in the evaluated setup.</dd></div><div><dt>Application scope</dt><dd>Potential use in pick-and-place, assembly, medical robotics, education, and research platforms.</dd></div></dl></div></section>
+<div class="credibility-note"><strong>Validation boundary.</strong> The report explicitly states that full real-time physical correction was not completed because of hardware constraints; correction logic was validated through simulation/offline analysis. The system also depends on fixed reference markers and line of sight, and it does not yet fuse actuator/encoder feedback with the external vision loop. The physical prototype was suitable for motion testing, while full load-handling fabrication remained future work.</div><div class="case-study-actions" id="graduationProjectActions" aria-live="polite"></div>
+</article>
+<section class="section-block reveal"><div class="section-title-row"><div><p class="section-label">Project Portfolio</p><h3>Additional research &amp; engineering projects</h3></div></div><div class="filter-toolbar" data-filter-target="projectsList"><button class="filter-btn active" type="button" data-filter="all">All</button><button class="filter-btn" type="button" data-filter="robotics">Robotics</button><button class="filter-btn" type="button" data-filter="ev_charging">EV Charging</button><button class="filter-btn" type="button" data-filter="control_systems">Control Systems</button><button class="filter-btn" type="button" data-filter="renewable_energy">Renewable Energy</button></div><div id="projectsList" class="project-records" aria-live="polite"></div></section>
+<footer class="site-footer"><p>© <span id="year"></span> Salah Faisal Saeed Saeed. Official academic profile.</p><p><a href="https://orcid.org/0009-0000-9485-7467" target="_blank" rel="noopener">ORCID</a> · <a href="https://scholar.google.com/citations?hl=ar&user=kV3STigAAAAJ" target="_blank" rel="noopener">Google Scholar</a></p></footer>
+</main></div>
+<button class="back-to-top" id="backToTop" type="button" aria-label="Back to top">↑</button><div class="toast" id="toast" role="status" aria-live="polite"></div><div class="media-modal" id="mediaModal" aria-hidden="true"><div class="media-modal-backdrop" data-close-modal></div><div class="media-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="mediaModalTitle"><button class="modal-close" type="button" data-close-modal aria-label="Close preview">×</button><h2 id="mediaModalTitle">Media preview</h2><div id="mediaModalBody"></div></div></div>
 <script src="/script.js" defer></script>
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const list = document.getElementById('projectsList');
-    const target = document.getElementById('graduationProjectActions');
-    if (!list || !target) return;
-    const absorb = () => {
-      const records = [...list.querySelectorAll('.project-record')];
-      const match = records.find(record => {
-        const title = record.querySelector('h3')?.textContent.toLowerCase() || '';
-        return title.includes('manipulator robot error correction using computer vision');
-      });
-      if (!match) return false;
-      const actions = match.querySelector('.record-actions');
-      if (actions) [...actions.children].forEach(node => target.appendChild(node));
-      match.remove();
-      [...list.querySelectorAll('.project-index')].forEach((el, i) => { el.textContent = String(i + 1).padStart(2, '0'); });
-      return true;
-    };
-    if (!absorb()) {
-      const observer = new MutationObserver(() => { if (absorb()) observer.disconnect(); });
-      observer.observe(list, { childList: true, subtree: true });
-      setTimeout(() => observer.disconnect(), 10000);
-    }
-  });
-</script>
-</body>
-</html>
+<script>document.addEventListener('DOMContentLoaded',()=>{const list=document.getElementById('projectsList');const target=document.getElementById('graduationProjectActions');if(!list||!target)return;const absorb=()=>{const records=[...list.querySelectorAll('.project-record')];const match=records.find(record=>{const title=record.querySelector('h3')?.textContent.toLowerCase()||'';return title.includes('manipulator robot error correction using computer vision');});if(!match)return false;const actions=match.querySelector('.record-actions');if(actions)[...actions.children].forEach(node=>target.appendChild(node));match.remove();[...list.querySelectorAll('.project-index')].forEach((el,i)=>{el.textContent=String(i+1).padStart(2,'0');});return true;};if(!absorb()){const observer=new MutationObserver(()=>{if(absorb())observer.disconnect();});observer.observe(list,{childList:true,subtree:true});setTimeout(()=>observer.disconnect(),10000);}});</script>
+</body></html>
