@@ -1,0 +1,136 @@
+name: Appwrite Public Asset Audit
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/appwrite-public-audit.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Audit public Appwrite records and storage
+        shell: python
+        run: |
+          import json
+          import urllib.parse
+          import urllib.request
+
+          ENDPOINT = "https://fra.cloud.appwrite.io/v1"
+          PROJECT = "6a90545d002d8d1ed109"
+          DATABASE = "6a919743003b7658ee49"
+          BUCKET = "academic_media"
+          TABLES = [
+              "assets", "publications", "projects", "awards", "credentials",
+              "experiences", "recommendations", "institutional_evidence", "media"
+          ]
+
+          def get_json(url):
+              req = urllib.request.Request(
+                  url,
+                  headers={"X-Appwrite-Project": PROJECT, "Accept": "application/json"},
+              )
+              with urllib.request.urlopen(req, timeout=30) as response:
+                  return json.load(response)
+
+          def table_rows(table):
+              query = json.dumps({"method": "limit", "values": [250]}, separators=(",", ":"))
+              url = f"{ENDPOINT}/tablesdb/{DATABASE}/tables/{table}/rows?" + urllib.parse.urlencode({"queries[]": query, "total": "false"})
+              data = get_json(url)
+              return data.get("rows") or data.get("documents") or []
+
+          def storage_files():
+              query = json.dumps({"method": "limit", "values": [100]}, separators=(",", ":"))
+              url = f"{ENDPOINT}/storage/buckets/{BUCKET}/files?" + urllib.parse.urlencode({"queries[]": query, "total": "false"})
+              return get_json(url).get("files", [])
+
+          tables = {}
+          for table in TABLES:
+              try:
+                  tables[table] = table_rows(table)
+              except Exception as exc:
+                  tables[table] = []
+                  print(f"TABLE_ERROR|{table}|{type(exc).__name__}|{exc}")
+
+          try:
+              files = storage_files()
+          except Exception as exc:
+              files = []
+              print(f"STORAGE_ERROR|{type(exc).__name__}|{exc}")
+
+          print("AUDIT_SUMMARY_BEGIN")
+          for table in TABLES:
+              print(f"COUNT|{table}|{len(tables[table])}")
+          print(f"COUNT|storage_files|{len(files)}")
+          print("AUDIT_SUMMARY_END")
+
+          print("STORAGE_BEGIN")
+          for f in files:
+              print("STORAGE|" + json.dumps({
+                  "id": f.get("$id"),
+                  "name": f.get("name"),
+                  "mimeType": f.get("mimeType"),
+                  "sizeOriginal": f.get("sizeOriginal"),
+              }, ensure_ascii=False, separators=(",", ":")))
+          print("STORAGE_END")
+
+          fields = {
+              "assets": ["$id","title","file_id","media_type","asset_type","visibility","description","alt_text","thumbnail_file_id","sort_order"],
+              "publications": ["$id","title","status","year","asset_id","doi_url","featured","sort_order"],
+              "projects": ["$id","slug","title","category","cover_asset_id","asset_ids","featured","sort_order"],
+              "awards": ["$id","title","category","year","asset_id","featured","description","sort_order"],
+              "credentials": ["$id","title","category","year","asset_id","supporting_asset_ids","description","sort_order"],
+              "experiences": ["$id","slug","title","organization","evidence_asset_ids","sort_order"],
+              "recommendations": ["$id","slug","title","recommender_name","institution","asset_id","sort_order"],
+              "institutional_evidence": ["$id","title","institution","evidence_type","event_date","description","source_url","asset_id","sort_order"],
+              "media": ["$id","title","category","description","caption","asset_id","sort_order"],
+          }
+
+          for table in TABLES:
+              print(f"TABLE_BEGIN|{table}")
+              for row in tables[table]:
+                  payload = {key: row.get(key) for key in fields[table] if row.get(key) not in (None, "", [], {})}
+                  print(f"ROW|{table}|" + json.dumps(payload, ensure_ascii=False, separators=(",", ":")))
+              print(f"TABLE_END|{table}")
+
+          asset_ids = {row.get("$id") for row in tables["assets"] if row.get("$id")}
+          storage_ids = {f.get("$id") for f in files if f.get("$id")}
+          explicit_file_ids = [row.get("file_id") for row in tables["assets"] if row.get("file_id")]
+          print("CHECKS_BEGIN")
+          print("CHECK|assets_with_file_id|" + str(len(explicit_file_ids)))
+          print("CHECK|assets_without_file_id|" + str(sum(1 for row in tables["assets"] if not row.get("file_id"))))
+          print("CHECK|duplicate_file_ids|" + json.dumps(sorted({fid for fid in explicit_file_ids if explicit_file_ids.count(fid) > 1}), ensure_ascii=False))
+          print("CHECK|asset_file_ids_missing_from_storage|" + json.dumps(sorted({fid for fid in explicit_file_ids if fid not in storage_ids}), ensure_ascii=False))
+          print("CHECK|storage_files_without_asset_row|" + json.dumps(sorted(storage_ids - set(explicit_file_ids)), ensure_ascii=False))
+
+          refs = []
+          for table in ["publications","projects","awards","credentials","experiences","recommendations","institutional_evidence","media"]:
+              for row in tables[table]:
+                  for key in ["asset_id","cover_asset_id"]:
+                      value = row.get(key)
+                      if value:
+                          refs.append((table, row.get("$id"), key, value))
+                  for key in ["asset_ids","supporting_asset_ids","evidence_asset_ids"]:
+                      value = row.get(key)
+                      if isinstance(value, list):
+                          for item in value:
+                              refs.append((table, row.get("$id"), key, item))
+                      elif isinstance(value, str) and value:
+                          try:
+                              parsed = json.loads(value)
+                              if isinstance(parsed, list):
+                                  for item in parsed:
+                                      refs.append((table, row.get("$id"), key, item))
+                              else:
+                                  refs.extend((table, row.get("$id"), key, item.strip()) for item in value.split(",") if item.strip())
+                          except Exception:
+                              refs.extend((table, row.get("$id"), key, item.strip()) for item in value.split(",") if item.strip())
+          broken = [{"table":t,"row":r,"field":k,"asset_id":a} for t,r,k,a in refs if a not in asset_ids]
+          print("CHECK|broken_asset_references|" + json.dumps(broken, ensure_ascii=False, separators=(",", ":")))
+          print("CHECK|total_asset_references|" + str(len(refs)))
+          print("CHECKS_END")
