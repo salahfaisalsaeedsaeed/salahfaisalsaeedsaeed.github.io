@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Appwrite Public Access Diagnostics</title><style>body{font-family:system-ui,sans-serif;max-width:900px;margin:40px auto;padding:0 20px;line-height:1.5}pre{background:#f6f8fa;padding:16px;border-radius:8px;overflow:auto}.ok{color:#0a7a2f}.bad{color:#b42318}.muted{color:#666}</style></head>
+<body>
+<h1>Appwrite Public Access Diagnostics</h1>
+<p class="muted">Temporary read-only diagnostics. No secrets and no write operations.</p>
+<div id="status">Running…</div><pre id="out"></pre>
+<script>
+const ENDPOINT='https://fra.cloud.appwrite.io/v1';
+const PROJECT_ID='6a90545d002d8d1ed109';
+const DB='6a919743003b7658ee49';
+const BUCKET='academic_media';
+const PUBLIC_FILE='6a93302c002e6963e015';
+const REVIEW_FILE='6a93302c002e647b817e';
+const out=document.getElementById('out'), status=document.getElementById('status');
+const log=x=>out.textContent+=x+'\n';
+async function appwrite(path){
+ const r=await fetch(ENDPOINT+path,{headers:{'X-Appwrite-Project':PROJECT_ID,'Accept':'application/json'},cache:'no-store'});
+ const text=await r.text(); let data; try{data=text?JSON.parse(text):null}catch{data=text}
+ return {status:r.status,ok:r.ok,data};
+}
+async function run(){
+ let problems=[];
+ const rows=await appwrite(`/tablesdb/${DB}/tables/assets/rows?queries[]=${encodeURIComponent(JSON.stringify({method:'limit',values:[100]}))}&total=false`);
+ log(`Assets list status: ${rows.status}`);
+ if(rows.ok){
+   const list=rows.data?.rows||rows.data?.documents||[];
+   const pub=list.filter(r=>r.visibility==='public').length;
+   const nonpub=list.filter(r=>r.visibility && r.visibility!=='public').length;
+   log(`Rows returned: ${list.length}; public=${pub}; non-public=${nonpub}`);
+   if(nonpub>0) problems.push('Non-public asset rows are readable anonymously.');
+ } else problems.push('Anonymous assets list failed; row/table read setup needs review.');
+ for(const [label,id,shouldBePublic] of [['Known public file',PUBLIC_FILE,true],['Known needs_review file',REVIEW_FILE,false]]){
+   const r=await fetch(`${ENDPOINT}/storage/buckets/${BUCKET}/files/${id}/view?project=${encodeURIComponent(PROJECT_ID)}`,{method:'GET',cache:'no-store'});
+   log(`${label}: HTTP ${r.status}`);
+   if(shouldBePublic && !r.ok) problems.push('Known public file is not anonymously readable.');
+   if(!shouldBePublic && r.ok) problems.push('needs_review file is anonymously readable.');
+ }
+ if(problems.length){status.className='bad';status.textContent='Review needed';log('\nProblems:');problems.forEach(p=>log('- '+p));}
+ else {status.className='ok';status.textContent='Public/private access behavior looks correct';log('\nNo public/private access problem detected by this read-only test.');}
+}
+run().catch(e=>{status.className='bad';status.textContent='Diagnostic error';log(String(e.stack||e));});
+</script>
+</body></html>
