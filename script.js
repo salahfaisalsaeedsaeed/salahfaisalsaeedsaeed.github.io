@@ -59,6 +59,76 @@ const MEDIA_META = {
   }
 };
 
+
+const GITHUB_MEDIA = {
+  technical_maintenance_and_troubleshooting_work: [
+    {
+      file: "Desktop_PC_Workstation.jpg",
+      type: "image",
+      title: "Desktop PC Workstation",
+      description: "Desktop workstation documented during computer maintenance and technical support activities."
+    },
+    {
+      file: "Desktop_PC_Internal_Hardware.jpg",
+      type: "image",
+      title: "Desktop PC Internal Hardware",
+      description: "Internal desktop hardware documented during technical inspection and maintenance."
+    },
+    {
+      file: "Desktop_PC_Internal_Inspection.mp4",
+      type: "video",
+      poster: "Desktop_PC_Internal_Hardware.jpg",
+      title: "Desktop PC Internal Inspection",
+      description: "Internal inspection of a desktop computer during hardware diagnosis and maintenance."
+    },
+    {
+      file: "Desktop_RAM_Module.jpg",
+      type: "image",
+      title: "Desktop RAM Module",
+      description: "RAM module documented during desktop hardware inspection and component-level troubleshooting."
+    },
+    {
+      file: "Canon_MF4350d_Printer.jpg",
+      type: "image",
+      title: "Canon MF4350d Printer",
+      description: "Laser multifunction printer documented as part of technical maintenance and inspection work."
+    },
+    {
+      file: "Laser_Printer_Internal_Repair.mp4",
+      type: "video",
+      poster: "Canon_MF4350d_Printer.jpg",
+      title: "Laser Printer Internal Repair",
+      description: "Internal inspection and repair work on a laser printer."
+    },
+    {
+      file: "Power_Board_Inspection.jpg",
+      type: "image",
+      title: "Power Board Inspection",
+      description: "Power-board inspection documented during electronic troubleshooting and maintenance."
+    },
+    {
+      file: "Control_Board_Inspection.mp4",
+      type: "video",
+      poster: "Power_Board_Inspection.jpg",
+      title: "Control Board Inspection",
+      description: "Inspection of an electronic control board during troubleshooting and maintenance."
+    },
+    {
+      file: "Banknote_Sorter_BPS_C1.jpg",
+      type: "image",
+      title: "Banknote Sorter BPS C1",
+      description: "Banknote sorting equipment documented during technical maintenance and troubleshooting work."
+    },
+    {
+      file: "Computer_Lab_System_Test.mp4",
+      type: "video",
+      poster: "Desktop_PC_Workstation.jpg",
+      title: "Computer Lab System Test",
+      description: "Functional testing of a computer-laboratory system following technical inspection or maintenance."
+    }
+  ]
+};
+
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
 const asBool = value => value === true || value === "true" || value === 1 || value === "1";
@@ -575,10 +645,69 @@ async function renderDocuments() {
   bindAssetButtons(data);
 }
 
+
+function githubMediaPath(category, fileName) {
+  return `/media/assets/${encodeURIComponent(category)}/${encodeURIComponent(fileName)}`;
+}
+
+function githubMediaCard(category, item) {
+  const source = githubMediaPath(category, item.file);
+  const title = item.title || item.file;
+  const description = item.description || "";
+  const type = item.type === "video" ? "Video" : "Image";
+  const visual = item.type === "video"
+    ? `<video controls preload="none" playsinline${item.poster ? ` poster="${escapeAttr(githubMediaPath(category, item.poster))}"` : ""} aria-label="${escapeAttr(title)}"><source src="${escapeAttr(source)}" type="video/mp4">Your browser does not support embedded video.</video>`
+    : `<img src="${escapeAttr(source)}" alt="${escapeAttr(title)}" loading="lazy" decoding="async">`;
+
+  return `<figure class="asset-evidence-card github-media-card">
+    <div class="asset-window asset-window--${escapeAttr(item.type || "image")}">${visual}</div>
+    <figcaption class="asset-caption">
+      <div class="asset-caption-head"><span>${type}</span></div>
+      <h4>${escapeHTML(title)}</h4>
+      ${description ? `<p>${escapeHTML(description)}</p>` : ""}
+    </figcaption>
+  </figure>`;
+}
+
 async function renderMedia() {
   const root = $("#mediaLibrary");
   if (!root) return;
-  root.innerHTML = `<div class="media-library-intro"><div><p class="section-label">GitHub Media Library</p><h3>Academic and professional media in context</h3><p>This library is maintained separately from the protected Appwrite academic-document archive. Media files are published from the dedicated GitHub media collections only.</p></div></div><div class="media-sections">${MEDIA_ORDER.map((key, index) => { const meta = MEDIA_META[key]; return `<section class="media-category-section" id="media-${escapeAttr(key.replaceAll("_", "-"))}"><div class="media-category-heading"><div><span class="media-category-index">${String(index + 1).padStart(2, "0")}</span><div><h3>${escapeHTML(meta.title)}</h3><p>${escapeHTML(meta.description)}</p></div></div></div><div class="github-media-empty">No reviewed GitHub media files have been published in this category yet.</div></section>`; }).join("")}</div>`;
+
+  const populatedCategories = MEDIA_ORDER.filter(key => (GITHUB_MEDIA[key] || []).length);
+  const items = populatedCategories.flatMap(key => GITHUB_MEDIA[key] || []);
+  const imageCount = items.filter(item => item.type === "image").length;
+  const videoCount = items.filter(item => item.type === "video").length;
+
+  root.innerHTML = `
+    <div class="media-library-intro">
+      <div>
+        <p class="section-label">Curated Media Library</p>
+        <h3>Academic and professional media in context</h3>
+        <p>Selected images and videos are served directly within this website. Images use lazy loading, while videos load on demand when the visitor starts playback.</p>
+      </div>
+      <dl class="media-library-stats">
+        <div><dt>${items.length}</dt><dd>items</dd></div>
+        <div><dt>${imageCount}</dt><dd>images</dd></div>
+        <div><dt>${videoCount}</dt><dd>videos</dd></div>
+        <div><dt>${populatedCategories.length}</dt><dd>collection</dd></div>
+      </dl>
+    </div>
+    <div class="media-sections">
+      ${populatedCategories.map((key, index) => {
+        const meta = MEDIA_META[key];
+        const group = GITHUB_MEDIA[key] || [];
+        return `<section class="media-category-section" id="media-${escapeAttr(key.replaceAll("_", "-"))}">
+          <div class="media-category-heading">
+            <div>
+              <span class="media-category-index">${String(index + 1).padStart(2, "0")}</span>
+              <div><h3>${escapeHTML(meta.title)}</h3><p>${escapeHTML(meta.description)}</p></div>
+            </div>
+            <strong>${group.length} item${group.length === 1 ? "" : "s"}</strong>
+          </div>
+          <div class="asset-gallery-grid">${group.map(item => githubMediaCard(key, item)).join("")}</div>
+        </section>`;
+      }).join("")}
+    </div>`;
 }
 
 async function renderHome() {
