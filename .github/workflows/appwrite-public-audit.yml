@@ -1,10 +1,6 @@
-name: Appwrite Public Asset Audit
+name: Manual Appwrite Public Rendering Audit
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - '.github/workflows/appwrite-public-audit.yml'
   workflow_dispatch:
 
 permissions:
@@ -14,12 +10,11 @@ jobs:
   audit:
     runs-on: ubuntu-latest
     steps:
-      - name: Audit public Appwrite records and storage
+      - name: Verify public rendering relationships and private originals
         shell: python
         run: |
-          import collections
           import json
-          import re
+          import urllib.error
           import urllib.parse
           import urllib.request
 
@@ -27,133 +22,71 @@ jobs:
           PROJECT = "6a90545d002d8d1ed109"
           DATABASE = "6a919743003b7658ee49"
           BUCKET = "academic_media"
-          TABLES = ["assets","publications","projects","awards","credentials","experiences","recommendations","institutional_evidence","media"]
+          TABLES = [
+              "assets", "asset_renderings", "publications", "projects",
+              "awards", "credentials", "experiences", "recommendations",
+              "institutional_evidence"
+          ]
 
-          def get_json(url):
-              req = urllib.request.Request(url, headers={"X-Appwrite-Project": PROJECT, "Accept": "application/json"})
-              with urllib.request.urlopen(req, timeout=30) as response:
-                  return json.load(response)
+          def request(url):
+              req = urllib.request.Request(url, headers={
+                  "X-Appwrite-Project": PROJECT,
+                  "Accept": "application/json",
+              })
+              try:
+                  with urllib.request.urlopen(req, timeout=30) as response:
+                      return response.status, response.read()
+              except urllib.error.HTTPError as exc:
+                  return exc.code, exc.read()
 
-          def table_rows(table):
+          def rows(table):
               query = json.dumps({"method":"limit","values":[250]}, separators=(",", ":"))
-              url = f"{ENDPOINT}/tablesdb/{DATABASE}/tables/{table}/rows?" + urllib.parse.urlencode({"queries[]":query,"total":"false"})
-              data = get_json(url)
+              params = urllib.parse.urlencode({"queries[]":query,"total":"false"})
+              status, body = request(f"{ENDPOINT}/tablesdb/{DATABASE}/tables/{table}/rows?{params}")
+              if status != 200:
+                  raise SystemExit(f"TABLE_FAIL|{table}|HTTP {status}")
+              data = json.loads(body)
               return data.get("rows") or data.get("documents") or []
 
-          def storage_files():
-              files = []
-              for page in range(10):
-                  params = [("queries[]",json.dumps({"method":"limit","values":[100]},separators=(",", ":")))]
-                  if page:
-                      params.append(("queries[]",json.dumps({"method":"offset","values":[page*100]},separators=(",", ":"))))
-                  params.append(("total","false"))
-                  url = f"{ENDPOINT}/storage/buckets/{BUCKET}/files?" + urllib.parse.urlencode(params)
-                  batch = get_json(url).get("files",[])
-                  files.extend(batch)
-                  if len(batch) < 100:
-                      break
-              return files
+          tables = {table: rows(table) for table in TABLES}
+          assets = {row.get("$id"): row for row in tables["assets"] if row.get("$id")}
+          renderings = tables["asset_renderings"]
+          failures = []
 
-          tables = {}
-          for table in TABLES:
-              try:
-                  tables[table] = table_rows(table)
-              except Exception as exc:
-                  tables[table] = []
-                  print(f"TABLE_ERROR|{table}|{type(exc).__name__}|{exc}")
-          try:
-              files = storage_files()
-          except Exception as exc:
-              files = []
-              print(f"STORAGE_ERROR|{type(exc).__name__}|{exc}")
-
-          asset_rows = tables["assets"]
-          asset_ids = {row.get("$id") for row in asset_rows if row.get("$id")}
-          explicit_file_ids = [row.get("file_id") for row in asset_rows if row.get("file_id")]
-          storage_ids = {f.get("$id") for f in files if f.get("$id")}
-
-          def derivative_marker(file_id):
-              value = str(file_id or "")
-              match = re.match(r"^d_([^_]+)_", value)
-              return match.group(1) if match else ""
-
-          groups = collections.defaultdict(list)
-          for f in files:
-              marker = derivative_marker(f.get("$id"))
-              if marker:
-                  groups[marker].append(f)
-
-          print("AUDIT_SUMMARY_BEGIN")
+          print("COUNTS_BEGIN")
           for table in TABLES:
               print(f"COUNT|{table}|{len(tables[table])}")
-          print(f"COUNT|storage_derivative_files|{len(files)}")
-          print(f"COUNT|storage_logical_groups|{len(groups)}")
-          print("COUNT|asset_types|" + json.dumps(collections.Counter(row.get("asset_type") or "(blank)" for row in asset_rows),ensure_ascii=False,separators=(",", ":")))
-          print("COUNT|media_types|" + json.dumps(collections.Counter(row.get("media_type") or "(blank)" for row in asset_rows),ensure_ascii=False,separators=(",", ":")))
-          print("AUDIT_SUMMARY_END")
+          print("COUNTS_END")
 
-          print("DERIVATIVE_GROUPS_BEGIN")
-          for marker, batch in sorted(groups.items()):
-              matching_assets = [row for row in asset_rows if str(row.get("$id", "")).startswith(marker)]
-              payload = {
-                  "marker": marker,
-                  "derived_files": len(batch),
-                  "sample_names": [f.get("name") for f in batch[:3]],
-                  "asset_ids": [row.get("$id") for row in matching_assets],
-                  "asset_titles": [row.get("title") for row in matching_assets],
-                  "asset_types": [row.get("asset_type") for row in matching_assets],
-              }
-              print("GROUP|" + json.dumps(payload,ensure_ascii=False,separators=(",", ":")))
-          print("DERIVATIVE_GROUPS_END")
+          for rendering in renderings:
+              asset_id = rendering.get("asset_id")
+              display_ids = rendering.get("display_file_ids") or []
+              if isinstance(display_ids, str):
+                  try:
+                      display_ids = json.loads(display_ids)
+                  except Exception:
+                      display_ids = [item.strip() for item in display_ids.split(",") if item.strip()]
+              if not asset_id or asset_id not in assets:
+                  failures.append(f"rendering {rendering.get('$id')} has no readable public Asset")
+                  continue
+              if not display_ids:
+                  failures.append(f"rendering {rendering.get('$id')} has no display_file_ids")
+                  continue
 
-          fields = {
-              "assets":["$id","title","file_id","media_type","asset_type","visibility","description","alt_text","thumbnail_file_id","sort_order"],
-              "publications":["$id","title","status","year","asset_id","doi_url","featured","sort_order"],
-              "projects":["$id","slug","title","category","cover_asset_id","asset_ids","featured","sort_order"],
-              "awards":["$id","title","category","year","asset_id","featured","description","sort_order"],
-              "credentials":["$id","title","category","year","asset_id","supporting_asset_ids","description","sort_order"],
-              "experiences":["$id","slug","title","organization","evidence_asset_ids","sort_order"],
-              "recommendations":["$id","slug","title","recommender_name","institution","asset_id","sort_order"],
-              "institutional_evidence":["$id","title","institution","evidence_type","event_date","description","source_url","asset_id","sort_order"],
-              "media":["$id","title","category","description","caption","asset_id","sort_order"],
-          }
-          for table in TABLES:
-              print(f"TABLE_BEGIN|{table}")
-              for row in tables[table]:
-                  payload = {key:row.get(key) for key in fields[table] if row.get(key) not in (None,"",[],{})}
-                  print(f"ROW|{table}|" + json.dumps(payload,ensure_ascii=False,separators=(",", ":")))
-              print(f"TABLE_END|{table}")
+              display_url = f"{ENDPOINT}/storage/buckets/{BUCKET}/files/{urllib.parse.quote(str(display_ids[0]))}/view?project={PROJECT}"
+              status, _ = request(display_url)
+              if status != 200:
+                  failures.append(f"public rendering {rendering.get('$id')} first display file returned HTTP {status}")
 
-          refs = []
-          for table in ["publications","projects","awards","credentials","experiences","recommendations","institutional_evidence","media"]:
-              for row in tables[table]:
-                  for key in ["asset_id","cover_asset_id"]:
-                      value = row.get(key)
-                      if value:
-                          refs.append((table,row.get("$id"),key,value))
-                  for key in ["asset_ids","supporting_asset_ids","evidence_asset_ids"]:
-                      value = row.get(key)
-                      if isinstance(value,list):
-                          refs.extend((table,row.get("$id"),key,item) for item in value if item)
-                      elif isinstance(value,str) and value:
-                          try:
-                              parsed = json.loads(value)
-                          except Exception:
-                              parsed = [item.strip() for item in value.split(",") if item.strip()]
-                          if isinstance(parsed,list):
-                              refs.extend((table,row.get("$id"),key,item) for item in parsed if item)
+              original_id = assets[asset_id].get("file_id")
+              if original_id:
+                  original_url = f"{ENDPOINT}/storage/buckets/{BUCKET}/files/{urllib.parse.quote(str(original_id))}/view?project={PROJECT}"
+                  original_status, _ = request(original_url)
+                  if original_status == 200:
+                      failures.append(f"original file unexpectedly public for Asset {asset_id}")
 
-          broken = [{"table":t,"row":r,"field":k,"asset_id":a} for t,r,k,a in refs if a not in asset_ids]
-          mapped_markers = {str(row.get("$id", ""))[:17] for row in asset_rows if row.get("$id")}
-          unmatched_groups = sorted(set(groups) - mapped_markers)
-          print("CHECKS_BEGIN")
-          print("CHECK|assets_with_file_id|" + str(len(explicit_file_ids)))
-          print("CHECK|assets_without_file_id|" + str(sum(1 for row in asset_rows if not row.get("file_id"))))
-          print("CHECK|duplicate_file_ids|" + json.dumps(sorted({fid for fid in explicit_file_ids if explicit_file_ids.count(fid)>1}),ensure_ascii=False))
-          print("CHECK|broken_asset_references|" + json.dumps(broken,ensure_ascii=False,separators=(",", ":")))
-          print("CHECK|unmatched_derivative_groups|" + json.dumps(unmatched_groups,ensure_ascii=False))
-          for marker in unmatched_groups:
-              batch = groups[marker]
-              print("UNMATCHED_GROUP|" + json.dumps({"marker":marker,"count":len(batch),"samples":[f.get("name") for f in batch[:5]],"ids":[f.get("$id") for f in batch[:3]]},ensure_ascii=False,separators=(",", ":")))
-          print("CHECK|total_asset_references|" + str(len(refs)))
-          print("CHECKS_END")
+          if failures:
+              print('\n'.join('FAIL|' + item for item in failures))
+              raise SystemExit(1)
+
+          print(f"PASS|{len(assets)} anonymous-readable Assets and {len(renderings)} public rendering rows audited")

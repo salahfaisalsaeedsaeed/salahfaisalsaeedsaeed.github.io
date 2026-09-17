@@ -1,115 +1,71 @@
-# One-time runtime finalization and static QA
-name: Finalize Site Runtime
+name: Validate Site Runtime
 
 on:
+  pull_request:
+    paths:
+      - 'script.js'
+      - 'style.css'
+      - '**/*.html'
+      - '.github/workflows/finalize-site.yml'
   push:
     branches: [main]
     paths:
+      - 'script.js'
+      - 'style.css'
+      - '**/*.html'
       - '.github/workflows/finalize-site.yml'
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
-  finalize:
+  validate:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Patch Appwrite runtime safely
+
+      - name: JavaScript syntax check
+        run: node --check script.js
+
+      - name: Enforce safe Appwrite rendering architecture
         shell: python
         run: |
           from pathlib import Path
+          import sys
 
-          path = Path('script.js')
-          text = path.read_text(encoding='utf-8')
+          text = Path('script.js').read_text(encoding='utf-8')
 
-          def replace_function(source, name, replacement):
-              marker = f'function {name}('
-              start = source.find(marker)
-              if start < 0:
-                  raise SystemExit(f'{name} target not found')
-              brace = source.find('{', start)
-              if brace < 0:
-                  raise SystemExit(f'{name} opening brace not found')
-              depth = 0
-              end = None
-              for i in range(brace, len(source)):
-                  c = source[i]
-                  if c == '{':
-                      depth += 1
-                  elif c == '}':
-                      depth -= 1
-                      if depth == 0:
-                          end = i + 1
-                          break
-              if end is None:
-                  raise SystemExit(f'{name} closing brace not found')
-              return source[:start] + replacement + source[end:]
+          required = [
+              'assetRenderings: "asset_renderings"',
+              'display_file_ids',
+              'renderingMap',
+              'storageFileView(fileId)',
+          ]
+          forbidden = [
+              'fetchPublicStorageFiles',
+              'resolveStorageFile',
+              'bestStorageCandidate',
+              '_synthetic',
+              'Open original',
+              'asset.file_id',
+              'assets.file_id',
+          ]
 
-          text = replace_function(text, 'storagePreviewUrl', '''function storagePreviewUrl(asset, width = 1400, height = 1000) {
-            const previewId = asset?.thumbnail_file_id || asset?.thumbnailFileId || asset?._preview_file_id || asset?.file_id;
-            if (!previewId) return "";
-            return String(previewId).startsWith("d_")
-              ? storageFileView(previewId)
-              : storageFilePreview(previewId, width, height);
-          }''')
+          failures = []
+          for token in required:
+              if token not in text:
+                  failures.append(f'missing required architecture token: {token}')
+          for token in forbidden:
+              if token in text:
+                  failures.append(f'forbidden legacy/original-file token present: {token}')
 
-          text = replace_function(text, 'enrichAssets', '''function enrichAssets(assetRows, storageFiles) {
-            const claimedFileIds = new Set();
-            const enriched = (assetRows || []).map(asset => {
-              const explicitId = asset.file_id || asset.storage_file_id || asset.fileId || "";
-              const file = resolveStorageFile(asset, storageFiles);
-              const primaryId = explicitId || file?.$id || "";
-              const declaredType = effectiveMediaType(asset);
-              if (primaryId) claimedFileIds.add(primaryId);
-              if (file?.$id) claimedFileIds.add(file.$id);
-              return {
-                ...asset,
-                file_id: primaryId,
-                file_name: asset.file_name || asset.filename || file?.name || "",
-                media_type: declaredType !== "file" ? declaredType : mediaTypeFromFile(file, declaredType),
-                _preview_file_id: file?.$id && file.$id !== primaryId ? file.$id : "",
-                _storage_resolved: Boolean(primaryId),
-                _storage_meta: file || null
-              };
-            });
+          if failures:
+              print('\n'.join('FAIL|' + item for item in failures))
+              sys.exit(1)
 
-            (storageFiles || []).forEach(file => {
-              if (claimedFileIds.has(file.$id)) return;
-              enriched.push({
-                $id: `storage:${file.$id}`,
-                title: humanizeFileName(file.name),
-                description: "",
-                alt_text: humanizeFileName(file.name),
-                asset_type: ["image", "video"].includes(mediaTypeFromFile(file, "file")) ? "media" : (mediaTypeFromFile(file, "file") === "presentation" ? "presentation" : "unclassified"),
-                visibility: "public",
-                file_id: file.$id,
-                file_name: file.name || "",
-                media_type: mediaTypeFromFile(file, "file"),
-                _storage_resolved: true,
-                _storage_meta: file,
-                _synthetic: true
-              });
-            });
+          print('PASS|safe Appwrite rendering architecture checks passed')
 
-            return sortRows(enriched);
-          }''')
-
-          text = replace_function(text, 'assetNarrative', '''function assetNarrative(asset, context = {}) {
-            const explicit = context.description || context.caption || context.summary || asset.description;
-            if (explicit) return explicit;
-            const type = effectiveMediaType(asset);
-            if (type === "video") return "Selected video evidence documenting the academic, teaching, technical, or professional activity represented by this record.";
-            if (type === "image") return "Selected visual evidence documenting the academic, teaching, technical, or professional activity represented by this record.";
-            if (type === "presentation") return "Presentation material retained as supporting evidence for the academic or conference activity represented by this record.";
-            if (type === "pdf") return "Public supporting document linked directly to the academic or professional record in which it appears.";
-            return "Public supporting evidence linked to the academic or professional record in which it appears.";
-          }''')
-
-          path.write_text(text, encoding='utf-8')
-      - name: JavaScript syntax check
-        run: node --check script.js
       - name: Static internal-link and duplicate-id audit
         shell: python
         run: |
@@ -125,46 +81,44 @@ jobs:
           class Parser(HTMLParser):
               def __init__(self):
                   super().__init__()
-                  self.links=[]; self.ids=[]
+                  self.links = []
+                  self.ids = []
               def handle_starttag(self, tag, attrs):
-                  d=dict(attrs)
-                  if 'id' in d: self.ids.append(d['id'])
-                  if tag=='a' and d.get('href'): self.links.append(d['href'])
+                  values = dict(attrs)
+                  if 'id' in values:
+                      self.ids.append(values['id'])
+                  if tag == 'a' and values.get('href'):
+                      self.links.append(values['href'])
 
           for page in html_files:
-              parser=Parser(); parser.feed(page.read_text(encoding='utf-8'))
-              dup={x for x in parser.ids if parser.ids.count(x)>1}
-              if dup: failures.append(f'{page}: duplicate ids {sorted(dup)}')
+              parser = Parser()
+              parser.feed(page.read_text(encoding='utf-8'))
+              seen = set()
+              duplicates = set()
+              for value in parser.ids:
+                  if value in seen:
+                      duplicates.add(value)
+                  seen.add(value)
+              if duplicates:
+                  failures.append(f'{page}: duplicate ids {sorted(duplicates)}')
+
               for href in parser.links:
-                  if href.startswith(('http://','https://','mailto:','tel:','#','javascript:')): continue
-                  parsed=urlparse(href)
-                  target=parsed.path
-                  if not target: continue
-                  fs=(root / target.lstrip('/')) if target.startswith('/') else (page.parent / target)
+                  if href.startswith(('http://', 'https://', 'mailto:', 'tel:', '#', 'javascript:')):
+                      continue
+                  parsed = urlparse(href)
+                  target = parsed.path
+                  if not target:
+                      continue
+                  fs = (root / target.lstrip('/')) if target.startswith('/') else (page.parent / target)
                   if target.endswith('/'):
-                      fs=fs/'index.html'
-                  elif fs.suffix=='':
-                      if (fs/'index.html').exists(): fs=fs/'index.html'
-                  if not fs.exists(): failures.append(f'{page}: missing internal target {href}')
-
-          stale=[]
-          for page in html_files:
-              s=page.read_text(encoding='utf-8')
-              if '/achievements/' in s: stale.append(str(page))
-          if stale: failures.append('stale /achievements/ links: '+', '.join(stale))
+                      fs = fs / 'index.html'
+                  elif fs.suffix == '' and (fs / 'index.html').exists():
+                      fs = fs / 'index.html'
+                  if not fs.exists():
+                      failures.append(f'{page}: missing internal target {href}')
 
           if failures:
-              print('\n'.join('FAIL|'+f for f in failures))
+              print('\n'.join('FAIL|' + item for item in failures))
               sys.exit(1)
+
           print(f'PASS|checked {len(html_files)} HTML files')
-      - name: Commit finalized runtime
-        run: |
-          if git diff --quiet; then
-            echo "No changes required"
-            exit 0
-          fi
-          git config user.name "Salah Faisal Site Automation"
-          git config user.email "actions@users.noreply.github.com"
-          git add script.js
-          git commit -m "Preserve Appwrite originals and finalize evidence captions"
-          git push
