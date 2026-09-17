@@ -7,6 +7,8 @@ on:
       - 'style.css'
       - '**/*.html'
       - '.github/workflows/finalize-site.yml'
+      - 'tests/**'
+      - 'tests/**'
   push:
     branches: [main]
     paths:
@@ -27,6 +29,9 @@ jobs:
 
       - name: JavaScript syntax check
         run: node --check script.js
+
+      - name: GitHub media path regression test
+        run: node tests/media-paths.test.js
 
       - name: Enforce safe Appwrite rendering architecture
         shell: python
