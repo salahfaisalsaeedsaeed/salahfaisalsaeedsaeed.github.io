@@ -328,7 +328,7 @@ const GITHUB_MEDIA = {
       title: "Workshop Instructor Session"
     }
   ],
-  3d_printing_and_stem_laboratory_activities: [
+  "3d_printing_and_stem_laboratory_activities": [
     {
       file: "3D_Printer_Hands_On_Demo.jpg",
       type: "image",
