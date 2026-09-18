@@ -31,6 +31,11 @@ for (const [video, poster] of Object.entries(expected)) {
       console.error("FAIL|Unexpected poster size|" + poster + "|" + size);
       process.exit(1);
     }
+    const header = fs.readFileSync(posterPath).subarray(0, 12);
+    if (header.subarray(0, 4).toString("ascii") !== "RIFF" || header.subarray(8, 12).toString("ascii") !== "WEBP") {
+      console.error("FAIL|Poster is not a valid WebP container|" + poster);
+      process.exit(1);
+    }
   }
 }
 
