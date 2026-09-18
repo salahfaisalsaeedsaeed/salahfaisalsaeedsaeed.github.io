@@ -19,7 +19,16 @@ for (const [video, poster] of Object.entries(expected)) {
     `file:\\s*["']${video.replace(/[.*+?^\\$()|[\\]{}]/g, "\\$&")}["'][\\s\\S]{0,220}?poster:\\s*["']${poster.replace(/[.*+?^\\$()|[\\]{}]/g, "\\$&")}["']`
   );
   if (!pattern.test(source)) missingPosterFields.push(video);
-  if (!fs.existsSync(`${mediaDir}/${poster}`)) missingPosterFiles.push(poster);
+  const posterPath = `${mediaDir}/${poster}`;
+  if (!fs.existsSync(posterPath)) {
+    missingPosterFiles.push(poster);
+  } else {
+    const size = fs.statSync(posterPath).size;
+    if (size < 2048 || size > 500000) {
+      console.error(`FAIL|Unexpected poster size|${poster}|${size}`);
+      process.exit(1);
+    }
+  }
 }
 
 if (missingPosterFields.length || missingPosterFiles.length) {
