@@ -6,6 +6,8 @@ const required = [
   "--bg:#f5f7fa",
   "--surface:#ffffff",
   "--surface-blue:#e8f1f7",
+  "--page-wash:#f7f5ef",
+  "background:linear-gradient(180deg,var(--page-wash),transparent)",
   "--text:#1f2933",
   "--muted:#5f6f7e",
   "--navy:#12304a",
