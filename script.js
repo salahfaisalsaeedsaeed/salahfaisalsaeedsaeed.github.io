@@ -86,6 +86,42 @@ const GITHUB_MEDIA = {
       file: "tDCS_Presentation.mp4",
       type: "video",
       title: "tDCS Presentation"
+    },
+    {
+      file: "Camera_Based_Measurement_Systems.pdf",
+      type: "pdf",
+      title: "Camera-Based Measurement Systems",
+      description: "PDF presentation associated with student research and conference-oriented academic work."
+    },
+    {
+      file: "Deep_Learning_Scattering_Imaging.pdf",
+      type: "pdf",
+      title: "Deep Learning Scattering Imaging",
+      description: "PDF presentation associated with student research and conference-oriented academic work."
+    },
+    {
+      file: "EV_Charging_Systems.pdf",
+      type: "pdf",
+      title: "EV Charging Systems",
+      description: "PDF presentation associated with student research and conference-oriented academic work."
+    },
+    {
+      file: "Federated_Learning_Trust.pdf",
+      type: "pdf",
+      title: "Federated Learning Trust",
+      description: "PDF presentation associated with student research and conference-oriented academic work."
+    },
+    {
+      file: "Metaheuristic_Controller_Tuning.pdf",
+      type: "pdf",
+      title: "Metaheuristic Controller Tuning",
+      description: "PDF presentation associated with student research and conference-oriented academic work."
+    },
+    {
+      file: "tDCS_Review.pdf",
+      type: "pdf",
+      title: "tDCS Review",
+      description: "PDF presentation associated with student research and conference-oriented academic work."
     }
   ],
   student_teaching_and_practical_training_activities: [
