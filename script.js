@@ -61,6 +61,329 @@ const MEDIA_META = {
 
 
 const GITHUB_MEDIA = {
+  student_videos_and_conference_presentations: [
+    {
+      file: "EV_Charging_Presentation.mp4",
+      type: "video",
+      title: "EV Charging Presentation"
+    },
+    {
+      file: "Federated_Learning_Presentation.mp4",
+      type: "video",
+      title: "Federated Learning Presentation"
+    },
+    {
+      file: "Metaheuristic_Tuning_Presentation.mp4",
+      type: "video",
+      title: "Metaheuristic Tuning Presentation"
+    },
+    {
+      file: "Scattering_Imaging_Presentation.mp4",
+      type: "video",
+      title: "Scattering Imaging Presentation"
+    },
+    {
+      file: "tDCS_Presentation.mp4",
+      type: "video",
+      title: "tDCS Presentation"
+    }
+  ],
+  student_teaching_and_practical_training_activities: [
+    {
+      file: "3D_Printer_Lab_01.jpg",
+      type: "image",
+      title: "3D Printer Lab 01"
+    },
+    {
+      file: "3D_Printer_Lab_02.jpg",
+      type: "image",
+      title: "3D Printer Lab 02"
+    },
+    {
+      file: "Circuit_Practical_Training_01.jpg",
+      type: "image",
+      title: "Circuit Practical Training 01"
+    },
+    {
+      file: "Circuit_Practical_Training_02.jpg",
+      type: "image",
+      title: "Circuit Practical Training 02"
+    },
+    {
+      file: "Circuit_Worksheet_Activity_01.jpg",
+      type: "image",
+      title: "Circuit Worksheet Activity 01"
+    },
+    {
+      file: "Circuit_Worksheet_Activity_02.jpg",
+      type: "image",
+      title: "Circuit Worksheet Activity 02"
+    },
+    {
+      file: "Classroom_Practical_Session_01.jpg",
+      type: "image",
+      title: "Classroom Practical Session 01"
+    },
+    {
+      file: "Classroom_Practical_Session_02.jpg",
+      type: "image",
+      title: "Classroom Practical Session 02"
+    },
+    {
+      file: "Electronics_Lab_Group_01.jpg",
+      type: "image",
+      title: "Electronics Lab Group 01"
+    },
+    {
+      file: "Electronics_Lab_Group_02.jpg",
+      type: "image",
+      title: "Electronics Lab Group 02"
+    },
+    {
+      file: "Electronics_Lab_Guidance_01.jpg",
+      type: "image",
+      title: "Electronics Lab Guidance 01"
+    },
+    {
+      file: "Electronics_Lab_Guidance_02.jpg",
+      type: "image",
+      title: "Electronics Lab Guidance 02"
+    },
+    {
+      file: "Electronics_Prototype_Demo_01.jpg",
+      type: "image",
+      title: "Electronics Prototype Demo 01"
+    },
+    {
+      file: "Electronics_Prototype_Demo_02.jpg",
+      type: "image",
+      title: "Electronics Prototype Demo 02"
+    },
+    {
+      file: "Electronics_Workbench_Demo_01.jpg",
+      type: "image",
+      title: "Electronics Workbench Demo 01"
+    },
+    {
+      file: "Electronics_Workbench_Demo_02.jpg",
+      type: "image",
+      title: "Electronics Workbench Demo 02"
+    },
+    {
+      file: "Embedded_System_Prototype_Demo_01.jpg",
+      type: "image",
+      title: "Embedded System Prototype Demo 01"
+    },
+    {
+      file: "Embedded_System_Prototype_Demo_02.jpg",
+      type: "image",
+      title: "Embedded System Prototype Demo 02"
+    },
+    {
+      file: "Embedded_System_Prototype_Demo_03.jpg",
+      type: "image",
+      title: "Embedded System Prototype Demo 03"
+    },
+    {
+      file: "Measurement_Lab_Instruction_01.jpg",
+      type: "image",
+      title: "Measurement Lab Instruction 01"
+    },
+    {
+      file: "Measurement_Lab_Instruction_02.jpg",
+      type: "image",
+      title: "Measurement Lab Instruction 02"
+    },
+    {
+      file: "Measurement_Lab_Instruction_03.jpg",
+      type: "image",
+      title: "Measurement Lab Instruction 03"
+    },
+    {
+      file: "Measurement_Lab_Instruction_04.jpg",
+      type: "image",
+      title: "Measurement Lab Instruction 04"
+    },
+    {
+      file: "Oscilloscope_Practical_01.jpg",
+      type: "image",
+      title: "Oscilloscope Practical 01"
+    },
+    {
+      file: "Oscilloscope_Practical_02.jpg",
+      type: "image",
+      title: "Oscilloscope Practical 02"
+    },
+    {
+      file: "Oscilloscope_Practical_03.jpg",
+      type: "image",
+      title: "Oscilloscope Practical 03"
+    },
+    {
+      file: "Oscilloscope_Training_01.jpg",
+      type: "image",
+      title: "Oscilloscope Training 01"
+    },
+    {
+      file: "Oscilloscope_Training_02.jpg",
+      type: "image",
+      title: "Oscilloscope Training 02"
+    },
+    {
+      file: "Power_Supply_Training_01.jpg",
+      type: "image",
+      title: "Power Supply Training 01"
+    },
+    {
+      file: "Power_Supply_Training_02.jpg",
+      type: "image",
+      title: "Power Supply Training 02"
+    },
+    {
+      file: "Practical_Teaching_Session.jpg",
+      type: "image",
+      title: "Practical Teaching Session"
+    },
+    {
+      file: "Student_Electronics_Practice_01.jpg",
+      type: "image",
+      title: "Student Electronics Practice 01"
+    },
+    {
+      file: "Student_Electronics_Practice_02.jpg",
+      type: "image",
+      title: "Student Electronics Practice 02"
+    },
+    {
+      file: "Student_Lab_Instruction_01.jpg",
+      type: "image",
+      title: "Student Lab Instruction 01"
+    },
+    {
+      file: "Student_Lab_Instruction_02.jpg",
+      type: "image",
+      title: "Student Lab Instruction 02"
+    },
+    {
+      file: "Wiring_Practical_Training_01.jpg",
+      type: "image",
+      title: "Wiring Practical Training 01"
+    },
+    {
+      file: "Wiring_Practical_Training_02.jpg",
+      type: "image",
+      title: "Wiring Practical Training 02"
+    },
+    {
+      file: "Wiring_Practical_Training_03.jpg",
+      type: "image",
+      title: "Wiring Practical Training 03"
+    }
+  ],
+  teacher_training_and_professional_development_programs: [
+    {
+      file: "Electrical_Waveforms_Training.jpg",
+      type: "image",
+      title: "Electrical Waveforms Training"
+    },
+    {
+      file: "Electronics_Training_Demonstration.jpg",
+      type: "image",
+      title: "Electronics Training Demonstration"
+    },
+    {
+      file: "Professional_Development_Presentation.jpg",
+      type: "image",
+      title: "Professional Development Presentation"
+    },
+    {
+      file: "Teacher_Professional_Development_Workshop.mp4",
+      type: "video",
+      title: "Teacher Professional Development Workshop",
+      poster: "Teacher_Workshop_Group.jpg"
+    },
+    {
+      file: "Teacher_Training_Classroom.jpg",
+      type: "image",
+      title: "Teacher Training Classroom"
+    },
+    {
+      file: "Teacher_Workshop_Group.jpg",
+      type: "image",
+      title: "Teacher Workshop Group"
+    },
+    {
+      file: "Teacher_Workshop_Participants_01.jpg",
+      type: "image",
+      title: "Teacher Workshop Participants 01"
+    },
+    {
+      file: "Teacher_Workshop_Participants_02.jpg",
+      type: "image",
+      title: "Teacher Workshop Participants 02"
+    },
+    {
+      file: "Workshop_Instructor_Session.jpg",
+      type: "image",
+      title: "Workshop Instructor Session"
+    }
+  ],
+  "3d_printing_and_stem_laboratory_activities": [
+    {
+      file: "3D_Printer_Hands_On_Demo.jpg",
+      type: "image",
+      title: "3D Printer Hands On Demo"
+    },
+    {
+      file: "3D_Printer_Setup_Demo.mp4",
+      type: "video",
+      title: "3D Printer Setup Demo",
+      poster: "3D_Printer_Workshop_Setup.jpg"
+    },
+    {
+      file: "3D_Printer_STEM_Activity.mp4",
+      type: "video",
+      title: "3D Printer STEM Activity",
+      poster: "3D_Printer_Hands_On_Demo.jpg"
+    },
+    {
+      file: "3D_Printer_Training_Discussion.jpg",
+      type: "image",
+      title: "3D Printer Training Discussion"
+    },
+    {
+      file: "3D_Printer_Workshop_Discussion.jpg",
+      type: "image",
+      title: "3D Printer Workshop Discussion"
+    },
+    {
+      file: "3D_Printer_Workshop_Group.jpg",
+      type: "image",
+      title: "3D Printer Workshop Group"
+    },
+    {
+      file: "3D_Printer_Workshop_Session.jpg",
+      type: "image",
+      title: "3D Printer Workshop Session"
+    },
+    {
+      file: "3D_Printer_Workshop_Setup.jpg",
+      type: "image",
+      title: "3D Printer Workshop Setup"
+    },
+    {
+      file: "3D_Printing_Closeup.mp4",
+      type: "video",
+      title: "3D Printing Closeup",
+      poster: "3D_Printer_Hands_On_Demo.jpg"
+    },
+    {
+      file: "3D_Printing_Process.mp4",
+      type: "video",
+      title: "3D Printing Process",
+      poster: "3D_Printer_Workshop_Session.jpg"
+    }
+  ],
   technical_maintenance_and_troubleshooting_work: [
     {
       file: "Desktop_PC_Workstation.jpg",

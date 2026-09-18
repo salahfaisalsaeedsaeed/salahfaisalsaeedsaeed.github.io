@@ -33,6 +33,9 @@ jobs:
       - name: GitHub media path regression test
         run: node tests/media-paths.test.js
 
+      - name: GitHub media manifest coverage test
+        run: node tests/media-manifest.test.js
+
       - name: Enforce safe Appwrite rendering architecture
         shell: python
         run: |
