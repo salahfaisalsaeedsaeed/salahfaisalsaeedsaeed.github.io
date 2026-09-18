@@ -971,7 +971,7 @@ async function renderDocuments() {
 
 function githubMediaPath(category, fileName) {
   const folder = String(category || "").replaceAll("_", "-");
-  return `/media/assets/${encodeURIComponent(folder)}/${encodeURIComponent(fileName)}`;
+  return `https://raw.githubusercontent.com/salahfaisalsaeedsaeed/salahfaisalsaeedsaeed.github.io/main/media/assets/${encodeURIComponent(folder)}/${encodeURIComponent(fileName)}`;
 }
 
 function githubMediaCard(category, item) {
