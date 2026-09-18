@@ -36,6 +36,9 @@ jobs:
       - name: Academic color palette regression test
         run: node tests/academic-color-palette.test.js
 
+      - name: Professional editorial copy regression test
+        run: node tests/professional-editorial-copy.test.js
+
       - name: GitHub media path regression test
         run: node tests/media-paths.test.js
 
