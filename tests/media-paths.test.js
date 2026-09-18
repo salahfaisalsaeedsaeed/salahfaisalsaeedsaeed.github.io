@@ -13,10 +13,10 @@ const actual = githubMediaPath(
   "technical_maintenance_and_troubleshooting_work",
   "Desktop_PC_Workstation.jpg"
 );
-const expected = "/media/assets/technical-maintenance-and-troubleshooting-work/Desktop_PC_Workstation.jpg";
+const expected = "https://raw.githubusercontent.com/salahfaisalsaeedsaeed/salahfaisalsaeedsaeed.github.io/main/media/assets/technical-maintenance-and-troubleshooting-work/Desktop_PC_Workstation.jpg";
 
 if (actual !== expected) {
-  console.error("FAIL|GitHub media category keys must resolve to hyphenated folder paths");
+  console.error("FAIL|GitHub media must resolve to direct raw GitHub URLs with hyphenated folder paths");
   console.error("EXPECTED|" + expected);
   console.error("ACTUAL|" + actual);
   process.exit(1);
