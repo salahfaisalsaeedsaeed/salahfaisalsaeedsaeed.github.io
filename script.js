@@ -1104,7 +1104,7 @@ function initYear() { $$("#year").forEach(node => { node.textContent = new Date(
 function initReveal() {
   const elements = $$(".reveal");
   if (!("IntersectionObserver" in window)) return elements.forEach(element => element.classList.add("visible"));
-  const observer = new IntersectionObserver(entries => entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add("visible"); observer.unobserve(entry.target); } }), { threshold: 0.05 });
+  const observer = new IntersectionObserver(entries => entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add("visible"); observer.unobserve(entry.target); } }), { threshold: 0 });
   elements.forEach(element => observer.observe(element));
 }
 function initScrollUI() {
