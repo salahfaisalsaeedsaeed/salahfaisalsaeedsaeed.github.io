@@ -1,5 +1,20 @@
 const fs = require("fs");
 
+const previewFiles = [
+  "Camera_Based_Measurement_Systems_preview.webp",
+  "Deep_Learning_Scattering_Imaging_preview.webp",
+  "EV_Charging_Systems_preview.webp",
+  "Federated_Learning_Trust_preview.webp",
+  "Metaheuristic_Controller_Tuning_preview.webp",
+  "tDCS_Review_preview.webp"
+];
+const previewRoot = "media/assets/student-videos-and-conference-presentations";
+const missingPreviews = previewFiles.filter(file => !fs.existsSync(`${previewRoot}/${file}`));
+if (missingPreviews.length) {
+  console.error("FAIL|Missing generated PDF first-page previews: " + missingPreviews.join(", "));
+  process.exit(1);
+}
+
 const source = fs.readFileSync("script.js", "utf8");
 const visualMatch = source.match(/function githubMediaVisual\(category, item\) \{[\s\S]*?\n\}/);
 
