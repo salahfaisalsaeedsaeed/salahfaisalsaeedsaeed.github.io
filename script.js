@@ -89,36 +89,42 @@ const GITHUB_MEDIA = {
     },
     {
       file: "Camera_Based_Measurement_Systems.pdf",
+      preview: "Camera_Based_Measurement_Systems_preview.webp",
       type: "pdf",
       title: "Camera-Based Measurement Systems",
       description: "PDF presentation associated with student research and conference-oriented academic work."
     },
     {
       file: "Deep_Learning_Scattering_Imaging.pdf",
+      preview: "Deep_Learning_Scattering_Imaging_preview.webp",
       type: "pdf",
       title: "Deep Learning Scattering Imaging",
       description: "PDF presentation associated with student research and conference-oriented academic work."
     },
     {
       file: "EV_Charging_Systems.pdf",
+      preview: "EV_Charging_Systems_preview.webp",
       type: "pdf",
       title: "EV Charging Systems",
       description: "PDF presentation associated with student research and conference-oriented academic work."
     },
     {
       file: "Federated_Learning_Trust.pdf",
+      preview: "Federated_Learning_Trust_preview.webp",
       type: "pdf",
       title: "Federated Learning Trust",
       description: "PDF presentation associated with student research and conference-oriented academic work."
     },
     {
       file: "Metaheuristic_Controller_Tuning.pdf",
+      preview: "Metaheuristic_Controller_Tuning_preview.webp",
       type: "pdf",
       title: "Metaheuristic Controller Tuning",
       description: "PDF presentation associated with student research and conference-oriented academic work."
     },
     {
       file: "tDCS_Review.pdf",
+      preview: "tDCS_Review_preview.webp",
       type: "pdf",
       title: "tDCS Review",
       description: "PDF presentation associated with student research and conference-oriented academic work."
@@ -1016,7 +1022,9 @@ function githubMediaVisual(category, item) {
   return item.type === "video"
     ? `<video controls preload="none" playsinline${item.poster ? ` poster="${escapeAttr(githubMediaPath(category, item.poster))}"` : ""} aria-label="${escapeAttr(title)}"><source src="${escapeAttr(source)}" type="video/mp4">Your browser does not support embedded video.</video>`
     : item.type === "pdf"
-      ? `<div class="asset-file-panel presentation-panel"><span class="file-kind">PDF</span><strong>Presentation PDF</strong><button type="button" class="text-button" data-github-pdf="${escapeAttr(item.file)}" data-github-pdf-category="${escapeAttr(category)}" data-github-pdf-title="${escapeAttr(title)}">View presentation →</button></div>`
+      ? item.preview
+        ? `<button type="button" class="github-pdf-preview-button" data-github-pdf="${escapeAttr(item.file)}" data-github-pdf-category="${escapeAttr(category)}" data-github-pdf-title="${escapeAttr(title)}" aria-label="Open ${escapeAttr(title)} presentation"><img src="${escapeAttr(githubMediaPath(category, item.preview))}" alt="First page preview of ${escapeAttr(title)}" loading="lazy" decoding="async"><span class="github-pdf-preview-overlay"><span class="file-kind">PDF</span><strong>View full presentation →</strong></span></button>`
+        : `<div class="asset-file-panel presentation-panel"><span class="file-kind">PDF</span><strong>Presentation PDF</strong><button type="button" class="text-button" data-github-pdf="${escapeAttr(item.file)}" data-github-pdf-category="${escapeAttr(category)}" data-github-pdf-title="${escapeAttr(title)}">View presentation →</button></div>`
       : `<img src="${escapeAttr(source)}" alt="${escapeAttr(title)}" loading="lazy" decoding="async">`;
 }
 

@@ -8,7 +8,8 @@ on:
       - '**/*.html'
       - '.github/workflows/finalize-site.yml'
       - 'tests/**'
-      - 'tests/**'
+      - 'media/assets/**'
+      - 'scripts/generate_pdf_previews.py'
   push:
     branches: [main]
     paths:
@@ -16,6 +17,8 @@ on:
       - 'style.css'
       - '**/*.html'
       - '.github/workflows/finalize-site.yml'
+      - 'media/assets/**'
+      - 'scripts/generate_pdf_previews.py'
   workflow_dispatch:
 
 permissions:

@@ -1,5 +1,20 @@
 const fs = require("fs");
 
+const previewFiles = [
+  "Camera_Based_Measurement_Systems_preview.webp",
+  "Deep_Learning_Scattering_Imaging_preview.webp",
+  "EV_Charging_Systems_preview.webp",
+  "Federated_Learning_Trust_preview.webp",
+  "Metaheuristic_Controller_Tuning_preview.webp",
+  "tDCS_Review_preview.webp"
+];
+const previewRoot = "media/assets/student-videos-and-conference-presentations";
+const missingPreviews = previewFiles.filter(file => !fs.existsSync(`${previewRoot}/${file}`));
+if (missingPreviews.length) {
+  console.error("FAIL|Missing generated PDF first-page previews: " + missingPreviews.join(", "));
+  process.exit(1);
+}
+
 const source = fs.readFileSync("script.js", "utf8");
 const visualMatch = source.match(/function githubMediaVisual\(category, item\) \{[\s\S]*?\n\}/);
 
@@ -15,6 +30,7 @@ eval(visualMatch[0]);
 
 const pdfMarkup = githubMediaVisual("student-videos-and-conference-presentations", {
   file: "EV_Charging_Systems.pdf",
+  preview: "EV_Charging_Systems_preview.webp",
   type: "pdf",
   title: "EV Charging Systems"
 });
@@ -23,8 +39,12 @@ if (!pdfMarkup.includes("data-github-pdf")) {
   console.error("FAIL|PDF media card must expose an in-site viewer trigger");
   process.exit(1);
 }
-if (pdfMarkup.includes("<iframe") || pdfMarkup.includes("<img")) {
-  console.error("FAIL|PDF card must not eagerly load the PDF or render it as an image");
+if (pdfMarkup.includes("<iframe")) {
+  console.error("FAIL|PDF card must not eagerly load the full PDF");
+  process.exit(1);
+}
+if (!pdfMarkup.includes("<img") || !pdfMarkup.includes("EV_Charging_Systems_preview.webp") || !pdfMarkup.includes('loading="lazy"')) {
+  console.error("FAIL|PDF card must render a lazy first-page preview image");
   process.exit(1);
 }
 if (!/PDF|Presentation/.test(pdfMarkup)) {
@@ -37,4 +57,4 @@ if (!source.includes("function openGithubPdf(") || !source.includes("<iframe")) 
   process.exit(1);
 }
 
-console.log("PASS|PDF media uses a lazy card and an in-site modal viewer");
+console.log("PASS|PDF media shows a lazy first-page preview and opens the full file in-site");
