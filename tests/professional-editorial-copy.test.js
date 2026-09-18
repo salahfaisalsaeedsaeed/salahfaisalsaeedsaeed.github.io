@@ -38,7 +38,13 @@ const bannedPhrases = [
   "Verified supporting evidence linked to this academic or professional record.",
   "Publication file linked to this bibliographic record.",
   "Recommendation document retained according to privacy settings.",
-  "PDF presentation displayed within this website."
+  "PDF presentation displayed within this website.",
+  "synchronized with the academic database.",
+  "rather than repeated portfolio cards",
+  "Python · C · C++ · MATLAB",
+  "ROS 2 · Gazebo · Arduino",
+  "SOC engineering",
+  "C++ and Python fundamentals"
 ];
 
 const requiredPhrases = [
@@ -47,7 +53,10 @@ const requiredPhrases = [
   "Selected visual records of research mentorship, practical teaching, teacher development, STEM laboratory practice, technical maintenance, engineering activities, conference presentations, and academic milestones.",
   "Selected institutional announcements documenting teaching, technical training, student research mentorship, publication activities, and professional development.",
   "Selected academic and professional documents supporting education, research, training, awards, and professional experience.",
-  "Peer-reviewed IEEE conference publications spanning robotics, computer vision, energy systems, artificial intelligence, and related engineering research."
+  "Peer-reviewed IEEE conference publications spanning robotics, computer vision, energy systems, artificial intelligence, and related engineering research.",
+  "Professional Experience",
+  "Cybersecurity &amp; AI-Assisted Security",
+  "Python · C++ · MATLAB"
 ];
 
 const bannedFound = bannedPhrases.filter(phrase => text.includes(phrase));
