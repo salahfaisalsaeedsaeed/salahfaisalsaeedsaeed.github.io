@@ -65,26 +65,31 @@ const GITHUB_MEDIA = {
     {
       file: "EV_Charging_Presentation.mp4",
       type: "video",
+      poster: "EV_Charging_Presentation_poster.webp",
       title: "EV Charging Presentation"
     },
     {
       file: "Federated_Learning_Presentation.mp4",
       type: "video",
+      poster: "Federated_Learning_Presentation_poster.webp",
       title: "Federated Learning Presentation"
     },
     {
       file: "Metaheuristic_Tuning_Presentation.mp4",
       type: "video",
+      poster: "Metaheuristic_Tuning_Presentation_poster.webp",
       title: "Metaheuristic Tuning Presentation"
     },
     {
       file: "Scattering_Imaging_Presentation.mp4",
       type: "video",
+      poster: "Scattering_Imaging_Presentation_poster.webp",
       title: "Scattering Imaging Presentation"
     },
     {
       file: "tDCS_Presentation.mp4",
       type: "video",
+      poster: "tDCS_Presentation_poster.webp",
       title: "tDCS Presentation"
     },
     {
