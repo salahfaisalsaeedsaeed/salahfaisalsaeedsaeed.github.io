@@ -698,7 +698,7 @@ function displayModelForAsset(data, asset) {
   if (!rendering) return null;
   return {
     $id: asset.$id,
-    title: asset.title || "Supporting evidence",
+    title: asset.title || "Document",
     description: asset.description || "",
     alt_text: asset.alt_text || "",
     asset_type: asset.asset_type || "",
