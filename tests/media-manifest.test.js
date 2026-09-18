@@ -3,7 +3,7 @@ const path = require("path");
 
 const root = path.join("media", "assets");
 const script = fs.readFileSync("script.js", "utf8");
-const supported = new Set([".jpg", ".jpeg", ".png", ".webp", ".mp4"]);
+const supported = new Set([".jpg", ".jpeg", ".png", ".webp", ".mp4", ".pdf"]);
 const missing = [];
 
 for (const category of fs.readdirSync(root)) {
@@ -22,9 +22,9 @@ for (const category of fs.readdirSync(root)) {
 }
 
 if (missing.length) {
-  console.error("FAIL|GitHub image/video files missing from the site media manifest");
+  console.error("FAIL|GitHub media files missing from the site media manifest");
   missing.forEach(file => console.error("MISSING|" + file));
   process.exit(1);
 }
 
-console.log("PASS|Every GitHub image/video file is referenced by the site media manifest");
+console.log("PASS|Every GitHub image/video/PDF file is referenced by the site media manifest");

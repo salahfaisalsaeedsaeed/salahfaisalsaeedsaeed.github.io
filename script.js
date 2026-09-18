@@ -86,6 +86,42 @@ const GITHUB_MEDIA = {
       file: "tDCS_Presentation.mp4",
       type: "video",
       title: "tDCS Presentation"
+    },
+    {
+      file: "Camera_Based_Measurement_Systems.pdf",
+      type: "pdf",
+      title: "Camera-Based Measurement Systems",
+      description: "PDF presentation associated with student research and conference-oriented academic work."
+    },
+    {
+      file: "Deep_Learning_Scattering_Imaging.pdf",
+      type: "pdf",
+      title: "Deep Learning Scattering Imaging",
+      description: "PDF presentation associated with student research and conference-oriented academic work."
+    },
+    {
+      file: "EV_Charging_Systems.pdf",
+      type: "pdf",
+      title: "EV Charging Systems",
+      description: "PDF presentation associated with student research and conference-oriented academic work."
+    },
+    {
+      file: "Federated_Learning_Trust.pdf",
+      type: "pdf",
+      title: "Federated Learning Trust",
+      description: "PDF presentation associated with student research and conference-oriented academic work."
+    },
+    {
+      file: "Metaheuristic_Controller_Tuning.pdf",
+      type: "pdf",
+      title: "Metaheuristic Controller Tuning",
+      description: "PDF presentation associated with student research and conference-oriented academic work."
+    },
+    {
+      file: "tDCS_Review.pdf",
+      type: "pdf",
+      title: "tDCS Review",
+      description: "PDF presentation associated with student research and conference-oriented academic work."
     }
   ],
   student_teaching_and_practical_training_activities: [
@@ -974,14 +1010,21 @@ function githubMediaPath(category, fileName) {
   return `https://raw.githubusercontent.com/salahfaisalsaeedsaeed/salahfaisalsaeedsaeed.github.io/main/media/assets/${encodeURIComponent(folder)}/${encodeURIComponent(fileName)}`;
 }
 
-function githubMediaCard(category, item) {
+function githubMediaVisual(category, item) {
   const source = githubMediaPath(category, item.file);
   const title = item.title || item.file;
-  const description = item.description || "";
-  const type = item.type === "video" ? "Video" : "Image";
-  const visual = item.type === "video"
+  return item.type === "video"
     ? `<video controls preload="none" playsinline${item.poster ? ` poster="${escapeAttr(githubMediaPath(category, item.poster))}"` : ""} aria-label="${escapeAttr(title)}"><source src="${escapeAttr(source)}" type="video/mp4">Your browser does not support embedded video.</video>`
-    : `<img src="${escapeAttr(source)}" alt="${escapeAttr(title)}" loading="lazy" decoding="async">`;
+    : item.type === "pdf"
+      ? `<div class="asset-file-panel presentation-panel"><span class="file-kind">PDF</span><strong>Presentation PDF</strong><button type="button" class="text-button" data-github-pdf="${escapeAttr(item.file)}" data-github-pdf-category="${escapeAttr(category)}" data-github-pdf-title="${escapeAttr(title)}">View presentation →</button></div>`
+      : `<img src="${escapeAttr(source)}" alt="${escapeAttr(title)}" loading="lazy" decoding="async">`;
+}
+
+function githubMediaCard(category, item) {
+  const title = item.title || item.file;
+  const description = item.description || "";
+  const type = item.type === "video" ? "Video" : item.type === "pdf" ? "Presentation / PDF" : "Image";
+  const visual = githubMediaVisual(category, item);
 
   return `<figure class="asset-evidence-card github-media-card">
     <div class="asset-window asset-window--${escapeAttr(item.type || "image")}">${visual}</div>
@@ -993,6 +1036,35 @@ function githubMediaCard(category, item) {
   </figure>`;
 }
 
+function openGithubPdf(category, fileName, title, trigger = null) {
+  const modal = ensureModal();
+  const body = $("#mediaModalBody", modal);
+  const heading = $("#mediaModalTitle", modal);
+  const source = githubMediaPath(category, fileName);
+  const viewerSource = `${source}#toolbar=0&navpanes=0&view=FitH`;
+
+  modalState = { models: [], itemIndex: 0, pageIndex: 0, trigger };
+  heading.textContent = title || "Presentation PDF";
+  body.innerHTML = `<div class="asset-preview-full github-pdf-preview"><iframe src="${escapeAttr(viewerSource)}" title="${escapeAttr(title || "PDF presentation")}" loading="lazy"></iframe></div><p class="modal-description">PDF presentation displayed within this website.</p>`;
+  modal.classList.add("show");
+  modal.setAttribute("aria-hidden", "false");
+  document.body.classList.add("modal-open");
+  setTimeout(() => $(".modal-close", modal)?.focus(), 0);
+}
+
+function bindGithubPdfButtons() {
+  $("[data-github-pdf]").forEach(button => {
+    if (button.dataset.bound === "1") return;
+    button.dataset.bound = "1";
+    button.addEventListener("click", () => openGithubPdf(
+      button.dataset.githubPdfCategory,
+      button.dataset.githubPdf,
+      button.dataset.githubPdfTitle,
+      button
+    ));
+  });
+}
+
 async function renderMedia() {
   const root = $("#mediaLibrary");
   if (!root) return;
@@ -1001,19 +1073,20 @@ async function renderMedia() {
   const items = populatedCategories.flatMap(key => GITHUB_MEDIA[key] || []);
   const imageCount = items.filter(item => item.type === "image").length;
   const videoCount = items.filter(item => item.type === "video").length;
+  const pdfCount = items.filter(item => item.type === "pdf").length;
 
   root.innerHTML = `
     <div class="media-library-intro">
       <div>
         <p class="section-label">Curated Media Library</p>
         <h3>Academic and professional media in context</h3>
-        <p>Selected images and videos are served directly within this website. Images use lazy loading, while videos load on demand when the visitor starts playback.</p>
+        <p>Selected images, videos, and PDF presentations are displayed within this website. Images use lazy loading, videos load on demand, and PDFs open only when requested.</p>
       </div>
       <dl class="media-library-stats">
         <div><dt>${items.length}</dt><dd>items</dd></div>
         <div><dt>${imageCount}</dt><dd>images</dd></div>
         <div><dt>${videoCount}</dt><dd>videos</dd></div>
-        <div><dt>${populatedCategories.length}</dt><dd>collection</dd></div>
+        <div><dt>${pdfCount}</dt><dd>PDFs</dd></div>
       </dl>
     </div>
     <div class="media-sections">
@@ -1032,6 +1105,7 @@ async function renderMedia() {
         </section>`;
       }).join("")}
     </div>`;
+  bindGithubPdfButtons();
 }
 
 async function renderHome() {

@@ -36,6 +36,9 @@ jobs:
       - name: GitHub media manifest coverage test
         run: node tests/media-manifest.test.js
 
+      - name: In-site PDF viewer regression test
+        run: node tests/media-pdf-viewer.test.js
+
       - name: Long reveal section regression test
         run: node tests/reveal-long-sections.test.js
 
