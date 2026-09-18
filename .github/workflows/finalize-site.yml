@@ -45,6 +45,9 @@ jobs:
       - name: Presentation video poster regression test
         run: node tests/presentation-video-posters.test.js
 
+      - name: Student practical-training video poster regression test
+        run: node tests/student-training-video-posters.test.js
+
       - name: Long reveal section regression test
         run: node tests/reveal-long-sections.test.js
 
