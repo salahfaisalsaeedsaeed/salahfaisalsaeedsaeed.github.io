@@ -4,6 +4,9 @@ const source = fs.readFileSync("script.js", "utf8");
 const mediaDir = "media/assets/student-teaching-and-practical-training-activities";
 
 const expected = {
+  "Circuit_Assembly_Practical_Training.mp4": "Circuit_Assembly_Practical_Training_poster.webp",
+  "Circuit_Diagram_Instruction.mp4": "Circuit_Diagram_Instruction_poster.webp",
+  "DC_Motor_Demonstration.mp4": "DC_Motor_Demonstration_poster.webp",
   "Electronic_Components_Practical_Demo.mp4": "Electronic_Components_Practical_Demo_poster.webp",
   "Motor_and_Component_Demonstration.mp4": "Motor_and_Component_Demonstration_poster.webp",
   "Multimeter_Oscilloscope_Training.mp4": "Multimeter_Oscilloscope_Training_poster.webp",
@@ -46,4 +49,4 @@ if (missingEntries.length || missingPosters.length) {
   process.exit(1);
 }
 
-console.log("PASS|All 7 student practical-training videos have posters and media manifest entries");
+console.log("PASS|All 10 student practical-training videos have posters and media manifest entries");
