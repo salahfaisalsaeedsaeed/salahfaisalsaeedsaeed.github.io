@@ -3,6 +3,7 @@
   --surface:#ffffff;
   --surface-soft:#f8fafc;
   --surface-blue:#e8f1f7;
+  --page-wash:#f7f5ef;
   --text:#1f2933;
   --muted:#5f6f7e;
   --navy:#12304a;
@@ -34,6 +35,7 @@
   --surface:#12202c;
   --surface-soft:#162734;
   --surface-blue:#193246;
+  --page-wash:#193246;
   --text:#e9eef3;
   --muted:#a9b6c1;
   --navy:#aacce3;
@@ -73,7 +75,7 @@ body::before{
   height:280px;
   z-index:-1;
   pointer-events:none;
-  background:linear-gradient(180deg,color-mix(in srgb,var(--surface-blue) 52%,transparent),transparent);
+  background:linear-gradient(180deg,var(--page-wash),transparent);
 }
 body.modal-open,body.sidebar-open{overflow:hidden}
 a{color:inherit}
