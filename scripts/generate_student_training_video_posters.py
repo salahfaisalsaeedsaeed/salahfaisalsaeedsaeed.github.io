@@ -5,6 +5,9 @@ import subprocess
 MEDIA_DIR = Path("media/assets/student-teaching-and-practical-training-activities")
 
 VIDEOS = [
+    "Circuit_Assembly_Practical_Training.mp4",
+    "Circuit_Diagram_Instruction.mp4",
+    "DC_Motor_Demonstration.mp4",
     "Electronic_Components_Practical_Demo.mp4",
     "Motor_and_Component_Demonstration.mp4",
     "Multimeter_Oscilloscope_Training.mp4",

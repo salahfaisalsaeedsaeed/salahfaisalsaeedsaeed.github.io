@@ -137,6 +137,24 @@ const GITHUB_MEDIA = {
   ],
   student_teaching_and_practical_training_activities: [
     {
+      file: "Circuit_Assembly_Practical_Training.mp4",
+      type: "video",
+      poster: "Circuit_Assembly_Practical_Training_poster.webp",
+      title: "Circuit Assembly Practical Training"
+    },
+    {
+      file: "Circuit_Diagram_Instruction.mp4",
+      type: "video",
+      poster: "Circuit_Diagram_Instruction_poster.webp",
+      title: "Circuit Diagram Instruction"
+    },
+    {
+      file: "DC_Motor_Demonstration.mp4",
+      type: "video",
+      poster: "DC_Motor_Demonstration_poster.webp",
+      title: "DC Motor Demonstration"
+    },
+    {
       file: "Electronic_Components_Practical_Demo.mp4",
       type: "video",
       poster: "Electronic_Components_Practical_Demo_poster.webp",
