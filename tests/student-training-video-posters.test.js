@@ -16,6 +16,15 @@ const expected = {
   "Proteus_Circuit_Simulation.mp4": "Proteus_Circuit_Simulation_poster.webp"
 };
 
+const actualVideos = fs.readdirSync(mediaDir).filter(file => file.toLowerCase().endsWith(".mp4")).sort();
+const expectedVideos = Object.keys(expected).sort();
+if (JSON.stringify(actualVideos) !== JSON.stringify(expectedVideos)) {
+  console.error("FAIL|Student practical-training MP4 set does not match the expected 10-video manifest");
+  console.error("ACTUAL|" + actualVideos.join(","));
+  console.error("EXPECTED|" + expectedVideos.join(","));
+  process.exit(1);
+}
+
 const missingEntries = [];
 const missingPosters = [];
 
