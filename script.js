@@ -137,6 +137,48 @@ const GITHUB_MEDIA = {
   ],
   student_teaching_and_practical_training_activities: [
     {
+      file: "Electronic_Components_Practical_Demo.mp4",
+      type: "video",
+      poster: "Electronic_Components_Practical_Demo_poster.webp",
+      title: "Electronic Components Practical Demo"
+    },
+    {
+      file: "Motor_and_Component_Demonstration.mp4",
+      type: "video",
+      poster: "Motor_and_Component_Demonstration_poster.webp",
+      title: "Motor and Component Demonstration"
+    },
+    {
+      file: "Multimeter_Oscilloscope_Training.mp4",
+      type: "video",
+      poster: "Multimeter_Oscilloscope_Training_poster.webp",
+      title: "Multimeter and Oscilloscope Training"
+    },
+    {
+      file: "Oscilloscope_Waveform_Training_01.mp4",
+      type: "video",
+      poster: "Oscilloscope_Waveform_Training_01_poster.webp",
+      title: "Oscilloscope Waveform Training 01"
+    },
+    {
+      file: "Oscilloscope_Waveform_Training_02.mp4",
+      type: "video",
+      poster: "Oscilloscope_Waveform_Training_02_poster.webp",
+      title: "Oscilloscope Waveform Training 02"
+    },
+    {
+      file: "Perfboard_Preparation_Demo.mp4",
+      type: "video",
+      poster: "Perfboard_Preparation_Demo_poster.webp",
+      title: "Perfboard Preparation Demo"
+    },
+    {
+      file: "Proteus_Circuit_Simulation.mp4",
+      type: "video",
+      poster: "Proteus_Circuit_Simulation_poster.webp",
+      title: "Proteus Circuit Simulation"
+    },
+    {
       file: "3D_Printer_Lab_01.jpg",
       type: "image",
       title: "3D Printer Lab 01"
