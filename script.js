@@ -655,6 +655,11 @@ function storageFileView(fileId) {
   return `${APPWRITE.endpoint}/storage/buckets/${APPWRITE.bucketId}/files/${encodeURIComponent(fileId)}/view?project=${encodeURIComponent(APPWRITE.projectId)}`;
 }
 
+function storageFilePreview(fileId, width = 1200, height = 900) {
+  if (!fileId) return "";
+  return `${APPWRITE.endpoint}/storage/buckets/${APPWRITE.bucketId}/files/${encodeURIComponent(fileId)}/preview?width=${width}&height=${height}&quality=90&project=${encodeURIComponent(APPWRITE.projectId)}`;
+}
+
 let DATA_PROMISE;
 function loadData() {
   if (DATA_PROMISE) return DATA_PROMISE;
