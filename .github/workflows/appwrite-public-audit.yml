@@ -171,6 +171,38 @@ jobs:
                   title = assets[asset_id].get("title") or asset_id
                   failures.append(f"referenced public Asset has no public rendering: {title} ({asset_id})")
 
+          for diagnostic_table in ["awards", "credentials", "recommendations"]:
+              record_count = 0
+              records_with_refs = 0
+              records_with_public_renderings = 0
+              unresolved_refs = 0
+              for row in tables[diagnostic_table]:
+                  record_count += 1
+                  refs = []
+                  for field in scalar_fields:
+                      value = row.get(field)
+                      if value:
+                          refs.append(value)
+                  for field in list_fields:
+                      refs.extend(as_list(row.get(field)))
+                  if refs:
+                      records_with_refs += 1
+                  resolved_for_row = 0
+                  for value in refs:
+                      resolved, _legacy = resolve_asset_reference(value)
+                      if resolved and resolved in rendering_by_asset:
+                          resolved_for_row += 1
+                      elif value:
+                          unresolved_refs += 1
+                  if resolved_for_row:
+                      records_with_public_renderings += 1
+              print(
+                  f"RELATION|{diagnostic_table}|records={record_count}|"
+                  f"with_refs={records_with_refs}|"
+                  f"with_public_renderings={records_with_public_renderings}|"
+                  f"unresolved_refs={unresolved_refs}"
+              )
+
           if failures:
               print('\n'.join('FAIL|' + item for item in failures))
               raise SystemExit(1)
