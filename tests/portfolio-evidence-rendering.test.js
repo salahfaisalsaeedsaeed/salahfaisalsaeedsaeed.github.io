@@ -11,7 +11,7 @@ for (const token of [
   "function renderCredentials()",
   "function renderRecommendations()",
   "data-display-asset",
-  "Supporting document retained privately for privacy."
+  "Supporting document retained privately. Public display is available only for approved evidence."
 ]) {
   if (!source.includes(token)) failures.push(`script.js missing: ${token}`);
 }
