@@ -36,6 +36,9 @@ jobs:
       - name: Academic color palette regression test
         run: node tests/academic-color-palette.test.js
 
+      - name: Professional editorial copy regression test
+        run: node tests/professional-editorial-copy.test.js
+
       - name: GitHub media path regression test
         run: node tests/media-paths.test.js
 
@@ -53,6 +56,16 @@ jobs:
 
       - name: Long reveal section regression test
         run: node tests/reveal-long-sections.test.js
+
+      - name: Portfolio evidence rendering regression test
+        run: node tests/portfolio-evidence-rendering.test.js
+
+      - name: Vercel Appwrite preview fallback syntax check
+        run: node --check api/appwrite-table.js
+
+      - name: Vercel Appwrite preview fallback regression test
+        run: node tests/vercel-appwrite-fallback.test.js
+
 
       - name: Enforce safe Appwrite rendering architecture
         shell: python

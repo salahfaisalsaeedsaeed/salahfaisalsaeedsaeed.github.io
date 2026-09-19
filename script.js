@@ -2,7 +2,7 @@ const SITE = {
   email: "salahfaisal589@gmail.com",
   scholar: "https://scholar.google.com/citations?hl=ar&user=kV3STigAAAAJ",
   orcid: "https://orcid.org/0009-0000-9485-7467",
-  linkedin: "https://www.linkedin.com/in/eng-salah-faisal-saeed-saeed-naser-925a1b2a3"
+  linkedin: "https://www.linkedin.com/in/salah-faisal-saeed-saeed-925a1b2a3"
 };
 
 const APPWRITE = {
@@ -34,28 +34,28 @@ const MEDIA_ORDER = [
 
 const MEDIA_META = {
   student_videos_and_conference_presentations: {
-    title: "Student Videos and Conference Presentations",
-    description: "Student research communication, conference presentations, and selected videos documenting publication-oriented academic work."
+    title: "Student Research & Conference Presentations",
+    description: "Selected student research communication, academic presentations, and conference-oriented work connected to research and publication activities."
   },
   student_teaching_and_practical_training_activities: {
-    title: "Student Teaching and Practical Training Activities",
-    description: "Selected evidence of practical instruction in electronics, circuits, simulation software, laboratory work, and student-led technical explanation."
+    title: "Teaching & Practical Training Activities",
+    description: "Practical instruction in electronics, circuits, measurement, simulation, embedded systems, laboratory work, and student technical activities."
   },
   teacher_training_and_professional_development_programs: {
-    title: "Teacher Training and Professional Development Programs",
-    description: "Selected evidence from professional-development activities delivered for physics teachers and other education-focused technical training."
+    title: "Teacher Training & Professional Development",
+    description: "Selected activities from technical and professional-development training delivered for teachers and education-focused participants."
   },
   "3d_printing_and_stem_laboratory_activities": {
-    title: "3D Printing and STEM Laboratory Activities",
-    description: "3D printing, prototyping, STEM laboratory practice, and selected engineering activities connected to robotics and applied technical education."
+    title: "3D Printing & STEM Laboratory Activities",
+    description: "3D printing, prototyping, robotics, STEM laboratory practice, and applied engineering activities."
   },
   technical_maintenance_and_troubleshooting_work: {
-    title: "Technical Maintenance and Troubleshooting Work",
-    description: "Selected practical work in electronic maintenance, diagnostic testing, troubleshooting, repair, measurement, and technical inspection."
+    title: "Technical Maintenance & Troubleshooting",
+    description: "Practical technical work involving equipment inspection, computer and electronics maintenance, diagnostic testing, troubleshooting, repair, and system verification."
   },
   graduation_highlights: {
-    title: "Graduation Highlights",
-    description: "A restrained selection of graduation-related visual records included for academic context."
+    title: "Academic Milestones",
+    description: "Selected records from graduation and related academic milestones."
   }
 };
 
@@ -619,16 +619,50 @@ function queryString(method, values, column) {
 }
 
 async function fetchRows(tableId, { limit = 250 } = {}) {
-  const url = new URL(`${APPWRITE.endpoint}/tablesdb/${APPWRITE.databaseId}/tables/${tableId}/rows`);
-  url.searchParams.append("queries[]", queryString("limit", [limit]));
-  url.searchParams.set("total", "false");
-  const response = await fetch(url, {
-    headers: { "X-Appwrite-Project": APPWRITE.projectId, "Accept": "application/json" },
-    cache: "no-store"
-  });
-  if (!response.ok) throw new Error(`${tableId}: HTTP ${response.status}`);
-  const data = await response.json();
-  return data.rows || data.documents || [];
+  const directUrl = new URL(`${APPWRITE.endpoint}/tablesdb/${APPWRITE.databaseId}/tables/${tableId}/rows`);
+  directUrl.searchParams.append("queries[]", queryString("limit", [limit]));
+  directUrl.searchParams.set("total", "false");
+
+  let directError = null;
+  try {
+    const response = await fetch(directUrl, {
+      headers: { "X-Appwrite-Project": APPWRITE.projectId, "Accept": "application/json" },
+      cache: "no-store"
+    });
+    if (response.ok) {
+      const data = await response.json();
+      return data.rows || data.documents || [];
+    }
+    directError = new Error(`${tableId}: HTTP ${response.status}`);
+  } catch (error) {
+    directError = error;
+  }
+
+  // Vercel preview URLs are not always registered as Appwrite Web platforms.
+  // Fall back to a same-origin serverless proxy so preview deployments can
+  // read the same anonymous public tables without modifying Appwrite data.
+  const canUseVercelProxy = typeof location !== "undefined"
+    && location.hostname.endsWith(".vercel.app");
+
+  if (canUseVercelProxy) {
+    const proxyUrl = new URL("/api/appwrite-table", location.origin);
+    proxyUrl.searchParams.set("table", tableId);
+    proxyUrl.searchParams.set("limit", String(limit));
+
+    const proxyResponse = await fetch(proxyUrl, {
+      headers: { "Accept": "application/json" },
+      cache: "no-store"
+    });
+
+    if (proxyResponse.ok) {
+      const data = await proxyResponse.json();
+      return data.rows || data.documents || [];
+    }
+
+    throw new Error(`${tableId}: proxy HTTP ${proxyResponse.status}`);
+  }
+
+  throw directError || new Error(`${tableId}: unavailable`);
 }
 
 function publicRow(row) {
@@ -775,7 +809,7 @@ function renderingFileUrl(model, pageIndex = 0) {
 function renderingPreviewMarkup(model, context = {}, pageIndex = 0) {
   const source = renderingFileUrl(model, pageIndex);
   const title = context.title || model?.title || "Supporting evidence";
-  if (!source) return `<div class="asset-unavailable"><span>Preview</span><strong>${escapeHTML(title)}</strong><small>Public rendering unavailable</small></div>`;
+  if (!source) return `<div class="asset-unavailable"><span>Preview</span><strong>${escapeHTML(title)}</strong><small>Content temporarily unavailable.</small></div>`;
   if (String(model.render_type || "").toLowerCase().includes("video") || String(model.media_type || "").toLowerCase() === "video") {
     return `<video controls preload="metadata" playsinline aria-label="${escapeAttr(title)}"><source src="${escapeAttr(source)}"></video>`;
   }
@@ -785,7 +819,7 @@ function renderingPreviewMarkup(model, context = {}, pageIndex = 0) {
 function assetWindowCard(model, context = {}, options = {}) {
   if (!model?.display_file_ids?.length) return "";
   const title = context.title || model.title || "Supporting evidence";
-  const description = context.description || context.caption || context.summary || model.description || "Verified supporting evidence linked to this academic or professional record.";
+  const description = context.description || context.caption || context.summary || model.description || "";
   const className = options.compact ? " asset-evidence-card--compact" : "";
   const pages = model.display_file_ids.length;
   return `<figure class="asset-evidence-card${className}" data-asset-card="${escapeAttr(model.$id)}">
@@ -803,11 +837,41 @@ function inlineAssetStrip(data, items, context = {}, options = {}) {
   const models = uniqueRows((items || []).filter(item => item?.display_file_ids?.length), item => item.$id);
   if (!models.length) {
     return (items || []).some(item => item?._privateEvidence)
-      ? `<div class="private-evidence-note" role="note">Supporting document retained privately for privacy.</div>`
+      ? `<div class="private-evidence-note" role="note">Supporting document retained privately. Public display is available only for approved evidence.</div>`
       : "";
   }
   const max = options.max || models.length;
   return `<div class="record-asset-gallery${options.compact ? " record-asset-gallery--compact" : ""}">${models.slice(0, max).map(model => assetWindowCard(model, context, { compact: options.compact })).join("")}</div>`;
+}
+
+function portfolioMediaCard(data, row, options = {}) {
+  const assets = recordAssets(data, row);
+  const models = uniqueRows(assets.filter(item => item?.display_file_ids?.length), item => item.$id);
+  const model = models[0] || null;
+  const title = options.title || row.title || model?.title || "Portfolio record";
+  const institution = options.institution || row.issuer || row.institution || "";
+  const description = options.description || row.description || row.summary || "";
+  const year = options.year || row.year || "";
+  const category = options.categoryLabel || prettyCategory(row.category || options.fallbackCategory || "Record");
+  const dataCategory = options.dataCategory || row.category || "other";
+  const filterClass = options.filterable ? " filter-item" : "";
+  const extraClass = options.extraClass ? ` ${options.extraClass}` : "";
+  const visual = model
+    ? `<button class="github-pdf-preview-button portfolio-preview-button" type="button" data-display-asset="${escapeAttr(model.$id)}" aria-label="Open ${escapeAttr(title)}">
+        ${renderingPreviewMarkup(model, { title }, 0)}
+        <span class="github-pdf-preview-overlay"><span class="file-kind">${model.display_file_ids.length > 1 ? "DOC" : "VIEW"}</span><strong>${model.display_file_ids.length > 1 ? "View document →" : "Open full view →"}</strong></span>
+      </button>`
+    : `<div class="asset-file-panel portfolio-private-panel"><span class="file-kind">${options.placeholderKind || "FILE"}</span><strong>${escapeHTML(options.placeholderTitle || "Supporting document")}</strong><small>${escapeHTML(options.placeholderText || "Document not published")}</small></div>`;
+
+  return `<figure class="asset-evidence-card github-media-card portfolio-media-card${filterClass}${extraClass}" data-category="${escapeAttr(dataCategory)}">
+    <div class="asset-window asset-window--image">${visual}</div>
+    <figcaption class="asset-caption">
+      <div class="asset-caption-head"><span>${escapeHTML(category)}</span>${year ? `<time>${escapeHTML(year)}</time>` : ""}</div>
+      <h4>${escapeHTML(title)}</h4>
+      ${institution ? `<p class="portfolio-card-institution">${escapeHTML(institution)}</p>` : ""}
+      ${description ? `<p>${escapeHTML(description)}</p>` : ""}
+    </figcaption>
+  </figure>`;
 }
 
 let modalState = { models: [], itemIndex: 0, pageIndex: 0, trigger: null };
@@ -914,9 +978,9 @@ function formatExperienceRange(row) {
   return [startLabel, endLabel].filter(Boolean).join(" – ");
 }
 
-function renderError(root, message = "Live academic data is temporarily unavailable. Please refresh shortly.") {
+function renderError(root, message = "Content temporarily unavailable. Please refresh shortly.") {
   if (!root) return;
-  root.innerHTML = `<div class="empty-state"><h3>Data temporarily unavailable</h3><p>${escapeHTML(message)}</p></div>`;
+  root.innerHTML = `<div class="empty-state"><h3>Content temporarily unavailable</h3><p>${escapeHTML(message)}</p></div>`;
 }
 
 function highlightSelf(authors = "") {
@@ -928,7 +992,7 @@ async function renderPublications() {
   const root = $("#publicationsList");
   if (!root) return;
   const data = await loadData();
-  let rows = uniqueRows((data.publications || []).filter(approvedRow), row => normalizedKey(row.doi_url || row.title));
+  let rows = uniqueRows((data.publications || []).filter(row => approvedRow(row) && row.status === "published"), row => normalizedKey(row.doi_url || row.title));
   if (!rows.length) return renderError(root);
   rows = [...rows].sort((a, b) => {
     const ap = a.status === "published" ? 0 : 1;
@@ -939,11 +1003,10 @@ async function renderPublications() {
     const category = publication.status === "published" ? "published" : "in_preparation";
     const assets = recordAssets(data, publication);
     const isAward = /trust-by-design/i.test(publication.title || "");
-    return `<article class="publication-record filter-item" data-category="${category}"><div class="publication-index">${String(index + 1).padStart(2, "0")}</div><div class="publication-content"><div class="record-eyebrow"><span class="status-badge ${category === "published" ? "status-published" : "status-prep"}">${escapeHTML(publication.status === "published" ? "Published" : prettyCategory(publication.status || "In preparation"))}</span>${isAward ? '<span class="status-badge award-badge">Best Paper Award</span>' : ""}<span class="publication-year">${escapeHTML(publication.year || "")}</span></div><h3>${escapeHTML(publication.title)}</h3><p class="pub-authors">${highlightSelf(publication.authors || "")}</p><p class="pub-venue">${escapeHTML(publication.venue || "")}</p>${publication.summary ? `<p class="record-summary">${escapeHTML(publication.summary)}</p>` : ""}${publication.doi_url ? `<div class="record-actions"><a class="text-link" href="${escapeAttr(publication.doi_url)}" target="_blank" rel="noopener">DOI / Publisher ↗</a></div>` : ""}${inlineAssetStrip(data, assets, { description: publication.summary || "Publication file linked to this bibliographic record." }, { compact: true, max: 2 })}</div></article>`;
+    return `<article class="publication-record filter-item" data-category="${category}"><div class="publication-index">${String(index + 1).padStart(2, "0")}</div><div class="publication-content"><div class="record-eyebrow"><span class="status-badge ${category === "published" ? "status-published" : "status-prep"}">${escapeHTML(publication.status === "published" ? "Published" : prettyCategory(publication.status || "In preparation"))}</span>${isAward ? '<span class="status-badge award-badge">Best Paper Award</span>' : ""}<span class="publication-year">${escapeHTML(publication.year || "")}</span></div><h3>${escapeHTML(publication.title)}</h3><p class="pub-authors">${highlightSelf(publication.authors || "")}</p><p class="pub-venue">${escapeHTML(publication.venue || "")}</p>${publication.summary ? `<p class="record-summary">${escapeHTML(publication.summary)}</p>` : ""}${publication.doi_url ? `<div class="record-actions"><a class="text-link" href="${escapeAttr(publication.doi_url)}" target="_blank" rel="noopener">DOI / Publisher ↗</a></div>` : ""}${inlineAssetStrip(data, assets, { description: publication.summary || "" }, { compact: true, max: 2 })}</div></article>`;
   }).join("");
-  const published = rows.filter(row => row.status === "published").length;
   const summary = $("#publicationsSummary");
-  if (summary) summary.innerHTML = `<span><strong>${published}</strong> published</span><span><strong>${rows.length - published}</strong> current works</span><span><strong>${rows.length}</strong> public records</span>`;
+  if (summary) summary.innerHTML = `<span><strong>${rows.length}</strong> published IEEE conference papers</span>`;
   bindAssetButtons(data);
   initFilters();
 }
@@ -958,7 +1021,7 @@ async function renderProjects() {
     const assets = recordAssets(data, project);
     const technologies = asArray(project.technologies);
     const tags = technologies.length ? technologies : [prettyCategory(project.category || "Project")];
-    return `<article class="project-record filter-item" id="${escapeAttr(project.slug || "")}" data-category="${escapeAttr(project.category || "other")}"><div class="project-index">${String(index + 1).padStart(2, "0")}</div><div class="project-main"><div class="project-top"><div><p class="record-type">${escapeHTML(prettyCategory(project.status || "Project"))}</p><h3>${escapeHTML(project.title)}</h3></div>${project.year ? `<time>${escapeHTML(project.year)}</time>` : ""}</div><p class="project-summary">${escapeHTML(project.short_description || project.overview || "")}</p><div class="project-tags">${tags.filter(Boolean).slice(0, 7).map(tag => `<span>${escapeHTML(tag)}</span>`).join("")}</div>${inlineAssetStrip(data, assets, { description: project.short_description || project.overview || "Supporting project evidence." }, { compact: true, max: 3 })}<details class="project-details"><summary>Project details</summary><dl>${project.role ? `<div><dt>Role</dt><dd>${escapeHTML(project.role)}</dd></div>` : ""}${project.objectives ? `<div><dt>Objectives</dt><dd>${escapeHTML(project.objectives)}</dd></div>` : ""}${project.methodology ? `<div><dt>Methodology</dt><dd>${escapeHTML(project.methodology)}</dd></div>` : ""}${project.results ? `<div><dt>Results / status</dt><dd>${escapeHTML(project.results)}</dd></div>` : ""}</dl></details></div></article>`;
+    return `<article class="project-record filter-item" id="${escapeAttr(project.slug || "")}" data-category="${escapeAttr(project.category || "other")}"><div class="project-index">${String(index + 1).padStart(2, "0")}</div><div class="project-main"><div class="project-top"><div><p class="record-type">${escapeHTML(prettyCategory(project.status || "Project"))}</p><h3>${escapeHTML(project.title)}</h3></div>${project.year ? `<time>${escapeHTML(project.year)}</time>` : ""}</div><p class="project-summary">${escapeHTML(project.short_description || project.overview || "")}</p><div class="project-tags">${tags.filter(Boolean).slice(0, 7).map(tag => `<span>${escapeHTML(tag)}</span>`).join("")}</div>${inlineAssetStrip(data, assets, { description: project.short_description || project.overview || "" }, { compact: true, max: 3 })}<details class="project-details"><summary>Project details</summary><dl>${project.role ? `<div><dt>Role</dt><dd>${escapeHTML(project.role)}</dd></div>` : ""}${project.objectives ? `<div><dt>Objectives</dt><dd>${escapeHTML(project.objectives)}</dd></div>` : ""}${project.methodology ? `<div><dt>Methodology</dt><dd>${escapeHTML(project.methodology)}</dd></div>` : ""}${project.results ? `<div><dt>Results / status</dt><dd>${escapeHTML(project.results)}</dd></div>` : ""}</dl></details></div></article>`;
   }).join("");
   bindAssetButtons(data);
   initFilters();
@@ -971,13 +1034,20 @@ async function renderAwards() {
   let rows = uniqueRows((data.awards || []).filter(approvedRow), row => row.asset_id || normalizedKey(row.title));
   if (!rows.length) return renderError(root);
   rows = [...rows].sort((a, b) => Number(asBool(b.featured)) - Number(asBool(a.featured)) || (Number(b.year) || 0) - (Number(a.year) || 0));
-  root.innerHTML = rows.map(award => {
-    const assets = recordAssets(data, award);
-    const major = /best paper|distinction|rank|national/i.test(award.title || "") || asBool(award.featured);
-    return `<article class="achievement-record ${major ? "major-recognition" : ""}"><div class="achievement-date"><time>${escapeHTML(award.year || "")}</time><span>${escapeHTML(prettyCategory(award.category || "Recognition"))}</span></div><div class="achievement-main"><h3>${escapeHTML(award.title)}</h3><p class="institution">${escapeHTML(award.issuer || "")}</p>${award.description ? `<p>${escapeHTML(award.description)}</p>` : ""}${inlineAssetStrip(data, assets, { description: award.description || "Verified supporting evidence for this recognition." }, { compact: true, max: 2 })}</div></article>`;
-  }).join("");
+
+  root.className = "asset-gallery-grid portfolio-gallery-grid";
+  root.innerHTML = rows.map(award => portfolioMediaCard(data, award, {
+    title: award.title,
+    institution: award.issuer || "",
+    description: award.description || "",
+    year: award.year || "",
+    categoryLabel: prettyCategory(award.category || "Recognition"),
+    fallbackCategory: "Recognition",
+    extraClass: asBool(award.featured) ? "portfolio-media-card--featured" : ""
+  })).join("");
+
   const summary = $("#awardsSummary");
-  if (summary) summary.innerHTML = `<span><strong>${rows.length}</strong> verified recognitions</span><span><strong>${rows.filter(row => asBool(row.featured)).length}</strong> featured distinctions</span>`;
+  if (summary) summary.innerHTML = `<span><strong>${rows.length}</strong> recognitions</span><span><strong>${rows.filter(row => asBool(row.featured)).length}</strong> featured distinctions</span>`;
   bindAssetButtons(data);
 }
 
@@ -990,14 +1060,55 @@ async function renderCredentials() {
   let rows = (data.credentials || []).filter(approvedRow).filter(row => !awardAssetIds.has(row.asset_id) && !awardTitles.has(normalizedKey(row.title)));
   rows = uniqueRows(rows, row => row.asset_id || normalizedKey(row.title));
   if (!rows.length) return renderError(root);
-  root.innerHTML = rows.map(credential => {
-    const assets = recordAssets(data, credential);
-    return `<article class="credential-card filter-item" data-category="${escapeAttr(credential.category || "other")}"><div class="credential-meta"><span>${escapeHTML(credential.year || "")}</span><span>${escapeHTML(prettyCategory(credential.category || "Credential"))}</span></div><h3>${escapeHTML(credential.title)}</h3><p class="institution">${escapeHTML(credential.issuer || "")}</p>${credential.description ? `<p>${escapeHTML(credential.description)}</p>` : ""}${inlineAssetStrip(data, assets, { description: credential.description || "Credential evidence." }, { compact: true, max: 3 })}</article>`;
-  }).join("");
+
+  root.className = "asset-gallery-grid portfolio-gallery-grid";
+  root.innerHTML = rows.map(credential => portfolioMediaCard(data, credential, {
+    title: credential.title,
+    institution: credential.issuer || "",
+    description: credential.description || "",
+    year: credential.year || "",
+    categoryLabel: prettyCategory(credential.category || "Credential"),
+    dataCategory: credential.category || "other",
+    fallbackCategory: "Credential",
+    filterable: true
+  })).join("");
+
   bindAssetButtons(data);
   initFilters();
 }
 
+async function renderRecommendations() {
+  const root = $("#recommendationsList");
+  if (!root) return;
+  const data = await loadData();
+  const rows = uniqueRows((data.recommendations || []).filter(approvedRow), row => normalizedKey(row.slug || row.title));
+  if (!rows.length) return renderError(root);
+
+  root.className = "asset-gallery-grid portfolio-gallery-grid";
+  root.innerHTML = rows.map(row => {
+    const issued = row.issued_date && row.issued_date !== "null"
+      ? formatDate(row.issued_date, { year: "numeric", month: "short", day: "numeric" })
+      : "";
+    const institution = [row.recommender_title, row.institution].filter(Boolean).join(" · ");
+    const focus = asArray(row.focus_areas);
+    const detailParts = [row.relationship_context, row.summary].filter(Boolean);
+    if (focus.length) detailParts.push(`Focus: ${focus.join(", ")}`);
+
+    return portfolioMediaCard(data, row, {
+      title: row.recommender_name || row.title || "Recommendation",
+      institution,
+      description: detailParts.join(" "),
+      year: issued,
+      categoryLabel: "Recommendation",
+      fallbackCategory: "Recommendation",
+      placeholderKind: "LETTER",
+      placeholderTitle: "Recommendation letter",
+      placeholderText: "Document not published"
+    });
+  }).join("");
+
+  bindAssetButtons(data);
+}
 async function renderExperiences() {
   const root = $("#experienceList");
   if (!root) return;
@@ -1008,28 +1119,7 @@ async function renderExperiences() {
     const responsibilities = asArray(experience.responsibilities);
     const tags = asArray(experience.tags);
     const assets = recordAssets(data, experience);
-    return `<article class="timeline-record"><div class="record-date">${escapeHTML(formatExperienceRange(experience))}</div><div class="record-body"><p class="record-type">${escapeHTML(prettyCategory(experience.experience_type || "Experience"))}</p><h3>${escapeHTML(experience.title)}</h3><p class="institution">${escapeHTML(experience.organization || "")}${experience.location ? ` · ${escapeHTML(experience.location)}` : ""}</p>${experience.summary ? `<p class="record-summary">${escapeHTML(experience.summary)}</p>` : ""}${responsibilities.length ? `<ul class="record-bullets">${responsibilities.map(item => `<li>${escapeHTML(item)}</li>`).join("")}</ul>` : ""}${tags.length ? `<div class="project-tags">${tags.map(tag => `<span>${escapeHTML(tag)}</span>`).join("")}</div>` : ""}${inlineAssetStrip(data, assets, { description: experience.summary || "Supporting evidence for this professional experience." }, { compact: true, max: 3 })}</div></article>`;
-  }).join("");
-  bindAssetButtons(data);
-}
-
-async function renderRecommendations() {
-  const root = $("#recommendationsList");
-  if (!root) return;
-  const data = await loadData();
-  const rows = uniqueRows((data.recommendations || []).filter(approvedRow), row => normalizedKey(row.slug || row.title));
-  if (!rows.length) return renderError(root);
-  const groups = new Map();
-  rows.forEach(row => {
-    const key = row.asset_id || row.$id;
-    if (!groups.has(key)) groups.set(key, []);
-    groups.get(key).push(row);
-  });
-  root.innerHTML = [...groups.values()].map(group => {
-    const first = group[0];
-    const assets = uniqueRows(group.flatMap(row => recordAssets(data, row)), item => item.$id);
-    const multi = group.length > 1;
-    return `<article class="recommendation-card ${multi ? "recommendation-group" : ""}"><div class="recommendation-head"><div><p class="record-type">${multi ? `${group.length} recommendations` : "Recommendation"}</p><h3>${escapeHTML(multi ? "Academic & Technical Recommendations" : first.title)}</h3></div>${first.issued_date && first.issued_date !== "null" ? `<time>${escapeHTML(formatDate(first.issued_date, { year: "numeric", month: "short", day: "numeric" }))}</time>` : ""}</div><div class="recommendation-entries">${group.map(row => `<div class="recommendation-entry"><h4>${escapeHTML(row.recommender_name || row.title)}</h4><p class="institution">${escapeHTML(row.recommender_title || "")}${row.institution ? ` · ${escapeHTML(row.institution)}` : ""}</p>${row.relationship_context ? `<p class="relationship-context">${escapeHTML(row.relationship_context)}</p>` : ""}${row.summary ? `<p>${escapeHTML(row.summary)}</p>` : ""}${asArray(row.focus_areas).length ? `<div class="project-tags">${asArray(row.focus_areas).map(tag => `<span>${escapeHTML(tag)}</span>`).join("")}</div>` : ""}</div>`).join("")}</div>${inlineAssetStrip(data, assets, { description: first.summary || "Recommendation document retained according to privacy settings." }, { compact: true, max: 2 })}</article>`;
+    return `<article class="timeline-record"><div class="record-date">${escapeHTML(formatExperienceRange(experience))}</div><div class="record-body"><p class="record-type">${escapeHTML(prettyCategory(experience.experience_type || "Experience"))}</p><h3>${escapeHTML(experience.title)}</h3><p class="institution">${escapeHTML(experience.organization || "")}${experience.location ? ` · ${escapeHTML(experience.location)}` : ""}</p>${experience.summary ? `<p class="record-summary">${escapeHTML(experience.summary)}</p>` : ""}${responsibilities.length ? `<ul class="record-bullets">${responsibilities.map(item => `<li>${escapeHTML(item)}</li>`).join("")}</ul>` : ""}${tags.length ? `<div class="project-tags">${tags.map(tag => `<span>${escapeHTML(tag)}</span>`).join("")}</div>` : ""}${inlineAssetStrip(data, assets, { description: experience.summary || "" }, { compact: true, max: 3 })}</div></article>`;
   }).join("");
   bindAssetButtons(data);
 }
@@ -1051,12 +1141,12 @@ async function renderInstitutionalEvidence() {
   if (!root) return;
   const data = await loadData();
   const rows = uniqueRows((data.institutionalEvidence || []).filter(approvedRow), row => row.source_url || normalizedKey(row.title));
-  if (!rows.length) return renderError(root, "No public institutional evidence records are currently available.");
+  if (!rows.length) return renderError(root, "No institutional source records are currently available.");
   root.innerHTML = rows.map((row, index) => {
     const assets = recordAssets(data, row);
     const description = curatedInstitutionalDescription(row);
     const date = row.event_date && row.event_date !== "null" ? formatDate(row.event_date, { year: "numeric", month: "long", day: "numeric" }) : "";
-    return `<article class="institutional-record"><div class="institutional-record-number">${String(index + 1).padStart(2, "0")}</div><div class="institutional-record-main"><div class="institutional-meta"><span>${escapeHTML(prettyCategory(row.evidence_type || "Institutional evidence"))}</span>${date ? `<time>${escapeHTML(date)}</time>` : ""}</div><h3>${escapeHTML(row.title)}</h3>${row.institution ? `<p class="institution">${escapeHTML(row.institution)}</p>` : ""}<p class="institutional-description">${escapeHTML(description)}</p>${inlineAssetStrip(data, assets, { title: row.title, description, date }, { compact: true, max: 2 })}${row.source_url ? `<div class="institutional-source"><span>Original institutional source</span><a href="${escapeAttr(row.source_url)}" target="_blank" rel="noopener">Open the original post ↗</a></div>` : ""}</div></article>`;
+    return `<article class="institutional-record"><div class="institutional-record-number">${String(index + 1).padStart(2, "0")}</div><div class="institutional-record-main"><div class="institutional-meta"><span>${escapeHTML(prettyCategory(row.evidence_type || "Institutional evidence"))}</span>${date ? `<time>${escapeHTML(date)}</time>` : ""}</div><h3>${escapeHTML(row.title)}</h3>${row.institution ? `<p class="institution">${escapeHTML(row.institution)}</p>` : ""}<p class="institutional-description">${escapeHTML(description)}</p>${inlineAssetStrip(data, assets, { title: row.title, description, date }, { compact: true, max: 2 })}${row.source_url ? `<div class="institutional-source"><a href="${escapeAttr(row.source_url)}" target="_blank" rel="noopener">Institutional Source ↗</a></div>` : ""}</div></article>`;
   }).join("");
   bindAssetButtons(data);
 }
@@ -1068,10 +1158,10 @@ async function renderDocuments() {
   const used = data.referencedAssetIds || referencedAssetIds(data);
   const models = (data.assets || []).map(asset => displayModelForAsset(data, asset)).filter(Boolean).filter(model => !used.has(model.$id));
   if (!models.length) {
-    root.innerHTML = `<div class="empty-state compact-empty"><h3>No duplicated document archive</h3><p>Public evidence is displayed inside the academic or professional record it supports. Private documents remain protected and are not exposed here.</p></div>`;
+    root.innerHTML = "";
     return;
   }
-  root.innerHTML = `<div class="asset-gallery-grid asset-gallery-grid--documents">${models.map(model => assetWindowCard(model, { description: model.description || "Public supporting document not duplicated elsewhere on the site." }, { compact: true })).join("")}</div>`;
+  root.innerHTML = `<div class="asset-gallery-grid asset-gallery-grid--documents">${models.map(model => assetWindowCard(model, { description: model.description || "" }, { compact: true })).join("")}</div>`;
   bindAssetButtons(data);
 }
 
@@ -1118,7 +1208,7 @@ function openGithubPdf(category, fileName, title, trigger = null) {
 
   modalState = { models: [], itemIndex: 0, pageIndex: 0, trigger };
   heading.textContent = title || "Presentation PDF";
-  body.innerHTML = `<div class="asset-preview-full github-pdf-preview"><iframe src="${escapeAttr(viewerSource)}" title="${escapeAttr(title || "PDF presentation")}" loading="lazy"></iframe></div><p class="modal-description">PDF presentation displayed within this website.</p>`;
+  body.innerHTML = `<div class="asset-preview-full github-pdf-preview"><iframe src="${escapeAttr(viewerSource)}" title="${escapeAttr(title || "PDF presentation")}" loading="lazy"></iframe></div>`;
   modal.classList.add("show");
   modal.setAttribute("aria-hidden", "false");
   document.body.classList.add("modal-open");
@@ -1151,9 +1241,9 @@ async function renderMedia() {
   root.innerHTML = `
     <div class="media-library-intro">
       <div>
-        <p class="section-label">Curated Media Library</p>
-        <h3>Academic and professional media in context</h3>
-        <p>Selected images, videos, and PDF presentations are displayed within this website. Images use lazy loading, videos load on demand, and PDFs open only when requested.</p>
+        <p class="section-label">Selected Activities</p>
+        <h3>Selected Academic & Professional Activities</h3>
+        <p>Photographs, videos, and presentations documenting practical teaching, laboratory work, engineering activities, technical training, research communication, and professional development.</p>
       </div>
       <dl class="media-library-stats">
         <div><dt>${items.length}</dt><dd>items</dd></div>
@@ -1339,6 +1429,7 @@ function absorbGraduationProjectDuplicate() {
 async function runDynamicRenderers() {
   const jobs = [renderHome(), renderPublications(), renderProjects(), renderAwards(), renderCredentials(), renderExperiences(), renderRecommendations(), renderInstitutionalEvidence(), renderDocuments(), renderMedia()];
   await Promise.allSettled(jobs);
+  bindRenderingImageFallbacks();
   initFilters();
   absorbGraduationProjectDuplicate();
   normalizeSchoolNameInDOM();
