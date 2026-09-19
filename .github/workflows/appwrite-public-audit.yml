@@ -87,34 +87,6 @@ jobs:
               print(f"COUNT|{table}|{len(tables[table])}")
           print("COUNTS_END")
 
-          print("EXPERIENCE_DIAGNOSTICS_BEGIN")
-          for row in tables["experiences"]:
-              refs = []
-              for field in ["asset_id", "cover_asset_id"]:
-                  value = row.get(field)
-                  if value:
-                      refs.append(value)
-              for field in ["asset_ids", "supporting_asset_ids", "evidence_asset_ids"]:
-                  refs.extend(as_list(row.get(field)))
-              resolved = []
-              for ref in refs:
-                  asset = assets.get(ref)
-                  rendering = rendering_by_asset.get(ref)
-                  resolved.append({
-                      "ref": ref,
-                      "asset_public": bool(asset),
-                      "asset_title": (asset or {}).get("title"),
-                      "rendering": (rendering or {}).get("$id"),
-                      "display_count": len(as_list((rendering or {}).get("display_file_ids"))),
-                  })
-              print("EXPERIENCE|" + json.dumps({
-                  "id": row.get("$id"),
-                  "title": row.get("title"),
-                  "organization": row.get("organization"),
-                  "refs": refs,
-                  "resolved": resolved,
-              }, ensure_ascii=False))
-          print("EXPERIENCE_DIAGNOSTICS_END")
 
 
           for rendering in renderings:
