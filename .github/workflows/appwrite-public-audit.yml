@@ -87,6 +87,15 @@ jobs:
               print(f"COUNT|{table}|{len(tables[table])}")
           print("COUNTS_END")
 
+          credential_categories = {}
+          for row in tables["credentials"]:
+              category = str(row.get("category") or "").strip() or "<empty>"
+              credential_categories[category] = credential_categories.get(category, 0) + 1
+          print("CREDENTIAL_CATEGORIES_BEGIN")
+          for category, count in sorted(credential_categories.items()):
+              print(f"CREDENTIAL_CATEGORY|{category}|{count}")
+          print("CREDENTIAL_CATEGORIES_END")
+
           for rendering in renderings:
               asset_id = rendering.get("asset_id")
               display_ids = as_list(rendering.get("display_file_ids"))
