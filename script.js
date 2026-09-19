@@ -1124,27 +1124,6 @@ async function renderExperiences() {
   bindAssetButtons(data);
 }
 
-async function renderRecommendations() {
-  const root = $("#recommendationsList");
-  if (!root) return;
-  const data = await loadData();
-  const rows = uniqueRows((data.recommendations || []).filter(approvedRow), row => normalizedKey(row.slug || row.title));
-  if (!rows.length) return renderError(root);
-  const groups = new Map();
-  rows.forEach(row => {
-    const key = row.asset_id || row.$id;
-    if (!groups.has(key)) groups.set(key, []);
-    groups.get(key).push(row);
-  });
-  root.innerHTML = [...groups.values()].map(group => {
-    const first = group[0];
-    const assets = uniqueRows(group.flatMap(row => recordAssets(data, row)), item => item.$id);
-    const multi = group.length > 1;
-    return `<article class="recommendation-card ${multi ? "recommendation-group" : ""}"><div class="recommendation-head"><div><p class="record-type">${multi ? `${group.length} recommendations` : "Recommendation"}</p><h3>${escapeHTML(multi ? "Academic & Technical Recommendations" : first.title)}</h3></div>${first.issued_date && first.issued_date !== "null" ? `<time>${escapeHTML(formatDate(first.issued_date, { year: "numeric", month: "short", day: "numeric" }))}</time>` : ""}</div><div class="recommendation-entries">${group.map(row => `<div class="recommendation-entry"><h4>${escapeHTML(row.recommender_name || row.title)}</h4><p class="institution">${escapeHTML(row.recommender_title || "")}${row.institution ? ` · ${escapeHTML(row.institution)}` : ""}</p>${row.relationship_context ? `<p class="relationship-context">${escapeHTML(row.relationship_context)}</p>` : ""}${row.summary ? `<p>${escapeHTML(row.summary)}</p>` : ""}${asArray(row.focus_areas).length ? `<div class="project-tags">${asArray(row.focus_areas).map(tag => `<span>${escapeHTML(tag)}</span>`).join("")}</div>` : ""}</div>`).join("")}</div>${inlineAssetStrip(data, assets, { description: first.summary || "" }, { compact: true, max: 2 })}</article>`;
-  }).join("");
-  bindAssetButtons(data);
-}
-
 function curatedInstitutionalDescription(row) {
   if (row.description) return row.description;
   const key = normalizedKey(row.title || "");
