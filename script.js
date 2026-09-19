@@ -2,7 +2,7 @@ const SITE = {
   email: "salahfaisal589@gmail.com",
   scholar: "https://scholar.google.com/citations?hl=ar&user=kV3STigAAAAJ",
   orcid: "https://orcid.org/0009-0000-9485-7467",
-  linkedin: "https://www.linkedin.com/in/eng-salah-faisal-saeed-saeed-naser-925a1b2a3"
+  linkedin: "https://www.linkedin.com/in/salah-faisal-saeed-saeed-925a1b2a3"
 };
 
 const APPWRITE = {
