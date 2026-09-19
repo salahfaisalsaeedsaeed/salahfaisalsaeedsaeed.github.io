@@ -77,10 +77,16 @@ jobs:
 
           tables = {table: rows(table) for table in TABLES}
           assets = {row.get("$id"): row for row in tables["assets"] if row.get("$id")}
+          assets_by_original_file = {
+              row.get("file_id"): row
+              for row in assets.values()
+              if row.get("file_id")
+          }
           renderings = tables["asset_renderings"]
           rendering_by_asset = {}
           failures = []
           checked_display_files = 0
+          legacy_relation_refs = 0
 
           print("COUNTS_BEGIN")
           for table in TABLES:
@@ -129,20 +135,36 @@ jobs:
           referenced_public_assets = set()
           relation_tables = [
               "publications", "projects", "awards", "credentials",
-              "experiences", "institutional_evidence"
+              "experiences", "recommendations", "institutional_evidence"
           ]
           scalar_fields = ["asset_id", "cover_asset_id"]
           list_fields = ["asset_ids", "supporting_asset_ids", "evidence_asset_ids"]
+
+          def resolve_asset_reference(value):
+              nonlocal_legacy = False
+              if value in assets:
+                  return value, nonlocal_legacy
+              asset = assets_by_original_file.get(value)
+              if asset:
+                  return asset.get("$id"), True
+              return None, False
+
           for table in relation_tables:
               for row in tables[table]:
                   for field in scalar_fields:
                       value = row.get(field)
-                      if value in assets:
-                          referenced_public_assets.add(value)
+                      resolved, legacy = resolve_asset_reference(value)
+                      if resolved:
+                          referenced_public_assets.add(resolved)
+                          if legacy:
+                              legacy_relation_refs += 1
                   for field in list_fields:
                       for value in as_list(row.get(field)):
-                          if value in assets:
-                              referenced_public_assets.add(value)
+                          resolved, legacy = resolve_asset_reference(value)
+                          if resolved:
+                              referenced_public_assets.add(resolved)
+                              if legacy:
+                                  legacy_relation_refs += 1
 
           for asset_id in sorted(referenced_public_assets):
               if asset_id not in rendering_by_asset:
@@ -156,5 +178,6 @@ jobs:
           print(
               f"PASS|{len(assets)} anonymous-readable Assets, "
               f"{len(renderings)} rendering rows, {checked_display_files} display files, "
-              f"and {len(referenced_public_assets)} referenced public Assets verified"
+              f"{len(referenced_public_assets)} referenced public Assets verified, "
+              f"{legacy_relation_refs} legacy file-ID relation references safely resolved"
           )
