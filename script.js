@@ -675,6 +675,7 @@ function loadData() {
 
     data.assets = sortRows(data.assets || []);
     data.assetMap = new Map(data.assets.map(asset => [asset.$id, asset]));
+    data.assetReferenceMap = buildAssetReferenceMap(data.assets);
     data.assetRenderings = (data.assetRenderings || []).map(normalizeRendering).filter(Boolean);
     data.renderingMap = new Map(data.assetRenderings.map(row => [row.asset_id, row]));
     data.referencedAssetIds = referencedAssetIds(data);
@@ -683,8 +684,29 @@ function loadData() {
   return DATA_PROMISE;
 }
 
+function buildAssetReferenceMap(assets = []) {
+  const map = new Map();
+
+  // Canonical Asset IDs always win.
+  (assets || []).forEach(asset => {
+    if (asset?.$id) map.set(asset.$id, asset);
+  });
+
+  // Some older semantic records store the original Storage file ID instead
+  // of the Asset row ID. Resolve that legacy reference to the public Asset,
+  // then continue through asset_renderings; never expose or open the original.
+  (assets || []).forEach(asset => {
+    const legacyReferenceId = asset?.["file_id"];
+    if (legacyReferenceId && !map.has(legacyReferenceId)) {
+      map.set(legacyReferenceId, asset);
+    }
+  });
+
+  return map;
+}
+
 function assetFor(data, id) {
-  return id ? data.assetMap?.get(id) || null : null;
+  return id ? data.assetReferenceMap?.get(id) || data.assetMap?.get(id) || null : null;
 }
 
 function publicAsset(data, id) {
@@ -727,7 +749,11 @@ function assetIdsFromRecord(row) {
 
 function referencedAssetIds(data) {
   const ids = new Set();
-  const add = id => { if (id) ids.add(id); };
+  const add = id => {
+    if (!id) return;
+    const asset = assetFor(data, id);
+    if (asset?.$id) ids.add(asset.$id);
+  };
   ["publications", "projects", "awards", "credentials", "experiences", "recommendations", "institutionalEvidence"]
     .forEach(key => (data[key] || []).forEach(row => assetIdsFromRecord(row).forEach(add)));
   return ids;
