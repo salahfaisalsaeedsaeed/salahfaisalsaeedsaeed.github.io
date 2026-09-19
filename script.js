@@ -901,7 +901,8 @@ function renderModalAsset() {
 
   const itemNav = modalState.models.length > 1 ? `<div class="modal-item-nav"><button type="button" data-item-prev>← Previous item</button><span>${modalState.itemIndex + 1} / ${modalState.models.length}</span><button type="button" data-item-next>Next item →</button></div>` : "";
   const pageNav = model.display_file_ids.length > 1 ? `<div class="document-page-nav"><button type="button" data-page-prev ${modalState.pageIndex === 0 ? "disabled" : ""}>← Previous</button><span>Page ${modalState.pageIndex + 1} / ${model.display_file_ids.length}</span><button type="button" data-page-next ${modalState.pageIndex === pageMax ? "disabled" : ""}>Next →</button></div>` : "";
-  body.innerHTML = `${itemNav}<div class="asset-preview-full">${renderingPreviewMarkup(model, {}, modalState.pageIndex)}</div>${pageNav}${model.description ? `<p class="modal-description">${escapeHTML(model.description)}</p>` : ""}`;
+  body.innerHTML = `${itemNav}<div class="asset-preview-full">${renderingPreviewMarkup(model, {}, modalState.pageIndex, "modal")}</div>${pageNav}${model.description ? `<p class="modal-description">${escapeHTML(model.description)}</p>` : ""}`;
+  bindRenderingImageFallbacks(body);
 
   $("[data-page-prev]", body)?.addEventListener("click", () => { modalState.pageIndex -= 1; renderModalAsset(); });
   $("[data-page-next]", body)?.addEventListener("click", () => { modalState.pageIndex += 1; renderModalAsset(); });
@@ -1394,6 +1395,7 @@ function absorbGraduationProjectDuplicate() {
 async function runDynamicRenderers() {
   const jobs = [renderHome(), renderPublications(), renderProjects(), renderAwards(), renderCredentials(), renderExperiences(), renderRecommendations(), renderInstitutionalEvidence(), renderDocuments(), renderMedia()];
   await Promise.allSettled(jobs);
+  bindRenderingImageFallbacks();
   initFilters();
   absorbGraduationProjectDuplicate();
   normalizeSchoolNameInDOM();
