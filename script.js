@@ -844,9 +844,26 @@ function assetWindowCard(model, context = {}, options = {}) {
 
 function inlineAssetStrip(data, items, context = {}, options = {}) {
   const models = uniqueRows((items || []).filter(item => item?.display_file_ids?.length), item => item.$id);
-  if (!models.length) return "";
+  if (!models.length) {
+    return (items || []).some(item => item?._privateEvidence)
+      ? `<div class="private-evidence-note" role="note">Supporting document retained privately. Public display is available only for approved evidence.</div>`
+      : "";
+  }
   const max = options.max || models.length;
   return `<div class="record-asset-gallery${options.compact ? " record-asset-gallery--compact" : ""}">${models.slice(0, max).map(model => assetWindowCard(model, context, { compact: options.compact })).join("")}</div>`;
+}
+
+function bindRenderingImageFallbacks(root = document) {
+  $("img[data-rendering-fallback]", root).forEach(image => {
+    if (image.dataset.renderingFallbackBound === "1") return;
+    image.dataset.renderingFallbackBound = "1";
+    image.addEventListener("error", () => {
+      const fallback = image.dataset.renderingFallback;
+      if (!fallback || image.dataset.renderingFallbackUsed === "1") return;
+      image.dataset.renderingFallbackUsed = "1";
+      image.src = fallback;
+    });
+  });
 }
 
 let modalState = { models: [], itemIndex: 0, pageIndex: 0, trigger: null };
