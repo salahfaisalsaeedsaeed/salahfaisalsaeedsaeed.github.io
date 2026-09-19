@@ -27,7 +27,7 @@ for (const renderer of ["renderAwards", "renderCredentials", "renderRecommendati
 
 for (const page of ["awards/index.html", "credentials/index.html", "recommendations/index.html"]) {
   const html = fs.readFileSync(page, "utf8");
-  if (!html.includes('/script.js?v=20260919-evidence-fix')) {
+  if (!html.includes('/script.js?v=20260919-evidence-fix2')) {
     failures.push(`${page} does not force the current evidence renderer`);
   }
 }
