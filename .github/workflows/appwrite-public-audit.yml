@@ -176,6 +176,7 @@ jobs:
               records_with_refs = 0
               records_with_public_renderings = 0
               unresolved_refs = 0
+              sample_display_id = None
               for row in tables[diagnostic_table]:
                   record_count += 1
                   refs = []
@@ -192,15 +193,31 @@ jobs:
                       resolved, _legacy = resolve_asset_reference(value)
                       if resolved and resolved in rendering_by_asset:
                           resolved_for_row += 1
+                          if sample_display_id is None:
+                              display_ids = as_list(rendering_by_asset[resolved].get("display_file_ids"))
+                              if display_ids:
+                                  sample_display_id = display_ids[0]
                       elif value:
                           unresolved_refs += 1
                   if resolved_for_row:
                       records_with_public_renderings += 1
+              sample_type = "none"
+              if sample_display_id:
+                  sample_url = f"{ENDPOINT}/storage/buckets/{BUCKET}/files/{urllib.parse.quote(str(sample_display_id))}/view?project={PROJECT}"
+                  req = urllib.request.Request(sample_url, headers={
+                      "X-Appwrite-Project": PROJECT,
+                      "Accept": "*/*",
+                  })
+                  try:
+                      with urllib.request.urlopen(req, timeout=30) as response:
+                          sample_type = response.headers.get("Content-Type") or "unknown"
+                  except Exception as exc:
+                      sample_type = f"error:{type(exc).__name__}"
               print(
                   f"RELATION|{diagnostic_table}|records={record_count}|"
                   f"with_refs={records_with_refs}|"
                   f"with_public_renderings={records_with_public_renderings}|"
-                  f"unresolved_refs={unresolved_refs}"
+                  f"unresolved_refs={unresolved_refs}|sample_content_type={sample_type}"
               )
 
           if failures:
