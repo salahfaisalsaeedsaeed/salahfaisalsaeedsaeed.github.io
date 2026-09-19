@@ -775,7 +775,7 @@ function renderingFileUrl(model, pageIndex = 0) {
 function renderingPreviewMarkup(model, context = {}, pageIndex = 0) {
   const source = renderingFileUrl(model, pageIndex);
   const title = context.title || model?.title || "Supporting evidence";
-  if (!source) return `<div class="asset-unavailable"><span>Preview</span><strong>${escapeHTML(title)}</strong><small>Public rendering unavailable</small></div>`;
+  if (!source) return `<div class="asset-unavailable"><span>Preview</span><strong>${escapeHTML(title)}</strong><small>Content temporarily unavailable.</small></div>`;
   if (String(model.render_type || "").toLowerCase().includes("video") || String(model.media_type || "").toLowerCase() === "video") {
     return `<video controls preload="metadata" playsinline aria-label="${escapeAttr(title)}"><source src="${escapeAttr(source)}"></video>`;
   }
@@ -785,7 +785,7 @@ function renderingPreviewMarkup(model, context = {}, pageIndex = 0) {
 function assetWindowCard(model, context = {}, options = {}) {
   if (!model?.display_file_ids?.length) return "";
   const title = context.title || model.title || "Supporting evidence";
-  const description = context.description || context.caption || context.summary || model.description || "Verified supporting evidence linked to this academic or professional record.";
+  const description = context.description || context.caption || context.summary || model.description || "";
   const className = options.compact ? " asset-evidence-card--compact" : "";
   const pages = model.display_file_ids.length;
   return `<figure class="asset-evidence-card${className}" data-asset-card="${escapeAttr(model.$id)}">
@@ -803,7 +803,7 @@ function inlineAssetStrip(data, items, context = {}, options = {}) {
   const models = uniqueRows((items || []).filter(item => item?.display_file_ids?.length), item => item.$id);
   if (!models.length) {
     return (items || []).some(item => item?._privateEvidence)
-      ? `<div class="private-evidence-note" role="note">Supporting document retained privately for privacy.</div>`
+      ? `<div class="private-evidence-note" role="note">Supporting document retained privately. Public display is available only for approved evidence.</div>`
       : "";
   }
   const max = options.max || models.length;
