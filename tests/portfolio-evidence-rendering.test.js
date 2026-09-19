@@ -44,6 +44,12 @@ for (const page of ["awards/index.html", "credentials/index.html", "recommendati
   }
 }
 
+const credentialsHtml = fs.readFileSync("credentials/index.html", "utf8");
+for (const filterKey of ["research_conference", "technical_professional_development", "industrial_training", "education_language_training", "community_engagement"]) {
+  if (!credentialsHtml.includes(`data-filter="${filterKey}"`)) {
+    failures.push(`credentials/index.html missing live Appwrite filter key: ${filterKey}`);
+  }
+}
 if (failures.length) {
   console.error(failures.map(item => "FAIL|" + item).join("\n"));
   process.exit(1);
