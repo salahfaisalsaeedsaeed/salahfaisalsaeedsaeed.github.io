@@ -803,14 +803,26 @@ function renderingFileUrl(model, pageIndex = 0) {
   return fileId ? storageFileView(fileId) : "";
 }
 
-function renderingPreviewMarkup(model, context = {}, pageIndex = 0) {
-  const source = renderingFileUrl(model, pageIndex);
+function renderingPreviewMarkup(model, context = {}, pageIndex = 0, mode = "card") {
+  const viewSource = renderingFileUrl(model, pageIndex);
   const title = context.title || model?.title || "Document";
-  if (!source) return `<div class="asset-unavailable"><span>Preview</span><strong>${escapeHTML(title)}</strong><small>Content temporarily unavailable.</small></div>`;
-  if (String(model.render_type || "").toLowerCase().includes("video") || String(model.media_type || "").toLowerCase() === "video") {
-    return `<video controls preload="metadata" playsinline aria-label="${escapeAttr(title)}"><source src="${escapeAttr(source)}"></video>`;
+  if (!viewSource) return `<div class="asset-unavailable"><span>Preview</span><strong>${escapeHTML(title)}</strong><small>Content temporarily unavailable.</small></div>`;
+
+  const isVideo = String(model.render_type || "").toLowerCase().includes("video")
+    || String(model.media_type || "").toLowerCase() === "video";
+
+  if (isVideo) {
+    return `<video controls preload="metadata" playsinline aria-label="${escapeAttr(title)}"><source src="${escapeAttr(viewSource)}"></video>`;
   }
-  return `<img src="${escapeAttr(source)}" alt="${escapeAttr(model.alt_text || title)}" loading="lazy" decoding="async">`;
+
+  const fileId = model?.display_file_ids?.[pageIndex];
+  const previewSource = storageFilePreview(
+    fileId,
+    mode === "modal" ? 2000 : 1200,
+    mode === "modal" ? 1600 : 900
+  ) || viewSource;
+
+  return `<img src="${escapeAttr(previewSource)}" data-rendering-fallback="${escapeAttr(viewSource)}" alt="${escapeAttr(model.alt_text || title)}" loading="lazy" decoding="async">`;
 }
 
 function assetWindowCard(model, context = {}, options = {}) {
