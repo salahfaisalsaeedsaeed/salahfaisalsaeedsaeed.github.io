@@ -1139,7 +1139,35 @@ async function renderExperiences() {
   const root = $("#experienceList");
   if (!root) return;
   const data = await loadData();
-  const rows = uniqueRows((data.experiences || []).filter(approvedRow), row => normalizedKey(row.slug || row.title));
+  const appwriteRows = uniqueRows((data.experiences || []).filter(approvedRow), row => normalizedKey(row.slug || row.title));
+
+  const alHasabExperience = {
+    $id: "site:technical-industrial-institute-al-hasab",
+    slug: "technical-industrial-institute-al-hasab",
+    title: "Industrial Control Systems Trainer",
+    organization: "Technical Industrial Institute – Al-Hasab",
+    location: "Taiz, Yemen",
+    start_date: "2018-09-01",
+    end_date: "2019-02-28",
+    current: false,
+    experience_type: "Technical Education / Training",
+    summary: "Part-time, on-site teaching and practical training in industrial control systems and electronics.",
+    responsibilities: [
+      "Delivered practical instruction in industrial control systems and electronics.",
+      "Guided students through control circuits, electronic components, and hands-on technical activities.",
+      "Supported equipment setup, practical testing, and basic troubleshooting during laboratory training."
+    ],
+    tags: ["Industrial Control", "Electronics", "Technical Training"],
+    visibility: "public",
+    sort_order: 99
+  };
+
+  const hasAlHasab = appwriteRows.some(row => {
+    const key = normalizedKey([row.title, row.organization, row.location].filter(Boolean).join(" "));
+    return key.includes("al hasab") || key.includes("technical industrial institute");
+  });
+  const rows = hasAlHasab ? appwriteRows : [...appwriteRows, alHasabExperience];
+
   if (!rows.length) return renderError(root);
   root.innerHTML = rows.map(experience => {
     const responsibilities = asArray(experience.responsibilities);
