@@ -34,7 +34,7 @@ if (!css.includes(".portfolio-gallery-grid{") || !css.includes(".portfolio-media
   failures.push("style.css is missing Media-style portfolio gallery rules");
 }
 
-for (const page of ["awards/index.html", "credentials/index.html", "recommendations/index.html"]) {
+for (const page of ["awards/index.html", "credentials/index.html"]) {
   const html = fs.readFileSync(page, "utf8");
   if (!html.includes('/script.js?v=20260919-portfolio-media')) {
     failures.push(`${page} does not force the current portfolio renderer`);
@@ -50,6 +50,19 @@ for (const filterKey of ["research_conference", "technical_professional_developm
     failures.push(`credentials/index.html missing live Appwrite filter key: ${filterKey}`);
   }
 }
+const recommendationsHtml = fs.readFileSync("recommendations/index.html", "utf8");
+if (!recommendationsHtml.includes('/script.js?v=20260919-recommendations-public')) {
+  failures.push("recommendations/index.html does not force the current public recommendation renderer");
+}
+const recommendationsStart = source.indexOf("async function renderRecommendations()");
+const recommendationsEnd = source.indexOf("async function renderExperiences()", recommendationsStart);
+const recommendationsBlock = recommendationsStart >= 0
+  ? source.slice(recommendationsStart, recommendationsEnd >= 0 ? recommendationsEnd : source.length)
+  : "";
+for (const token of ["const groups = new Map()", "asset:", "Academic & Technical Recommendations", "bindAssetButtons(data)"]) {
+  if (!recommendationsBlock.includes(token)) failures.push("renderRecommendations missing: " + token);
+}
+
 if (failures.length) {
   console.error(failures.map(item => "FAIL|" + item).join("\n"));
   process.exit(1);
