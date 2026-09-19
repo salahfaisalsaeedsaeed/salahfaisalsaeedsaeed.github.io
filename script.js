@@ -619,16 +619,50 @@ function queryString(method, values, column) {
 }
 
 async function fetchRows(tableId, { limit = 250 } = {}) {
-  const url = new URL(`${APPWRITE.endpoint}/tablesdb/${APPWRITE.databaseId}/tables/${tableId}/rows`);
-  url.searchParams.append("queries[]", queryString("limit", [limit]));
-  url.searchParams.set("total", "false");
-  const response = await fetch(url, {
-    headers: { "X-Appwrite-Project": APPWRITE.projectId, "Accept": "application/json" },
-    cache: "no-store"
-  });
-  if (!response.ok) throw new Error(`${tableId}: HTTP ${response.status}`);
-  const data = await response.json();
-  return data.rows || data.documents || [];
+  const directUrl = new URL(`${APPWRITE.endpoint}/tablesdb/${APPWRITE.databaseId}/tables/${tableId}/rows`);
+  directUrl.searchParams.append("queries[]", queryString("limit", [limit]));
+  directUrl.searchParams.set("total", "false");
+
+  let directError = null;
+  try {
+    const response = await fetch(directUrl, {
+      headers: { "X-Appwrite-Project": APPWRITE.projectId, "Accept": "application/json" },
+      cache: "no-store"
+    });
+    if (response.ok) {
+      const data = await response.json();
+      return data.rows || data.documents || [];
+    }
+    directError = new Error(`${tableId}: HTTP ${response.status}`);
+  } catch (error) {
+    directError = error;
+  }
+
+  // Vercel preview URLs are not always registered as Appwrite Web platforms.
+  // Fall back to a same-origin serverless proxy so preview deployments can
+  // read the same anonymous public tables without modifying Appwrite data.
+  const canUseVercelProxy = typeof location !== "undefined"
+    && location.hostname.endsWith(".vercel.app");
+
+  if (canUseVercelProxy) {
+    const proxyUrl = new URL("/api/appwrite-table", location.origin);
+    proxyUrl.searchParams.set("table", tableId);
+    proxyUrl.searchParams.set("limit", String(limit));
+
+    const proxyResponse = await fetch(proxyUrl, {
+      headers: { "Accept": "application/json" },
+      cache: "no-store"
+    });
+
+    if (proxyResponse.ok) {
+      const data = await proxyResponse.json();
+      return data.rows || data.documents || [];
+    }
+
+    throw new Error(`${tableId}: proxy HTTP ${proxyResponse.status}`);
+  }
+
+  throw directError || new Error(`${tableId}: unavailable`);
 }
 
 function publicRow(row) {
