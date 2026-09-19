@@ -844,6 +844,36 @@ function inlineAssetStrip(data, items, context = {}, options = {}) {
   return `<div class="record-asset-gallery${options.compact ? " record-asset-gallery--compact" : ""}">${models.slice(0, max).map(model => assetWindowCard(model, context, { compact: options.compact })).join("")}</div>`;
 }
 
+function portfolioMediaCard(data, row, options = {}) {
+  const assets = recordAssets(data, row);
+  const models = uniqueRows(assets.filter(item => item?.display_file_ids?.length), item => item.$id);
+  const model = models[0] || null;
+  const title = options.title || row.title || model?.title || "Portfolio record";
+  const institution = options.institution || row.issuer || row.institution || "";
+  const description = options.description || row.description || row.summary || "";
+  const year = options.year || row.year || "";
+  const category = options.categoryLabel || prettyCategory(row.category || options.fallbackCategory || "Record");
+  const dataCategory = options.dataCategory || row.category || "other";
+  const filterClass = options.filterable ? " filter-item" : "";
+  const extraClass = options.extraClass ? ` ${options.extraClass}` : "";
+  const visual = model
+    ? `<button class="github-pdf-preview-button portfolio-preview-button" type="button" data-display-asset="${escapeAttr(model.$id)}" aria-label="Open ${escapeAttr(title)}">
+        ${renderingPreviewMarkup(model, { title }, 0)}
+        <span class="github-pdf-preview-overlay"><span class="file-kind">${model.display_file_ids.length > 1 ? "DOC" : "VIEW"}</span><strong>${model.display_file_ids.length > 1 ? "View document →" : "Open full view →"}</strong></span>
+      </button>`
+    : `<div class="asset-file-panel portfolio-private-panel"><span class="file-kind">${options.placeholderKind || "FILE"}</span><strong>${escapeHTML(options.placeholderTitle || "Supporting document")}</strong><small>${escapeHTML(options.placeholderText || "Document not published")}</small></div>`;
+
+  return `<figure class="asset-evidence-card github-media-card portfolio-media-card${filterClass}${extraClass}" data-category="${escapeAttr(dataCategory)}">
+    <div class="asset-window asset-window--image">${visual}</div>
+    <figcaption class="asset-caption">
+      <div class="asset-caption-head"><span>${escapeHTML(category)}</span>${year ? `<time>${escapeHTML(year)}</time>` : ""}</div>
+      <h4>${escapeHTML(title)}</h4>
+      ${institution ? `<p class="portfolio-card-institution">${escapeHTML(institution)}</p>` : ""}
+      ${description ? `<p>${escapeHTML(description)}</p>` : ""}
+    </figcaption>
+  </figure>`;
+}
+
 let modalState = { models: [], itemIndex: 0, pageIndex: 0, trigger: null };
 
 function ensureModal() {
@@ -1004,11 +1034,18 @@ async function renderAwards() {
   let rows = uniqueRows((data.awards || []).filter(approvedRow), row => row.asset_id || normalizedKey(row.title));
   if (!rows.length) return renderError(root);
   rows = [...rows].sort((a, b) => Number(asBool(b.featured)) - Number(asBool(a.featured)) || (Number(b.year) || 0) - (Number(a.year) || 0));
-  root.innerHTML = rows.map(award => {
-    const assets = recordAssets(data, award);
-    const major = /best paper|distinction|rank|national/i.test(award.title || "") || asBool(award.featured);
-    return `<article class="achievement-record ${major ? "major-recognition" : ""}"><div class="achievement-date"><time>${escapeHTML(award.year || "")}</time><span>${escapeHTML(prettyCategory(award.category || "Recognition"))}</span></div><div class="achievement-main"><h3>${escapeHTML(award.title)}</h3><p class="institution">${escapeHTML(award.issuer || "")}</p>${award.description ? `<p>${escapeHTML(award.description)}</p>` : ""}${inlineAssetStrip(data, assets, { description: award.description || "" }, { compact: true, max: 2 })}</div></article>`;
-  }).join("");
+
+  root.className = "asset-gallery-grid portfolio-gallery-grid";
+  root.innerHTML = rows.map(award => portfolioMediaCard(data, award, {
+    title: award.title,
+    institution: award.issuer || "",
+    description: award.description || "",
+    year: award.year || "",
+    categoryLabel: prettyCategory(award.category || "Recognition"),
+    fallbackCategory: "Recognition",
+    extraClass: asBool(award.featured) ? "portfolio-media-card--featured" : ""
+  })).join("");
+
   const summary = $("#awardsSummary");
   if (summary) summary.innerHTML = `<span><strong>${rows.length}</strong> recognitions</span><span><strong>${rows.filter(row => asBool(row.featured)).length}</strong> featured distinctions</span>`;
   bindAssetButtons(data);
@@ -1023,14 +1060,55 @@ async function renderCredentials() {
   let rows = (data.credentials || []).filter(approvedRow).filter(row => !awardAssetIds.has(row.asset_id) && !awardTitles.has(normalizedKey(row.title)));
   rows = uniqueRows(rows, row => row.asset_id || normalizedKey(row.title));
   if (!rows.length) return renderError(root);
-  root.innerHTML = rows.map(credential => {
-    const assets = recordAssets(data, credential);
-    return `<article class="credential-card filter-item" data-category="${escapeAttr(credential.category || "other")}"><div class="credential-meta"><span>${escapeHTML(credential.year || "")}</span><span>${escapeHTML(prettyCategory(credential.category || "Credential"))}</span></div><h3>${escapeHTML(credential.title)}</h3><p class="institution">${escapeHTML(credential.issuer || "")}</p>${credential.description ? `<p>${escapeHTML(credential.description)}</p>` : ""}${inlineAssetStrip(data, assets, { description: credential.description || "" }, { compact: true, max: 3 })}</article>`;
-  }).join("");
+
+  root.className = "asset-gallery-grid portfolio-gallery-grid";
+  root.innerHTML = rows.map(credential => portfolioMediaCard(data, credential, {
+    title: credential.title,
+    institution: credential.issuer || "",
+    description: credential.description || "",
+    year: credential.year || "",
+    categoryLabel: prettyCategory(credential.category || "Credential"),
+    dataCategory: credential.category || "other",
+    fallbackCategory: "Credential",
+    filterable: true
+  })).join("");
+
   bindAssetButtons(data);
   initFilters();
 }
 
+async function renderRecommendations() {
+  const root = $("#recommendationsList");
+  if (!root) return;
+  const data = await loadData();
+  const rows = uniqueRows((data.recommendations || []).filter(approvedRow), row => normalizedKey(row.slug || row.title));
+  if (!rows.length) return renderError(root);
+
+  root.className = "asset-gallery-grid portfolio-gallery-grid";
+  root.innerHTML = rows.map(row => {
+    const issued = row.issued_date && row.issued_date !== "null"
+      ? formatDate(row.issued_date, { year: "numeric", month: "short", day: "numeric" })
+      : "";
+    const institution = [row.recommender_title, row.institution].filter(Boolean).join(" · ");
+    const focus = asArray(row.focus_areas);
+    const detailParts = [row.relationship_context, row.summary].filter(Boolean);
+    if (focus.length) detailParts.push(`Focus: ${focus.join(", ")}`);
+
+    return portfolioMediaCard(data, row, {
+      title: row.recommender_name || row.title || "Recommendation",
+      institution,
+      description: detailParts.join(" "),
+      year: issued,
+      categoryLabel: "Recommendation",
+      fallbackCategory: "Recommendation",
+      placeholderKind: "LETTER",
+      placeholderTitle: "Recommendation letter",
+      placeholderText: "Document not published"
+    });
+  }).join("");
+
+  bindAssetButtons(data);
+}
 async function renderExperiences() {
   const root = $("#experienceList");
   if (!root) return;
