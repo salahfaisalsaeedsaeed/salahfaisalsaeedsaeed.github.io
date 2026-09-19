@@ -60,6 +60,9 @@ jobs:
       - name: Portfolio evidence rendering regression test
         run: node tests/portfolio-evidence-rendering.test.js
 
+      - name: Al-Hasab teaching experience regression test
+        run: node tests/al-hasab-experience.test.js
+
       - name: Vercel Appwrite preview fallback syntax check
         run: node --check api/appwrite-table.js
 
