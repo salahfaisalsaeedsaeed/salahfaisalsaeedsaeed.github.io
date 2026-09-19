@@ -655,11 +655,6 @@ function storageFileView(fileId) {
   return `${APPWRITE.endpoint}/storage/buckets/${APPWRITE.bucketId}/files/${encodeURIComponent(fileId)}/view?project=${encodeURIComponent(APPWRITE.projectId)}`;
 }
 
-function storageFilePreview(fileId, width = 1200, height = 900) {
-  if (!fileId) return "";
-  return `${APPWRITE.endpoint}/storage/buckets/${APPWRITE.bucketId}/files/${encodeURIComponent(fileId)}/preview?width=${width}&height=${height}&quality=90&project=${encodeURIComponent(APPWRITE.projectId)}`;
-}
-
 let DATA_PROMISE;
 function loadData() {
   if (DATA_PROMISE) return DATA_PROMISE;
@@ -680,7 +675,6 @@ function loadData() {
 
     data.assets = sortRows(data.assets || []);
     data.assetMap = new Map(data.assets.map(asset => [asset.$id, asset]));
-    data.assetReferenceMap = buildAssetReferenceMap(data.assets);
     data.assetRenderings = (data.assetRenderings || []).map(normalizeRendering).filter(Boolean);
     data.renderingMap = new Map(data.assetRenderings.map(row => [row.asset_id, row]));
     data.referencedAssetIds = referencedAssetIds(data);
@@ -689,29 +683,8 @@ function loadData() {
   return DATA_PROMISE;
 }
 
-function buildAssetReferenceMap(assets = []) {
-  const map = new Map();
-
-  // Canonical Asset IDs always win.
-  (assets || []).forEach(asset => {
-    if (asset?.$id) map.set(asset.$id, asset);
-  });
-
-  // Some older semantic records store the original Storage file ID instead
-  // of the Asset row ID. Resolve that legacy reference to the public Asset,
-  // then continue through asset_renderings; never expose or open the original.
-  (assets || []).forEach(asset => {
-    const legacyReferenceId = asset?.["file_id"];
-    if (legacyReferenceId && !map.has(legacyReferenceId)) {
-      map.set(legacyReferenceId, asset);
-    }
-  });
-
-  return map;
-}
-
 function assetFor(data, id) {
-  return id ? data.assetReferenceMap?.get(id) || data.assetMap?.get(id) || null : null;
+  return id ? data.assetMap?.get(id) || null : null;
 }
 
 function publicAsset(data, id) {
@@ -725,7 +698,7 @@ function displayModelForAsset(data, asset) {
   if (!rendering) return null;
   return {
     $id: asset.$id,
-    title: asset.title || "Document",
+    title: asset.title || "Supporting evidence",
     description: asset.description || "",
     alt_text: asset.alt_text || "",
     asset_type: asset.asset_type || "",
@@ -754,11 +727,7 @@ function assetIdsFromRecord(row) {
 
 function referencedAssetIds(data) {
   const ids = new Set();
-  const add = id => {
-    if (!id) return;
-    const asset = assetFor(data, id);
-    if (asset?.$id) ids.add(asset.$id);
-  };
+  const add = id => { if (id) ids.add(id); };
   ["publications", "projects", "awards", "credentials", "experiences", "recommendations", "institutionalEvidence"]
     .forEach(key => (data[key] || []).forEach(row => assetIdsFromRecord(row).forEach(add)));
   return ids;
@@ -803,32 +772,20 @@ function renderingFileUrl(model, pageIndex = 0) {
   return fileId ? storageFileView(fileId) : "";
 }
 
-function renderingPreviewMarkup(model, context = {}, pageIndex = 0, mode = "card") {
-  const viewSource = renderingFileUrl(model, pageIndex);
-  const title = context.title || model?.title || "Document";
-  if (!viewSource) return `<div class="asset-unavailable"><span>Preview</span><strong>${escapeHTML(title)}</strong><small>Content temporarily unavailable.</small></div>`;
-
-  const isVideo = String(model.render_type || "").toLowerCase().includes("video")
-    || String(model.media_type || "").toLowerCase() === "video";
-
-  if (isVideo) {
-    return `<video controls preload="metadata" playsinline aria-label="${escapeAttr(title)}"><source src="${escapeAttr(viewSource)}"></video>`;
+function renderingPreviewMarkup(model, context = {}, pageIndex = 0) {
+  const source = renderingFileUrl(model, pageIndex);
+  const title = context.title || model?.title || "Supporting evidence";
+  if (!source) return `<div class="asset-unavailable"><span>Preview</span><strong>${escapeHTML(title)}</strong><small>Public rendering unavailable</small></div>`;
+  if (String(model.render_type || "").toLowerCase().includes("video") || String(model.media_type || "").toLowerCase() === "video") {
+    return `<video controls preload="metadata" playsinline aria-label="${escapeAttr(title)}"><source src="${escapeAttr(source)}"></video>`;
   }
-
-  const fileId = model?.display_file_ids?.[pageIndex];
-  const previewSource = storageFilePreview(
-    fileId,
-    mode === "modal" ? 2000 : 1200,
-    mode === "modal" ? 1600 : 900
-  ) || viewSource;
-
-  return `<img src="${escapeAttr(previewSource)}" data-rendering-fallback="${escapeAttr(viewSource)}" alt="${escapeAttr(model.alt_text || title)}" loading="lazy" decoding="async">`;
+  return `<img src="${escapeAttr(source)}" alt="${escapeAttr(model.alt_text || title)}" loading="lazy" decoding="async">`;
 }
 
 function assetWindowCard(model, context = {}, options = {}) {
   if (!model?.display_file_ids?.length) return "";
-  const title = context.title || model.title || "Document";
-  const description = context.description || context.caption || context.summary || model.description || "";
+  const title = context.title || model.title || "Supporting evidence";
+  const description = context.description || context.caption || context.summary || model.description || "Verified supporting evidence linked to this academic or professional record.";
   const className = options.compact ? " asset-evidence-card--compact" : "";
   const pages = model.display_file_ids.length;
   return `<figure class="asset-evidence-card${className}" data-asset-card="${escapeAttr(model.$id)}">
@@ -846,24 +803,11 @@ function inlineAssetStrip(data, items, context = {}, options = {}) {
   const models = uniqueRows((items || []).filter(item => item?.display_file_ids?.length), item => item.$id);
   if (!models.length) {
     return (items || []).some(item => item?._privateEvidence)
-      ? `<div class="private-evidence-note" role="note">Supporting document retained privately. Public display is available only for approved evidence.</div>`
+      ? `<div class="private-evidence-note" role="note">Supporting document retained privately for privacy.</div>`
       : "";
   }
   const max = options.max || models.length;
   return `<div class="record-asset-gallery${options.compact ? " record-asset-gallery--compact" : ""}">${models.slice(0, max).map(model => assetWindowCard(model, context, { compact: options.compact })).join("")}</div>`;
-}
-
-function bindRenderingImageFallbacks(root = document) {
-  $("img[data-rendering-fallback]", root).forEach(image => {
-    if (image.dataset.renderingFallbackBound === "1") return;
-    image.dataset.renderingFallbackBound = "1";
-    image.addEventListener("error", () => {
-      const fallback = image.dataset.renderingFallback;
-      if (!fallback || image.dataset.renderingFallbackUsed === "1") return;
-      image.dataset.renderingFallbackUsed = "1";
-      image.src = fallback;
-    });
-  });
 }
 
 let modalState = { models: [], itemIndex: 0, pageIndex: 0, trigger: null };
@@ -901,8 +845,7 @@ function renderModalAsset() {
 
   const itemNav = modalState.models.length > 1 ? `<div class="modal-item-nav"><button type="button" data-item-prev>← Previous item</button><span>${modalState.itemIndex + 1} / ${modalState.models.length}</span><button type="button" data-item-next>Next item →</button></div>` : "";
   const pageNav = model.display_file_ids.length > 1 ? `<div class="document-page-nav"><button type="button" data-page-prev ${modalState.pageIndex === 0 ? "disabled" : ""}>← Previous</button><span>Page ${modalState.pageIndex + 1} / ${model.display_file_ids.length}</span><button type="button" data-page-next ${modalState.pageIndex === pageMax ? "disabled" : ""}>Next →</button></div>` : "";
-  body.innerHTML = `${itemNav}<div class="asset-preview-full">${renderingPreviewMarkup(model, {}, modalState.pageIndex, "modal")}</div>${pageNav}${model.description ? `<p class="modal-description">${escapeHTML(model.description)}</p>` : ""}`;
-  bindRenderingImageFallbacks(body);
+  body.innerHTML = `${itemNav}<div class="asset-preview-full">${renderingPreviewMarkup(model, {}, modalState.pageIndex)}</div>${pageNav}${model.description ? `<p class="modal-description">${escapeHTML(model.description)}</p>` : ""}`;
 
   $("[data-page-prev]", body)?.addEventListener("click", () => { modalState.pageIndex -= 1; renderModalAsset(); });
   $("[data-page-next]", body)?.addEventListener("click", () => { modalState.pageIndex += 1; renderModalAsset(); });
