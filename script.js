@@ -1081,29 +1081,55 @@ async function renderRecommendations() {
   const root = $("#recommendationsList");
   if (!root) return;
   const data = await loadData();
-  const rows = uniqueRows((data.recommendations || []).filter(approvedRow), row => normalizedKey(row.slug || row.title));
+  const rows = uniqueRows((data.recommendations || []).filter(approvedRow), row => row.$id || normalizedKey(row.slug || row.title));
   if (!rows.length) return renderError(root);
 
-  root.className = "asset-gallery-grid portfolio-gallery-grid";
-  root.innerHTML = rows.map(row => {
-    const issued = row.issued_date && row.issued_date !== "null"
-      ? formatDate(row.issued_date, { year: "numeric", month: "short", day: "numeric" })
-      : "";
-    const institution = [row.recommender_title, row.institution].filter(Boolean).join(" · ");
-    const focus = asArray(row.focus_areas);
-    const detailParts = [row.relationship_context, row.summary].filter(Boolean);
-    if (focus.length) detailParts.push(`Focus: ${focus.join(", ")}`);
+  // Multiple recommendation records may intentionally point to one combined
+  // public rendering. Show that file once, not as repeated duplicate cards.
+  const groups = new Map();
+  rows.forEach(row => {
+    const publicModel = recordAssets(data, row).find(item => item?.display_file_ids?.length) || null;
+    const key = publicModel ? `asset:${publicModel.$id}` : `row:${row.$id || normalizedKey(row.title)}`;
+    if (!groups.has(key)) groups.set(key, { rows: [], model: publicModel });
+    groups.get(key).rows.push(row);
+  });
 
-    return portfolioMediaCard(data, row, {
-      title: row.recommender_name || row.title || "Recommendation",
+  root.className = "asset-gallery-grid portfolio-gallery-grid";
+  root.innerHTML = [...groups.values()].map(group => {
+    const first = group.rows[0];
+    const recommenders = [...new Set(group.rows.map(row => row.recommender_name || row.title).filter(Boolean))];
+    const institutions = [...new Set(group.rows.map(row => row.institution).filter(Boolean))];
+    const titles = [...new Set(group.rows.map(row => row.recommender_title).filter(Boolean))];
+    const focus = [...new Set(group.rows.flatMap(row => asArray(row.focus_areas)).filter(Boolean))];
+    const summaries = [...new Set(group.rows.map(row => row.summary || row.relationship_context).filter(Boolean))];
+    const issuedDates = group.rows
+      .map(row => row.issued_date && row.issued_date !== "null"
+        ? formatDate(row.issued_date, { year: "numeric", month: "short", day: "numeric" })
+        : "")
+      .filter(Boolean);
+
+    const multi = group.rows.length > 1;
+    const title = multi
+      ? "Academic & Technical Recommendations"
+      : (recommenders[0] || first.title || "Recommendation");
+    const institution = multi
+      ? [`${group.rows.length} recommendation letters`, ...institutions].filter(Boolean).join(" · ")
+      : [titles[0], institutions[0]].filter(Boolean).join(" · ");
+    const details = [];
+    if (multi && recommenders.length) details.push(`Recommenders: ${recommenders.join(", ")}.`);
+    if (summaries.length) details.push(summaries.join(" "));
+    if (focus.length) details.push(`Focus: ${focus.join(", ")}`);
+
+    return portfolioMediaCard(data, first, {
+      title,
       institution,
-      description: detailParts.join(" "),
-      year: issued,
-      categoryLabel: "Recommendation",
+      description: details.join(" "),
+      year: issuedDates[0] || "",
+      categoryLabel: multi ? `${group.rows.length} Recommendations` : "Recommendation",
       fallbackCategory: "Recommendation",
       placeholderKind: "LETTER",
       placeholderTitle: "Recommendation letter",
-      placeholderText: "Document not published"
+      placeholderText: "Supporting file not currently available"
     });
   }).join("");
 
