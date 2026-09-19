@@ -57,6 +57,10 @@ jobs:
       - name: Long reveal section regression test
         run: node tests/reveal-long-sections.test.js
 
+      - name: Portfolio evidence rendering regression test
+        run: node tests/portfolio-evidence-rendering.test.js
+
+
       - name: Enforce safe Appwrite rendering architecture
         shell: python
         run: |
