@@ -44,7 +44,13 @@ module.exports = async function handler(req, res) {
     });
 
     const body = await response.text();
-    res.setHeader("Cache-Control", "no-store, max-age=0");
+    if (response.ok) {
+      // Public table metadata changes infrequently. Cache successful responses
+      // at Vercel's edge so normal page views do not repeatedly consume Appwrite bandwidth.
+      res.setHeader("Cache-Control", "public, s-maxage=3600, stale-while-revalidate=604800");
+    } else {
+      res.setHeader("Cache-Control", "no-store, max-age=0");
+    }
     res.setHeader("Content-Type", "application/json; charset=utf-8");
     return res.status(response.status).send(body);
   } catch (error) {
