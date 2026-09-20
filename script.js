@@ -23,6 +23,11 @@ const APPWRITE = {
   }
 };
 
+const PUBLIC_FALLBACK = {
+  url: "/data/public-fallback.json?v=20260920-1",
+  cacheKey: "salah-faisal-public-data-v2"
+};
+
 const MEDIA_ORDER = [
   "student_videos_and_conference_presentations",
   "student_teaching_and_practical_training_activities",
@@ -619,28 +624,6 @@ function queryString(method, values, column) {
 }
 
 async function fetchRows(tableId, { limit = 250 } = {}) {
-  const directUrl = new URL(`${APPWRITE.endpoint}/tablesdb/${APPWRITE.databaseId}/tables/${tableId}/rows`);
-  directUrl.searchParams.append("queries[]", queryString("limit", [limit]));
-  directUrl.searchParams.set("total", "false");
-
-  let directError = null;
-  try {
-    const response = await fetch(directUrl, {
-      headers: { "X-Appwrite-Project": APPWRITE.projectId, "Accept": "application/json" },
-      cache: "no-store"
-    });
-    if (response.ok) {
-      const data = await response.json();
-      return data.rows || data.documents || [];
-    }
-    directError = new Error(`${tableId}: HTTP ${response.status}`);
-  } catch (error) {
-    directError = error;
-  }
-
-  // Vercel preview URLs are not always registered as Appwrite Web platforms.
-  // Fall back to a same-origin serverless proxy so preview deployments can
-  // read the same anonymous public tables without modifying Appwrite data.
   const canUseVercelProxy = typeof location !== "undefined"
     && location.hostname.endsWith(".vercel.app");
 
@@ -648,21 +631,25 @@ async function fetchRows(tableId, { limit = 250 } = {}) {
     const proxyUrl = new URL("/api/appwrite-table", location.origin);
     proxyUrl.searchParams.set("table", tableId);
     proxyUrl.searchParams.set("limit", String(limit));
-
-    const proxyResponse = await fetch(proxyUrl, {
+    const response = await fetch(proxyUrl, {
       headers: { "Accept": "application/json" },
-      cache: "no-store"
+      cache: "default"
     });
-
-    if (proxyResponse.ok) {
-      const data = await proxyResponse.json();
-      return data.rows || data.documents || [];
-    }
-
-    throw new Error(`${tableId}: proxy HTTP ${proxyResponse.status}`);
+    if (!response.ok) throw new Error(`${tableId}: proxy HTTP ${response.status}`);
+    const data = await response.json();
+    return data.rows || data.documents || [];
   }
 
-  throw directError || new Error(`${tableId}: unavailable`);
+  const directUrl = new URL(`${APPWRITE.endpoint}/tablesdb/${APPWRITE.databaseId}/tables/${tableId}/rows`);
+  directUrl.searchParams.append("queries[]", queryString("limit", [limit]));
+  directUrl.searchParams.set("total", "false");
+  const response = await fetch(directUrl, {
+    headers: { "X-Appwrite-Project": APPWRITE.projectId, "Accept": "application/json" },
+    cache: "no-store"
+  });
+  if (!response.ok) throw new Error(`${tableId}: HTTP ${response.status}`);
+  const data = await response.json();
+  return data.rows || data.documents || [];
 }
 
 function publicRow(row) {
@@ -686,27 +673,89 @@ function normalizeRendering(row) {
 
 function storageFileView(fileId) {
   if (!fileId) return "";
+  if (String(fileId).startsWith("/")) return String(fileId);
   return `${APPWRITE.endpoint}/storage/buckets/${APPWRITE.bucketId}/files/${encodeURIComponent(fileId)}/view?project=${encodeURIComponent(APPWRITE.projectId)}`;
+}
+
+function requiredDataKeys() {
+  const keys = new Set();
+  const add = (...items) => items.forEach(item => keys.add(item));
+  if ($("#homeFeaturedPublications") || $("#metricPublications")) add("publications", "projects", "awards");
+  if ($("#publicationsList")) add("publications", "assets", "assetRenderings");
+  if ($("#projectsList") || $("#graduationProjectActions")) add("projects", "assets", "assetRenderings");
+  if ($("#awardsList")) add("awards", "assets", "assetRenderings");
+  if ($("#credentialsList")) add("credentials", "awards", "assets", "assetRenderings");
+  if ($("#experienceList")) add("experiences", "assets", "assetRenderings");
+  if ($("#recommendationsList")) add("recommendations", "assets", "assetRenderings");
+  if ($("#institutionalEvidenceList")) add("institutionalEvidence", "assets", "assetRenderings");
+  if ($("#documentsList")) Object.keys(APPWRITE.tables).forEach(key => keys.add(key));
+  return keys;
+}
+
+async function fetchStaticFallback() {
+  const response = await fetch(PUBLIC_FALLBACK.url, {
+    headers: { "Accept": "application/json" },
+    cache: "force-cache"
+  });
+  if (!response.ok) throw new Error(`fallback HTTP ${response.status}`);
+  return response.json();
+}
+
+function readCachedPublicData() {
+  try {
+    const raw = localStorage.getItem(PUBLIC_FALLBACK.cacheKey);
+    if (!raw) return {};
+    const parsed = JSON.parse(raw);
+    return parsed && typeof parsed === "object" ? parsed : {};
+  } catch {
+    return {};
+  }
+}
+
+function writeCachedPublicData(partial) {
+  try {
+    const existing = readCachedPublicData();
+    const merged = { ...existing, ...partial, cached_at: new Date().toISOString() };
+    localStorage.setItem(PUBLIC_FALLBACK.cacheKey, JSON.stringify(merged));
+  } catch {}
 }
 
 let DATA_PROMISE;
 function loadData() {
   if (DATA_PROMISE) return DATA_PROMISE;
   DATA_PROMISE = (async () => {
-    const entries = Object.entries(APPWRITE.tables);
+    const required = requiredDataKeys();
+    const entries = Object.entries(APPWRITE.tables).filter(([key]) => required.has(key));
+    const fallbackPromise = fetchStaticFallback().catch(() => ({}));
+    const cached = readCachedPublicData();
     const results = await Promise.allSettled(entries.map(([, tableId]) => fetchRows(tableId)));
-    const data = { errors: [] };
+    const fallback = await fallbackPromise;
+    const data = { errors: [], fallbackKeys: [], liveKeys: [] };
+    const liveForCache = {};
+
+    Object.keys(APPWRITE.tables).forEach(key => { data[key] = []; });
 
     results.forEach((result, index) => {
       const [key] = entries[index];
       if (result.status === "fulfilled") {
-        data[key] = sortRows((result.value || []).filter(publicRow));
-      } else {
-        data[key] = [];
-        data.errors.push(`${key}: ${result.reason?.message || "unavailable"}`);
+        const rows = sortRows((result.value || []).filter(publicRow));
+        data[key] = rows;
+        data.liveKeys.push(key);
+        liveForCache[key] = rows;
+        return;
       }
+
+      const cachedRows = Array.isArray(cached[key]) ? cached[key].filter(publicRow) : [];
+      const staticRows = Array.isArray(fallback[key]) ? fallback[key].filter(publicRow) : [];
+      const rows = cachedRows.length ? cachedRows : staticRows;
+      data[key] = sortRows(rows);
+      data.fallbackKeys.push(key);
+      data.errors.push(`${key}: ${result.reason?.message || "unavailable"}`);
     });
 
+    if (Object.keys(liveForCache).length) writeCachedPublicData(liveForCache);
+
+    data.usingFallback = data.fallbackKeys.length > 0;
     data.assets = sortRows(data.assets || []);
     data.assetMap = new Map(data.assets.map(asset => [asset.$id, asset]));
     data.assetRenderings = (data.assetRenderings || []).map(normalizeRendering).filter(Boolean);
@@ -861,7 +910,7 @@ function portfolioMediaCard(data, row, options = {}) {
         ${renderingPreviewMarkup(model, { title }, 0)}
         <span class="github-pdf-preview-overlay"><span class="file-kind">${model.display_file_ids.length > 1 ? "DOC" : "VIEW"}</span><strong>${model.display_file_ids.length > 1 ? "View document →" : "Open full view →"}</strong></span>
       </button>`
-    : `<div class="asset-file-panel portfolio-private-panel"><span class="file-kind">${options.placeholderKind || "FILE"}</span><strong>${escapeHTML(options.placeholderTitle || "Supporting document")}</strong><small>${escapeHTML(options.placeholderText || "Document not published")}</small></div>`;
+    : `<div class="asset-file-panel portfolio-private-panel"><span class="file-kind">${options.placeholderKind || "FILE"}</span><strong>${escapeHTML(options.placeholderTitle || (data.usingFallback ? "Document preview temporarily unavailable" : "Supporting document"))}</strong><small>${escapeHTML(options.placeholderText || (data.usingFallback ? "The verified record remains available while the document preview service is temporarily unavailable." : "Document not published"))}</small></div>`;
 
   return `<figure class="asset-evidence-card github-media-card portfolio-media-card${filterClass}${extraClass}" data-category="${escapeAttr(dataCategory)}">
     <div class="asset-window asset-window--image">${visual}</div>
@@ -971,6 +1020,7 @@ function initModalKeyboard() {
 }
 
 function formatExperienceRange(row) {
+  if (row?.period_label) return String(row.period_label);
   const start = safeDate(row.start_date);
   const end = safeDate(row.end_date);
   const startLabel = start ? start.toLocaleDateString("en-US", { year: "numeric", month: "short" }) : "";
@@ -1144,18 +1194,17 @@ async function renderExperiences() {
   const alHasabExperience = {
     $id: "site:technical-industrial-institute-al-hasab",
     slug: "technical-industrial-institute-al-hasab",
-    title: "Industrial Control Systems Trainer",
+    title: "Industrial Training Assistant — Industrial Control Systems",
     organization: "Technical Industrial Institute – Al-Hasab",
     location: "Taiz, Yemen",
-    start_date: "2018-09-01",
-    end_date: "2019-02-28",
+    period_label: "2018–2019 · 6 months",
     current: false,
-    experience_type: "Technical Education / Training",
-    summary: "Part-time, on-site teaching and practical training in industrial control systems and electronics.",
+    experience_type: "Part-time",
+    summary: "Practical training support in industrial control systems and electronics.",
     responsibilities: [
-      "Delivered practical instruction in industrial control systems and electronics.",
-      "Guided students through control circuits, electronic components, and hands-on technical activities.",
-      "Supported equipment setup, practical testing, and basic troubleshooting during laboratory training."
+      "Assisted in practical training activities related to industrial control systems and electronics.",
+      "Supported hands-on instruction in control circuits, electronic components, panel-level practice, and troubleshooting.",
+      "Contributed to vocational laboratory sessions and applied industrial-control training."
     ],
     tags: ["Industrial Control", "Electronics", "Technical Training"],
     visibility: "public",
