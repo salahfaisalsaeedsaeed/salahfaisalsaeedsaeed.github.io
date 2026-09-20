@@ -8,6 +8,7 @@ on:
       - '**/*.html'
       - '.github/workflows/finalize-site.yml'
       - 'tests/**'
+      - 'data/**'
       - 'media/assets/**'
       - 'scripts/generate_pdf_previews.py'
   push:
@@ -68,6 +69,9 @@ jobs:
 
       - name: Vercel Appwrite preview fallback regression test
         run: node tests/vercel-appwrite-fallback.test.js
+
+      - name: Public data fallback regression test
+        run: node tests/public-data-fallback.test.js
 
 
       - name: Enforce safe Appwrite rendering architecture
