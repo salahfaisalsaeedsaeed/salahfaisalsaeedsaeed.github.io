@@ -1,0 +1,679 @@
+{
+  "version": 2,
+  "generated_at": "2026-09-20",
+  "note": "Static public-profile fallback used only when live public data is unavailable.",
+  "assets": [],
+  "assetRenderings": [],
+  "publications": [
+    {
+      "$id": "fallback-pub-2026-ev-control",
+      "title": "Control-Oriented Design and Performance Evaluation of a Three-Terminal Storage-Assisted EV Fast-Charging System with an Interleaved Bidirectional Buck–Boost Converter",
+      "authors": "S. F. S. Saeed, R. A. A. Saleh, A. Haidar, M. Ghaleb, H. AbuAlkebash and M. A. A. Saif",
+      "venue": "2026 6th International Conference on Emerging Smart Technologies and Applications (eSmarTA)",
+      "year": "2026",
+      "status": "published",
+      "doi_url": "https://doi.org/10.1109/eSmarTA70636.2026.11652324",
+      "featured": true,
+      "visibility": "public",
+      "sort_order": 1
+    },
+    {
+      "$id": "fallback-pub-2026-trust",
+      "title": "Toward Trust-by-Design in Federated Learning for Healthcare: A Taxonomic Review of Privacy, Explainability, and Accountability",
+      "authors": "R. A. A. Saleh, S. F. S. Saeed, M. A. H. Al-Ariqi, M. E. T. Ahmed, M. M. A. Yahya and M. Ghaleb",
+      "venue": "2026 6th International Conference on Emerging Smart Technologies and Applications (eSmarTA)",
+      "year": "2026",
+      "status": "published",
+      "doi_url": "https://doi.org/10.1109/eSmarTA70636.2026.11652200",
+      "featured": true,
+      "visibility": "public",
+      "sort_order": 2
+    },
+    {
+      "$id": "fallback-pub-2026-ev-review",
+      "title": "A Review of Electric Vehicle Charging Systems: Converter Architectures, Control Optimization, and PV-Integrated Energy Management",
+      "authors": "M. A. A. Saif, S. F. S. Saeed, A. Haidar, A. F. M. Almakhathy, M. M. N. Al-Koshab and N. H. A. Qasem",
+      "venue": "2026 6th International Conference on Emerging Smart Technologies and Applications (eSmarTA)",
+      "year": "2026",
+      "status": "published",
+      "doi_url": "https://doi.org/10.1109/eSmarTA70636.2026.11652317",
+      "featured": true,
+      "visibility": "public",
+      "sort_order": 3
+    },
+    {
+      "$id": "fallback-pub-2026-scattering",
+      "title": "Data-Driven Deep Learning for Imaging Through Scattering Media: Architectures, Learning Paradigms, and Methodological Frontiers",
+      "authors": "Radhwan A. A. Saleh; Salah F. S. Saeed; Malak M. N. Al-Koshab; Alzahraa F. M. Almakhathy; Abdullah Haidar; Kerem Küçük",
+      "venue": "2026 6th International Conference on Emerging Smart Technologies and Applications (eSmarTA)",
+      "year": "2026",
+      "status": "published",
+      "doi_url": "https://doi.org/10.1109/eSmarTA70636.2026.11652149",
+      "visibility": "public",
+      "sort_order": 4
+    },
+    {
+      "$id": "fallback-pub-2025-manipulator",
+      "title": "Advances in Error Compensation for Robotic Manipulators: A Systematic Review from Geometric Calibration to AI-Driven Hybrid Control",
+      "authors": "R. A. Saleh, S. F. Nasser, T. S. Abdullah",
+      "venue": "2025 5th International Conference on Emerging Smart Technologies and Applications (eSmarTA)",
+      "year": "2025",
+      "status": "published",
+      "doi_url": "https://doi.org/10.1109/eSmarTA66764.2025.11131700",
+      "visibility": "public",
+      "sort_order": 5
+    },
+    {
+      "$id": "fallback-pub-2025-camera",
+      "title": "A Survey on Camera-Based Measurement Systems: Techniques, Applications, and Challenges",
+      "authors": "R. A. Saleh, S. F. Nasser, M. M. Al Mashwali, E. M. Taha, O. A. Al-Noor",
+      "venue": "2025 5th International Conference on Emerging Smart Technologies and Applications (eSmarTA)",
+      "year": "2025",
+      "status": "published",
+      "doi_url": "https://doi.org/10.1109/eSmarTA66764.2025.11132174",
+      "visibility": "public",
+      "sort_order": 6
+    },
+    {
+      "$id": "fallback-pub-2025-tdcs",
+      "title": "A Comprehensive Review of Transcranial Direct Current Stimulation (tDCS): Mechanisms, Cognitive Effects, Applications, and Future Directions",
+      "authors": "R. A. Saleh, S. F. Nasser, A. F. Almakhathy, M. M. Al-Koshab",
+      "venue": "2025 5th International Conference on Emerging Smart Technologies and Applications (eSmarTA)",
+      "year": "2025",
+      "status": "published",
+      "doi_url": "https://doi.org/10.1109/eSmarTA66764.2025.11132143",
+      "visibility": "public",
+      "sort_order": 7
+    },
+    {
+      "$id": "fallback-pub-2025-robotic-arm",
+      "title": "Advancements in Robotic Arm Technologies: Precision, Intelligence, and Cross-Sector Applications",
+      "authors": "R. A. Saleh, Y. Alqudsi, A. A. Al-Hajj, A. A. Abdullah, S. F. Nasser, M. A. Amrani",
+      "venue": "2025 5th International Conference on Emerging Smart Technologies and Applications (eSmarTA)",
+      "year": "2025",
+      "status": "published",
+      "doi_url": "https://doi.org/10.1109/eSmarTA66764.2025.11132178",
+      "visibility": "public",
+      "sort_order": 8
+    }
+  ],
+  "projects": [
+    {
+      "$id": "fallback-project-ev-review",
+      "slug": "ev-charging-systematic-review",
+      "title": "From Fragmentation to Deployment: A Systematic Diagnosis and Evidence-Based Roadmap for Optimization- and AI-Enabled Fast and Bidirectional Electric-Vehicle Charging",
+      "category": "ev_charging",
+      "status": "research in progress",
+      "year": "2026",
+      "short_description": "Systematic research on optimization, artificial intelligence, integration, and validation readiness in fast and bidirectional EV charging.",
+      "technologies": [
+        "EV Fast Charging",
+        "Bidirectional Charging",
+        "Optimization",
+        "AI"
+      ],
+      "featured": true,
+      "visibility": "public",
+      "sort_order": 1
+    },
+    {
+      "$id": "fallback-project-petct",
+      "slug": "multimodal-pet-ct-oncology",
+      "title": "Multimodal PET/CT Predictive Modelling in Oncology: A Systematic Review of Data Composition, Fusion Strategies, Incremental Value, and Clinical Translation",
+      "category": "control_systems",
+      "status": "research in progress",
+      "year": "2026",
+      "short_description": "Systematic review of multimodal PET/CT predictive modelling, fusion strategies, incremental value, and clinical translation.",
+      "technologies": [
+        "PET/CT",
+        "Predictive Modelling",
+        "Multimodal AI"
+      ],
+      "visibility": "public",
+      "sort_order": 2
+    },
+    {
+      "$id": "fallback-project-fl",
+      "slug": "federated-learning-healthcare",
+      "title": "Explainable and Privacy-Preserving Federated Learning in Healthcare: A Systematic Review and Taxonomic Synthesis",
+      "category": "control_systems",
+      "status": "research in progress",
+      "year": "2026",
+      "short_description": "Research on explainable, privacy-preserving and trustworthy federated learning for healthcare.",
+      "technologies": [
+        "Federated Learning",
+        "Explainable AI",
+        "Privacy"
+      ],
+      "visibility": "public",
+      "sort_order": 3
+    },
+    {
+      "$id": "fallback-project-quadrotor",
+      "slug": "quadrotor-hybrid-control",
+      "title": "Hybrid Geometric–Sliding-Mode Control of Quadrotor UAVs with Optimized Disturbance Rejection",
+      "category": "control_systems",
+      "status": "research in progress",
+      "year": "2026",
+      "short_description": "Control research combining geometric and sliding-mode approaches for quadrotor disturbance rejection.",
+      "technologies": [
+        "Quadrotor",
+        "Geometric Control",
+        "Sliding Mode Control",
+        "Optimization"
+      ],
+      "featured": true,
+      "visibility": "public",
+      "sort_order": 4
+    },
+    {
+      "$id": "fallback-project-gfm",
+      "slug": "impedance-adaptive-dual-mode-ev-charger",
+      "title": "Impedance-Adaptive Dual-Mode Grid-Following/Grid-Forming Control of a Multi-Port Bidirectional Off-Board EV Fast Charger with LCL-Aware Stabilization Under Weak Grids",
+      "category": "ev_charging",
+      "status": "research in progress",
+      "year": "2026",
+      "short_description": "Adaptive dual-mode grid-following/grid-forming control research for a multi-port bidirectional off-board EV fast charger.",
+      "technologies": [
+        "MATLAB/Simulink",
+        "Grid-Following",
+        "Grid-Forming",
+        "LCL Filter"
+      ],
+      "featured": true,
+      "visibility": "public",
+      "sort_order": 5
+    },
+    {
+      "$id": "fallback-project-mpc",
+      "slug": "electro-thermal-aging-mpc-ev-charger",
+      "title": "Electro-Thermal-Aging-Aware Multi-Timescale Predictive Control of a Multi-Port Bidirectional Off-Board EV Fast-Charging System for Grid-to-Vehicle and Vehicle-to-Grid Services",
+      "category": "ev_charging",
+      "status": "research in progress",
+      "year": "2026",
+      "short_description": "Predictive-control research integrating electrical, thermal, aging and multi-timescale considerations for G2V and V2G operation.",
+      "technologies": [
+        "Predictive Control",
+        "EV Fast Charging",
+        "V2G",
+        "Electro-Thermal Modelling"
+      ],
+      "visibility": "public",
+      "sort_order": 6
+    },
+    {
+      "$id": "fallback-project-hres",
+      "slug": "off-grid-hybrid-energy-system",
+      "title": "Reliability-Constrained Multi-Objective Optimization of an Off-Grid PV–Wind–Diesel–Battery Hybrid Energy System: A HOMER-Benchmarked Cost–Renewability Assessment",
+      "category": "renewable_energy",
+      "status": "research in progress",
+      "year": "2026",
+      "short_description": "Multi-objective optimization of an off-grid hybrid energy system with reliability, cost and renewable-energy considerations.",
+      "technologies": [
+        "PV",
+        "Wind",
+        "Battery",
+        "HOMER",
+        "Multi-Objective Optimization"
+      ],
+      "visibility": "public",
+      "sort_order": 7
+    }
+  ],
+  "awards": [
+    {
+      "$id": "fallback-award-best-paper",
+      "title": "Best Paper Award — eSmarTA-2026",
+      "issuer": "6th International Conference on Emerging Smart Technologies and Applications (eSmarTA)",
+      "year": "2026",
+      "category": "conference_award",
+      "description": "Best Paper Award for “Toward Trust-by-Design in Federated Learning for Healthcare: A Taxonomic Review of Privacy, Explainability, and Accountability.”",
+      "featured": true,
+      "visibility": "public",
+      "sort_order": 1
+    },
+    {
+      "$id": "fallback-award-esmarta-2026",
+      "title": "eSmarTA-2026 Conference Participation and Presentations",
+      "issuer": "6th International Conference on Emerging Smart Technologies and Applications (eSmarTA)",
+      "year": "2026",
+      "category": "conference_recognition",
+      "description": "Conference participation and co-authorship of four presented papers covering EV charging, federated learning, and computational imaging.",
+      "featured": true,
+      "visibility": "public",
+      "sort_order": 2
+    },
+    {
+      "$id": "fallback-award-esmarta-2025",
+      "title": "eSmarTA-2025 Conference Participation and Presentations",
+      "issuer": "5th International Conference on Emerging Smart Technologies and Applications (eSmarTA)",
+      "year": "2025",
+      "category": "conference_recognition",
+      "description": "Conference participation and co-authorship of four presented papers in measurement, robotics, robotic-manipulator error compensation, and tDCS.",
+      "visibility": "public",
+      "sort_order": 3
+    },
+    {
+      "$id": "fallback-award-national-ranking",
+      "title": "Academic Distinction — Ranked First in Cohort and Second Nationally",
+      "issuer": "Technical Industrial Institute, Sana’a, Yemen",
+      "year": "2016/2017",
+      "category": "academic_distinction",
+      "description": "Recognition for outstanding performance in Industrial Control Systems / Electronics with a cumulative grade of 92.27% (Excellent).",
+      "featured": true,
+      "visibility": "public",
+      "sort_order": 4
+    },
+    {
+      "$id": "fallback-award-cohort",
+      "title": "Academic Distinction — First Rank in Cohort",
+      "issuer": "Technical Industrial Institute – Al-Hasab, Taiz, Yemen",
+      "year": "2014–2016",
+      "category": "academic_distinction",
+      "description": "Recognition for excellent academic and practical performance during the first and second vocational levels in Industrial Control Systems / Electronics.",
+      "visibility": "public",
+      "sort_order": 5
+    },
+    {
+      "$id": "fallback-award-research-writing",
+      "title": "Certificate of Appreciation — Research & Academic Writing",
+      "issuer": "Al-Shaheeda Ne’mah Rassam School, Taiz, Yemen",
+      "year": "2026",
+      "category": "professional_recognition",
+      "description": "Recognition for contributions to scientific research mentorship and academic writing support.",
+      "visibility": "public",
+      "sort_order": 6
+    },
+    {
+      "$id": "fallback-award-service",
+      "title": "Certificate of Appreciation — Professional Excellence and Dedicated Service",
+      "issuer": "Al-Shaheeda Ne’mah Rassam School, Taiz, Yemen",
+      "year": "2026",
+      "category": "professional_recognition",
+      "description": "Recognition for professional service, reliability, teamwork, problem solving, teaching, technical training, and academic guidance.",
+      "visibility": "public",
+      "sort_order": 7
+    },
+    {
+      "$id": "fallback-award-lab",
+      "title": "Certificate of Appreciation — Laboratory Development",
+      "issuer": "Al-Shaheeda Ne’mah Rassam School, Taiz, Yemen",
+      "year": "2026",
+      "category": "professional_recognition",
+      "description": "Recognition for laboratory development, equipment organization, experiment preparation, troubleshooting, safety, and hands-on STEM learning.",
+      "visibility": "public",
+      "sort_order": 8
+    },
+    {
+      "$id": "fallback-award-physics-lab",
+      "title": "Physics Laboratory Development Appreciation",
+      "issuer": "Al-Ghad Al-Mushreq School, Taiz, Yemen",
+      "year": "2023",
+      "category": "teaching_recognition",
+      "description": "Recognition for physics-laboratory equipment preparation, electronic experiments, and practical learning support.",
+      "visibility": "public",
+      "sort_order": 9
+    }
+  ],
+  "credentials": [
+    {
+      "$id": "fallback-cred-community-1",
+      "title": "Community Participation Certificate — Taiz Stars Festival",
+      "issuer": "Taiz Stars Festival",
+      "year": "",
+      "category": "community_engagement",
+      "description": "Certificate documenting community participation.",
+      "visibility": "public",
+      "sort_order": 1
+    },
+    {
+      "$id": "fallback-cred-community-2",
+      "title": "Founding Member Certificate — Sina’a Union",
+      "issuer": "Sina’a Union",
+      "year": "",
+      "category": "community_engagement",
+      "description": "Certificate documenting founding-member participation and community engagement.",
+      "visibility": "public",
+      "sort_order": 2
+    },
+    {
+      "$id": "fallback-cred-community-3",
+      "title": "Training and Active Participation Certificate — Sina’a Union",
+      "issuer": "Sina’a Union",
+      "year": "",
+      "category": "community_engagement",
+      "description": "Certificate documenting training-related involvement, teamwork, initiative planning, and active participation.",
+      "visibility": "public",
+      "sort_order": 3
+    },
+    {
+      "$id": "fallback-cred-translation",
+      "title": "Training Course in Translation",
+      "issuer": "Al-Kindi Institute for Languages & Computer",
+      "year": "2021",
+      "category": "education_language_training",
+      "description": "60-hour translation course completed with an Excellent grade (98%).",
+      "visibility": "public",
+      "sort_order": 4
+    },
+    {
+      "$id": "fallback-cred-genpack",
+      "title": "Cooperative Industrial Training — General Industries & Packages Co. (GenPack)",
+      "issuer": "General Industries & Packages Co. (GenPack)",
+      "year": "2024",
+      "category": "industrial_training",
+      "description": "Practical exposure to packaging production workflows, industrial operations, workplace practice, and engineering activities.",
+      "visibility": "public",
+      "sort_order": 5
+    },
+    {
+      "$id": "fallback-cred-nadfood",
+      "title": "Industrial Training — National Dairy & Food Co. (Nadfood)",
+      "issuer": "National Dairy & Food Co. (Nadfood)",
+      "year": "2024",
+      "category": "industrial_training",
+      "description": "Engineering-department training covering production systems, maintenance operations, plant utilities, PLC-related control, and industrial equipment.",
+      "visibility": "public",
+      "sort_order": 6
+    },
+    {
+      "$id": "fallback-cred-ycic",
+      "title": "Electronic Control Training — YCIC / HSA Group",
+      "issuer": "Yemen Company for Industry & Commerce (YCIC – HSA Group)",
+      "year": "2018",
+      "category": "industrial_training",
+      "description": "Practical training in electronic control systems and industrial-control applications.",
+      "visibility": "public",
+      "sort_order": 7
+    },
+    {
+      "$id": "fallback-cred-esmarta-2025",
+      "title": "eSmarTA-2025 Conference Participation",
+      "issuer": "5th International Conference on Emerging Smart Technologies and Applications (eSmarTA)",
+      "year": "2025",
+      "category": "research_conference",
+      "description": "Conference participation associated with four 2025 research papers.",
+      "visibility": "public",
+      "sort_order": 8
+    },
+    {
+      "$id": "fallback-cred-esmarta-2026",
+      "title": "eSmarTA-2026 Conference Participation",
+      "issuer": "6th International Conference on Emerging Smart Technologies and Applications (eSmarTA)",
+      "year": "2026",
+      "category": "research_conference",
+      "description": "Conference participation associated with four 2026 research papers.",
+      "visibility": "public",
+      "sort_order": 9
+    },
+    {
+      "$id": "fallback-cred-ieee",
+      "title": "IEEE Authorship and Open Access Symposium: Tips and Best Practices to Get Published from IEEE Editors",
+      "issuer": "IEEE",
+      "year": "2026",
+      "category": "research_conference",
+      "description": "Certificate of participation in a 90-minute IEEE authorship and open-access symposium.",
+      "visibility": "public",
+      "sort_order": 10
+    },
+    {
+      "$id": "fallback-cred-computer",
+      "title": "Computer Essentials",
+      "issuer": "Edraak",
+      "year": "",
+      "category": "technical_professional_development",
+      "description": "Level-completion certificate covering computer fundamentals, devices, storage, networks, security, and general computer operation.",
+      "visibility": "public",
+      "sort_order": 11
+    },
+    {
+      "$id": "fallback-cred-leadership",
+      "title": "Influential Leadership & Effective Management",
+      "issuer": "Edraak",
+      "year": "2024",
+      "category": "technical_professional_development",
+      "description": "Level-completion certificate in leadership and effective management.",
+      "visibility": "public",
+      "sort_order": 12
+    },
+    {
+      "$id": "fallback-cred-iot",
+      "title": "Internet of Things (IoT)",
+      "issuer": "Edraak",
+      "year": "2024",
+      "category": "technical_professional_development",
+      "description": "Level-completion certificate in Internet of Things fundamentals.",
+      "visibility": "public",
+      "sort_order": 13
+    },
+    {
+      "$id": "fallback-cred-ai",
+      "title": "Introduction in Artificial Intelligence",
+      "issuer": "Edraak",
+      "year": "",
+      "category": "technical_professional_development",
+      "description": "Level-completion certificate covering foundational artificial intelligence, algorithms, problem solving, machine learning, neural networks, and practical AI applications.",
+      "visibility": "public",
+      "sort_order": 14
+    },
+    {
+      "$id": "fallback-cred-trainer",
+      "title": "Train-the-Trainer Program: The Novice Trainer Level",
+      "issuer": "Edraak / International Board of Certified Trainers (IBCT)",
+      "year": "2026",
+      "category": "technical_professional_development",
+      "description": "Novice Trainer level-completion certificate.",
+      "visibility": "public",
+      "sort_order": 15
+    }
+  ],
+  "experiences": [
+    {
+      "$id": "fallback-exp-rassam",
+      "slug": "al-shaheeda-nemah-rassam-school",
+      "title": "STEM Technical Education Specialist, Laboratory Engineer & Scientific Research Mentor",
+      "organization": "Al-Shaheeda Ne’mah Rassam School",
+      "location": "Taiz, Yemen",
+      "start_date": "2022-01-15",
+      "current": true,
+      "experience_type": "Full-time · On-site",
+      "summary": "STEM technical education, laboratory engineering, electronics and measurement instruction, physics-laboratory support, technical troubleshooting, robotics-laboratory development, and student research mentorship.",
+      "responsibilities": [
+        "Teach electronics and measurement instruments through classroom instruction and laboratory practice.",
+        "Support physics laboratory preparation, equipment maintenance, troubleshooting, and safety supervision.",
+        "Contribute to robotics laboratory development, prototyping workflows, and technical documentation.",
+        "Mentor students in STEM projects, scientific research, academic writing, and publication-oriented revision."
+      ],
+      "tags": [
+        "STEM Education",
+        "Laboratory Engineering",
+        "Electronics",
+        "Research Mentorship"
+      ],
+      "visibility": "public",
+      "sort_order": 1
+    },
+    {
+      "$id": "fallback-exp-asbahi",
+      "slug": "al-asbahi-private-school",
+      "title": "Computer Maintenance Engineer & Physics Laboratory Technician",
+      "organization": "AL-ASBAHI Private School",
+      "location": "Taiz, Yemen",
+      "period_label": "2023–2024",
+      "experience_type": "Part-time",
+      "summary": "Technical support for classroom computer systems and physics laboratory resources.",
+      "responsibilities": [
+        "Supported classroom computer systems, educational software, and basic network connectivity.",
+        "Prepared laboratory experiments and equipment and supported hands-on practical sessions.",
+        "Provided technical support and helped maintain safe and reliable classroom and laboratory resources."
+      ],
+      "tags": [
+        "Computer Maintenance",
+        "Physics Laboratory",
+        "Technical Support"
+      ],
+      "visibility": "public",
+      "sort_order": 2
+    },
+    {
+      "$id": "fallback-exp-ghad",
+      "slug": "al-ghad-al-mushreq-school",
+      "title": "Physics Teacher & Laboratory Support Instructor",
+      "organization": "Al-Ghad Al-Mushreq School",
+      "location": "Taiz, Yemen",
+      "period_label": "2022–2023",
+      "experience_type": "Part-time",
+      "summary": "Secondary-level physics teaching combined with laboratory preparation, practical demonstrations, measurement activities, and equipment support.",
+      "responsibilities": [
+        "Taught Physics to secondary-level students through classroom lessons, structured problem solving, and practical demonstrations.",
+        "Prepared and supported laboratory experiments, measurement activities, and safe practical sessions.",
+        "Supported laboratory equipment setup, basic maintenance, and troubleshooting."
+      ],
+      "tags": [
+        "Physics Teaching",
+        "Laboratory Support",
+        "Practical Learning"
+      ],
+      "visibility": "public",
+      "sort_order": 3
+    },
+    {
+      "$id": "fallback-exp-alhasab",
+      "slug": "technical-industrial-institute-al-hasab",
+      "title": "Industrial Training Assistant — Industrial Control Systems",
+      "organization": "Technical Industrial Institute – Al-Hasab",
+      "location": "Taiz, Yemen",
+      "period_label": "2018–2019 · 6 months",
+      "experience_type": "Part-time",
+      "summary": "Practical training support in industrial control systems and electronics.",
+      "responsibilities": [
+        "Assisted in practical training activities related to industrial control systems and electronics.",
+        "Supported hands-on instruction in control circuits, electronic components, panel-level practice, and troubleshooting.",
+        "Contributed to vocational laboratory sessions and applied industrial-control training."
+      ],
+      "tags": [
+        "Industrial Control",
+        "Electronics",
+        "Technical Training"
+      ],
+      "visibility": "public",
+      "sort_order": 4
+    }
+  ],
+  "recommendations": [
+    {
+      "$id": "fallback-rec-alkindi",
+      "title": "Academic Recommendation — Al-Kindi Institute",
+      "institution": "Al-Kindi Institute",
+      "summary": "Academic recommendation supporting study, learning, and professional development.",
+      "visibility": "public",
+      "sort_order": 1
+    },
+    {
+      "$id": "fallback-rec-energy",
+      "title": "Research Recommendation — Energy Systems, Power Electronics and EV Fast Charging",
+      "institution": "Kocaeli University",
+      "summary": "Research recommendation associated with energy systems, power electronics, EV fast charging, PV integration, engineering simulation, control, and MATLAB/Simulink work.",
+      "focus_areas": [
+        "Energy Systems",
+        "Power Electronics",
+        "EV Fast Charging"
+      ],
+      "visibility": "public",
+      "sort_order": 2
+    },
+    {
+      "$id": "fallback-rec-kocaeli",
+      "title": "Academic Recommendation — Kocaeli University",
+      "institution": "Kocaeli University",
+      "summary": "Academic recommendation documenting research supervision and academic collaboration.",
+      "visibility": "public",
+      "sort_order": 3
+    },
+    {
+      "$id": "fallback-rec-academic",
+      "title": "Academic Recommendation",
+      "institution": "Academic reference",
+      "summary": "Academic recommendation supporting research, engineering study, and graduate-level academic development.",
+      "visibility": "public",
+      "sort_order": 4
+    },
+    {
+      "$id": "fallback-rec-combined",
+      "title": "Academic & Technical Recommendation Letters",
+      "institution": "Academic and professional references",
+      "summary": "Combined recommendation letters documenting academic, technical, teaching, and research-related strengths.",
+      "visibility": "public",
+      "sort_order": 5
+    },
+    {
+      "$id": "fallback-rec-software",
+      "title": "Research Recommendation — Software Engineering, Cybersecurity and Trustworthy AI",
+      "institution": "Kocaeli University",
+      "summary": "Research recommendation documenting collaboration in cybersecurity, federated learning, explainable AI, trustworthy machine learning, security digital twins, and systematic-review methodology.",
+      "focus_areas": [
+        "Software Engineering",
+        "Cybersecurity",
+        "Trustworthy AI"
+      ],
+      "visibility": "public",
+      "sort_order": 6
+    }
+  ],
+  "institutionalEvidence": [
+    {
+      "$id": "fallback-inst-research-writing",
+      "title": "Scientific Research & Academic Writing Training",
+      "institution": "Al-Shaheeda Ne’mah Rassam School",
+      "evidence_type": "institutional record",
+      "description": "Institutional documentation of a structured scientific-research and academic-writing training program covering research fundamentals, topic selection, literature work, citation practice, research questions, and conference-oriented academic preparation.",
+      "visibility": "public",
+      "sort_order": 1
+    },
+    {
+      "$id": "fallback-inst-accepted",
+      "title": "Student Research Mentorship and eSmarTA Paper Acceptance",
+      "institution": "Al-Shaheeda Ne’mah Rassam School",
+      "evidence_type": "institutional record",
+      "description": "Institutional documentation of student research mentorship connected to conference-oriented academic work and accepted student-involved research papers.",
+      "visibility": "public",
+      "sort_order": 2
+    },
+    {
+      "$id": "fallback-inst-ieee",
+      "title": "Student-Involved Research Publication and IEEE Xplore Indexing",
+      "institution": "Al-Shaheeda Ne’mah Rassam School",
+      "evidence_type": "institutional record",
+      "description": "Institutional documentation of student-involved research progressing to peer-reviewed conference publication and IEEE Xplore indexing.",
+      "visibility": "public",
+      "sort_order": 3
+    },
+    {
+      "$id": "fallback-inst-amal",
+      "title": "Research Exposure Activity — Al-Amal Cancer Center",
+      "institution": "Al-Shaheeda Ne’mah Rassam School",
+      "evidence_type": "institutional record",
+      "description": "Institutional documentation of a student research-exposure activity focused on scientific data, information collection, applied research tools, and AI-oriented early-detection research themes.",
+      "visibility": "public",
+      "sort_order": 4
+    },
+    {
+      "$id": "fallback-inst-optimization",
+      "title": "Applied Electronics & Optimization Training",
+      "institution": "Al-Shaheeda Ne’mah Rassam School",
+      "evidence_type": "institutional record",
+      "description": "Institutional documentation of applied electronics and optimization-oriented technical training linking electronics fundamentals with practical STEM and computational problem solving.",
+      "visibility": "public",
+      "sort_order": 5
+    },
+    {
+      "$id": "fallback-inst-teachers",
+      "title": "Applied Electronics Training for Physics Teachers",
+      "institution": "Al-Shaheeda Ne’mah Rassam School",
+      "evidence_type": "institutional record",
+      "description": "Institutional documentation of professional-development training for physics teachers covering applied electronics, measurement, components, rectification, and practical circuit construction.",
+      "visibility": "public",
+      "sort_order": 6
+    }
+  ]
+}
