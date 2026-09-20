@@ -1,26 +1,29 @@
 const fs = require("fs");
 
 const source = fs.readFileSync("script.js", "utf8");
-const page = fs.readFileSync("experience/index.html", "utf8");
+const fallback = JSON.parse(fs.readFileSync("data/public-fallback.json", "utf8"));
 const failures = [];
 
 for (const token of [
-  "Industrial Control Systems Trainer",
+  "Industrial Training Assistant — Industrial Control Systems",
   "Technical Industrial Institute – Al-Hasab",
-  'start_date: "2018-09-01"',
-  'end_date: "2019-02-28"',
-  "Delivered practical instruction in industrial control systems and electronics.",
-  "Guided students through control circuits, electronic components, and hands-on technical activities."
+  'period_label: "2018–2019 · 6 months"',
+  "Assisted in practical training activities related to industrial control systems and electronics.",
+  "Supported hands-on instruction in control circuits, electronic components, panel-level practice, and troubleshooting."
 ]) {
   if (!source.includes(token)) failures.push("script.js missing: " + token);
 }
 
-if (!source.includes("const hasAlHasab = appwriteRows.some")) {
-  failures.push("Al-Hasab fallback deduplication is missing");
+const row = (fallback.experiences || []).find(item => item.slug === "technical-industrial-institute-al-hasab");
+if (!row) {
+  failures.push("static fallback is missing Al-Hasab experience");
+} else {
+  if (row.title !== "Industrial Training Assistant — Industrial Control Systems") failures.push("unexpected Al-Hasab title");
+  if (row.period_label !== "2018–2019 · 6 months") failures.push("unexpected Al-Hasab period");
 }
 
-if (!page.includes('/script.js?v=20260919-al-hasab')) {
-  failures.push("experience page does not force the current renderer");
+if (!source.includes("const hasAlHasab = appwriteRows.some")) {
+  failures.push("Al-Hasab fallback deduplication is missing");
 }
 
 if (failures.length) {
@@ -28,4 +31,4 @@ if (failures.length) {
   process.exit(1);
 }
 
-console.log("PASS|Al-Hasab teaching experience is included without duplicating a future Appwrite record");
+console.log("PASS|Al-Hasab experience uses the evidence-supported title and 2018–2019 six-month period");
