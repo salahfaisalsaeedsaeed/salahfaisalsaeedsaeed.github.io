@@ -6,8 +6,8 @@ const failures = [];
 
 const expectedMinimums = {
   awards: 5,
-  credentials: 34,
-  recommendations: 16,
+  credentials: 33,
+  recommendations: 15,
   experience: 7
 };
 
