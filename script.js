@@ -170,6 +170,86 @@ const MEDIA_META = {
 };
 
 
+const PROJECT_HARDWARE_MEDIA = [
+  {
+    file: "3D_Printer.jpg",
+    type: "image",
+    category: "Digital Fabrication",
+    title: "Original Prusa i3 MK3S 3D Printer",
+    description: "3D-printing equipment used for prototype parts, mounts, enclosures, and mechanical components during engineering development."
+  },
+  {
+    file: "Arduino_Mega_2560_Board.jpg",
+    type: "image",
+    category: "Embedded Control",
+    title: "Arduino Mega 2560 Development Board",
+    description: "Microcontroller platform for embedded-control prototyping, sensor interfacing, actuator control, and hardware integration."
+  },
+  {
+    file: "Dual_Joystick_Shield.jpg",
+    type: "image",
+    category: "Human–Machine Interface",
+    title: "Dual Joystick Control Shield",
+    description: "Dual-axis manual input hardware for robotics, motion-control interfaces, and interactive embedded-system experiments."
+  },
+  {
+    file: "ESP32_CAM_MB_Programmer.jpg",
+    type: "image",
+    category: "Embedded Vision",
+    title: "ESP32-CAM-MB Programmer",
+    description: "USB programming and interface board for ESP32-CAM modules used in embedded-vision and connected-device development."
+  },
+  {
+    file: "ESP8266_OLED_Board.jpg",
+    type: "image",
+    category: "IoT & Monitoring",
+    title: "ESP8266 Development Board with OLED",
+    description: "Wi-Fi-enabled embedded-development board with an onboard OLED display for IoT, monitoring, and compact interface prototypes."
+  },
+  {
+    file: "Electronic_Components_Organizer.jpg",
+    type: "image",
+    category: "Sensors & Modules",
+    title: "Electronic Sensor & Module Collection",
+    description: "Organized assortment of sensor, interface, indicator, and control modules used for rapid prototyping and circuit experiments."
+  },
+  {
+    file: "Electronics_Lab_Storage_Cabinet.jpg",
+    type: "image",
+    category: "Test & Measurement",
+    title: "Electronics Laboratory Equipment",
+    description: "Laboratory storage and work area containing test instruments, a bench power supply, multimeter, electronic boards, wiring, and supporting equipment."
+  },
+  {
+    file: "Micro_Servo_Motors.jpg",
+    type: "image",
+    category: "Actuation",
+    title: "SG90 Micro Servo Motors",
+    description: "Compact servo actuators with control horns for positioning, small robotic mechanisms, and motion-oriented prototypes."
+  },
+  {
+    file: "Relay_Module.jpg",
+    type: "image",
+    category: "Switching & Control",
+    title: "Single-Channel Relay Module",
+    description: "Relay-based switching interface for electronically controlled loads and embedded-control experiments."
+  },
+  {
+    file: "Stepper_Motor.jpg",
+    type: "image",
+    category: "Motion Control",
+    title: "Compact Motion-Control Motor Assembly",
+    description: "Compact motor assembly used for positioning and motion-control prototyping in electromechanical experiments."
+  },
+  {
+    file: "Electronics_Lab_Inventory_Overview.mp4",
+    type: "video",
+    category: "Lab Overview",
+    title: "Electronics Lab Inventory Overview",
+    description: "Video overview of the laboratory inventory and engineering hardware collection used for practical electronics and prototyping work."
+  }
+];
+
 const GITHUB_MEDIA = {
   student_videos_and_conference_presentations: [
     {
@@ -1242,6 +1322,65 @@ async function renderPublications() {
   initFilters();
 }
 
+function projectHardwarePath(fileName) {
+  return `/media/assets/projects/engineering-components-and-tools/${encodeURIComponent(fileName)}`;
+}
+
+function projectHardwareModel(item, index) {
+  return {
+    $id: `project-hardware:${index}`,
+    title: item.title,
+    description: item.description,
+    alt_text: item.title,
+    media_type: item.type === "video" ? "video" : "image",
+    render_type: item.type === "video" ? "video" : "image",
+    display_file_ids: [projectHardwarePath(item.file)]
+  };
+}
+
+function projectHardwareCard(item, index) {
+  const source = projectHardwarePath(item.file);
+  const isVideo = item.type === "video";
+  const visual = isVideo
+    ? `<video controls preload="metadata" playsinline aria-label="${escapeAttr(item.title)}"><source src="${escapeAttr(source)}" type="video/mp4">Your browser does not support embedded video.</video>`
+    : `<button class="github-pdf-preview-button portfolio-preview-button project-hardware-preview" type="button" data-project-hardware-index="${index}" aria-label="Open ${escapeAttr(item.title)}">
+        <img src="${escapeAttr(source)}" alt="${escapeAttr(item.title)}" loading="lazy" decoding="async">
+        <span class="github-pdf-preview-overlay"><span class="file-kind">VIEW</span><strong>Open full view →</strong></span>
+      </button>`;
+
+  return `<figure class="asset-evidence-card github-media-card project-hardware-card">
+    <div class="asset-window asset-window--${isVideo ? "video" : "image"}">${visual}</div>
+    <figcaption class="asset-caption">
+      <div class="asset-caption-head"><span>${escapeHTML(item.category || (isVideo ? "Video" : "Image"))}</span></div>
+      <h4>${escapeHTML(item.title)}</h4>
+      <p>${escapeHTML(item.description)}</p>
+    </figcaption>
+  </figure>`;
+}
+
+function renderProjectHardware() {
+  const root = $("#projectHardwareGallery");
+  if (!root) return;
+
+  const imageCount = PROJECT_HARDWARE_MEDIA.filter(item => item.type === "image").length;
+  const videoCount = PROJECT_HARDWARE_MEDIA.filter(item => item.type === "video").length;
+  const stats = $("#projectHardwareStats");
+  if (stats) {
+    stats.innerHTML = `<div><dt>${PROJECT_HARDWARE_MEDIA.length}</dt><dd>media items</dd></div><div><dt>${imageCount}</dt><dd>images</dd></div><div><dt>${videoCount}</dt><dd>video</dd></div>`;
+  }
+
+  root.innerHTML = PROJECT_HARDWARE_MEDIA.map(projectHardwareCard).join("");
+  const models = PROJECT_HARDWARE_MEDIA.map(projectHardwareModel);
+  $("[data-project-hardware-index]", root);
+  $("[data-project-hardware-index]", root).forEach(button => {
+    button.addEventListener("click", () => {
+      const index = Number(button.dataset.projectHardwareIndex);
+      const model = models[index];
+      if (model) openAssetSet([model], button);
+    });
+  });
+}
+
 async function renderProjects() {
   const root = $("#projectsList");
   if (!root) return;
@@ -1716,6 +1855,7 @@ function absorbGraduationProjectDuplicate() {
 
 async function runDynamicRenderers() {
   const jobs = [renderHome(), renderPublications(), renderProjects(), renderAwards(), renderCredentials(), renderExperiences(), renderRecommendations(), renderInstitutionalEvidence(), renderDocuments(), renderMedia()];
+  renderProjectHardware();
   await Promise.allSettled(jobs);
   bindRenderingImageFallbacks();
   initFilters();
