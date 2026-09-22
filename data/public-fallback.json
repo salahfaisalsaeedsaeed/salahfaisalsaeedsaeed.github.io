@@ -1,9 +1,625 @@
 {
-  "version": 2,
+  "version": 3,
   "generated_at": "2026-09-20",
-  "note": "Static public-profile fallback used only when live public data is unavailable.",
-  "assets": [],
-  "assetRenderings": [],
+  "note": "Static public-profile fallback with local GitHub/Vercel display-derivative paths. Private originals remain outside the public repository.",
+  "assets": [
+    {
+      "$id": "local:award:best-paper-2026",
+      "title": "Best Paper Award — eSmarTA-2026",
+      "description": "",
+      "visibility": "public",
+      "media_type": "image",
+      "asset_type": "public_display_derivative"
+    },
+    {
+      "$id": "local:credential:esmarta-2026",
+      "title": "eSmarTA-2026 Conference Participation",
+      "description": "",
+      "visibility": "public",
+      "media_type": "image",
+      "asset_type": "public_display_derivative"
+    },
+    {
+      "$id": "local:credential:esmarta-2025",
+      "title": "eSmarTA-2025 Conference Participation",
+      "description": "",
+      "visibility": "public",
+      "media_type": "image",
+      "asset_type": "public_display_derivative"
+    },
+    {
+      "$id": "local:award:national-ranking",
+      "title": "Vocational Diploma Final Result and National Ranking",
+      "description": "",
+      "visibility": "public",
+      "media_type": "image",
+      "asset_type": "public_display_derivative"
+    },
+    {
+      "$id": "local:award:cohort-ranking",
+      "title": "Academic Distinction and Cohort Ranking",
+      "description": "",
+      "visibility": "public",
+      "media_type": "image",
+      "asset_type": "public_display_derivative"
+    },
+    {
+      "$id": "local:award:research-writing",
+      "title": "Certificate of Appreciation — Research & Academic Writing",
+      "description": "",
+      "visibility": "public",
+      "media_type": "image",
+      "asset_type": "public_display_derivative"
+    },
+    {
+      "$id": "local:award:professional-service",
+      "title": "Certificate of Appreciation — Professional Excellence and Dedicated Service",
+      "description": "",
+      "visibility": "public",
+      "media_type": "image",
+      "asset_type": "public_display_derivative"
+    },
+    {
+      "$id": "local:award:lab-development",
+      "title": "Certificate of Appreciation — Laboratory Development",
+      "description": "",
+      "visibility": "public",
+      "media_type": "image",
+      "asset_type": "public_display_derivative"
+    },
+    {
+      "$id": "local:award:physics-lab",
+      "title": "Physics Laboratory Development Appreciation",
+      "description": "",
+      "visibility": "public",
+      "media_type": "image",
+      "asset_type": "public_display_derivative"
+    },
+    {
+      "$id": "local:credential:community",
+      "title": "Community Participation Certificate — Taiz Stars Festival",
+      "description": "",
+      "visibility": "public",
+      "media_type": "image",
+      "asset_type": "public_display_derivative"
+    },
+    {
+      "$id": "local:credential:founding",
+      "title": "Founding Member Certificate — Sina’a Union",
+      "description": "",
+      "visibility": "public",
+      "media_type": "image",
+      "asset_type": "public_display_derivative"
+    },
+    {
+      "$id": "local:credential:training-participation",
+      "title": "Training and Active Participation Certificate — Sina’a Union",
+      "description": "",
+      "visibility": "public",
+      "media_type": "image",
+      "asset_type": "public_display_derivative"
+    },
+    {
+      "$id": "local:credential:translation",
+      "title": "Training Course in Translation",
+      "description": "",
+      "visibility": "public",
+      "media_type": "image",
+      "asset_type": "public_display_derivative"
+    },
+    {
+      "$id": "local:credential:genpack",
+      "title": "Cooperative Industrial Training — GenPack",
+      "description": "",
+      "visibility": "public",
+      "media_type": "image",
+      "asset_type": "public_display_derivative"
+    },
+    {
+      "$id": "local:credential:nadfood",
+      "title": "Industrial Training — Nadfood",
+      "description": "",
+      "visibility": "public",
+      "media_type": "image",
+      "asset_type": "public_display_derivative"
+    },
+    {
+      "$id": "local:credential:ycic",
+      "title": "Electronic Control Training — YCIC / HSA Group",
+      "description": "",
+      "visibility": "public",
+      "media_type": "image",
+      "asset_type": "public_display_derivative"
+    },
+    {
+      "$id": "local:credential:ieee-authorship",
+      "title": "IEEE Authorship and Open Access Symposium",
+      "description": "",
+      "visibility": "public",
+      "media_type": "image",
+      "asset_type": "public_display_derivative"
+    },
+    {
+      "$id": "local:credential:computer-essentials",
+      "title": "Computer Essentials — Edraak",
+      "description": "",
+      "visibility": "public",
+      "media_type": "image",
+      "asset_type": "public_display_derivative"
+    },
+    {
+      "$id": "local:credential:leadership",
+      "title": "Influential Leadership & Effective Management — Edraak",
+      "description": "",
+      "visibility": "public",
+      "media_type": "image",
+      "asset_type": "public_display_derivative"
+    },
+    {
+      "$id": "local:credential:iot",
+      "title": "Internet of Things — Edraak",
+      "description": "",
+      "visibility": "public",
+      "media_type": "image",
+      "asset_type": "public_display_derivative"
+    },
+    {
+      "$id": "local:credential:ai",
+      "title": "Introduction in Artificial Intelligence — Edraak",
+      "description": "",
+      "visibility": "public",
+      "media_type": "image",
+      "asset_type": "public_display_derivative"
+    },
+    {
+      "$id": "local:credential:trainer",
+      "title": "Train-the-Trainer — Novice Trainer Level",
+      "description": "",
+      "visibility": "public",
+      "media_type": "image",
+      "asset_type": "public_display_derivative"
+    },
+    {
+      "$id": "local:experience:rassam-employment",
+      "title": "Al-Shaheeda Ne’mah Rassam Employment Certificate",
+      "description": "",
+      "visibility": "public",
+      "media_type": "image",
+      "asset_type": "public_display_derivative"
+    },
+    {
+      "$id": "local:experience:rassam-research-mentorship",
+      "title": "Research Mentorship Experience Letters",
+      "description": "",
+      "visibility": "public",
+      "media_type": "image",
+      "asset_type": "public_display_derivative"
+    },
+    {
+      "$id": "local:experience:asbahi",
+      "title": "AL-ASBAHI Employment Certificate",
+      "description": "",
+      "visibility": "public",
+      "media_type": "image",
+      "asset_type": "public_display_derivative"
+    },
+    {
+      "$id": "local:experience:al-mashreq",
+      "title": "Al-Ghad Al-Mushreq Experience Certificates",
+      "description": "",
+      "visibility": "public",
+      "media_type": "image",
+      "asset_type": "public_display_derivative"
+    },
+    {
+      "$id": "local:experience:al-hasab",
+      "title": "Technical Industrial Institute – Al-Hasab Experience Certificate",
+      "description": "",
+      "visibility": "public",
+      "media_type": "image",
+      "asset_type": "public_display_derivative"
+    },
+    {
+      "$id": "local:recommendation:al-kindi",
+      "title": "Al-Kindi Recommendation Letter",
+      "description": "",
+      "visibility": "public",
+      "media_type": "image",
+      "asset_type": "public_display_derivative"
+    },
+    {
+      "$id": "local:recommendation:energy",
+      "title": "Research Recommendation — Energy Systems",
+      "description": "",
+      "visibility": "public",
+      "media_type": "image",
+      "asset_type": "public_display_derivative"
+    },
+    {
+      "$id": "local:recommendation:kocaeli",
+      "title": "Recommendation Letter — Kocaeli University",
+      "description": "",
+      "visibility": "public",
+      "media_type": "image",
+      "asset_type": "public_display_derivative"
+    },
+    {
+      "$id": "local:recommendation:academic",
+      "title": "Academic Recommendation",
+      "description": "",
+      "visibility": "public",
+      "media_type": "image",
+      "asset_type": "public_display_derivative"
+    },
+    {
+      "$id": "local:recommendation:combined",
+      "title": "Academic & Technical Recommendation Letters",
+      "description": "",
+      "visibility": "public",
+      "media_type": "image",
+      "asset_type": "public_display_derivative"
+    },
+    {
+      "$id": "local:recommendation:software",
+      "title": "Research Recommendation — Software Engineering",
+      "description": "",
+      "visibility": "public",
+      "media_type": "image",
+      "asset_type": "public_display_derivative"
+    }
+  ],
+  "assetRenderings": [
+    {
+      "$id": "render:local:award:best-paper-2026",
+      "asset_id": "local:award:best-paper-2026",
+      "visibility": "public",
+      "render_type": "image",
+      "display_file_ids": [
+        "/media/assets/awards/eSmarTA_2026_Best_Paper_Award.webp"
+      ],
+      "page_count": 1
+    },
+    {
+      "$id": "render:local:credential:esmarta-2026",
+      "asset_id": "local:credential:esmarta-2026",
+      "visibility": "public",
+      "render_type": "pdf_pages",
+      "display_file_ids": [
+        "/media/assets/credentials/06_eSmarTA_2026_Attendance.webp",
+        "/media/assets/credentials/07_eSmarTA_2026_P202.webp",
+        "/media/assets/credentials/08_eSmarTA_2026_P203.webp",
+        "/media/assets/credentials/09_eSmarTA_2026_P204.webp",
+        "/media/assets/credentials/10_eSmarTA_2026_P277.webp"
+      ],
+      "page_count": 5
+    },
+    {
+      "$id": "render:local:credential:esmarta-2025",
+      "asset_id": "local:credential:esmarta-2025",
+      "visibility": "public",
+      "render_type": "pdf_pages",
+      "display_file_ids": [
+        "/media/assets/credentials/01_eSmarTA_2025_Attendance.webp",
+        "/media/assets/credentials/02_eSmarTA_2025_P113.webp",
+        "/media/assets/credentials/03_eSmarTA_2025_P132.webp",
+        "/media/assets/credentials/04_eSmarTA_2025_P156.webp",
+        "/media/assets/credentials/05_eSmarTA_2025_P181.webp"
+      ],
+      "page_count": 5
+    },
+    {
+      "$id": "render:local:award:national-ranking",
+      "asset_id": "local:award:national-ranking",
+      "visibility": "public",
+      "render_type": "image",
+      "display_file_ids": [
+        "/media/assets/awards/Vocational_Diploma_Final_Result_and_National_Ranking.webp"
+      ],
+      "page_count": 1
+    },
+    {
+      "$id": "render:local:award:cohort-ranking",
+      "asset_id": "local:award:cohort-ranking",
+      "visibility": "public",
+      "render_type": "pdf_pages",
+      "display_file_ids": [
+        "/media/assets/awards/Certificate_of_Academic_Distinction_and_Ranking.webp",
+        "/media/assets/awards/Vocational_Diploma_Academic_Transcript_2014_2015.webp"
+      ],
+      "page_count": 2
+    },
+    {
+      "$id": "render:local:award:research-writing",
+      "asset_id": "local:award:research-writing",
+      "visibility": "public",
+      "render_type": "image",
+      "display_file_ids": [
+        "/media/assets/awards/Certificate_of_Appreciation_Research_and_Academic_Writing.webp"
+      ],
+      "page_count": 1
+    },
+    {
+      "$id": "render:local:award:professional-service",
+      "asset_id": "local:award:professional-service",
+      "visibility": "public",
+      "render_type": "image",
+      "display_file_ids": [
+        "/media/assets/awards/Certificate_of_Appreciation_Professional_Excellence_and_Service.webp"
+      ],
+      "page_count": 1
+    },
+    {
+      "$id": "render:local:award:lab-development",
+      "asset_id": "local:award:lab-development",
+      "visibility": "public",
+      "render_type": "image",
+      "display_file_ids": [
+        "/media/assets/awards/Certificate_of_Appreciation_Laboratory_Development.webp"
+      ],
+      "page_count": 1
+    },
+    {
+      "$id": "render:local:award:physics-lab",
+      "asset_id": "local:award:physics-lab",
+      "visibility": "public",
+      "render_type": "image",
+      "display_file_ids": [
+        "/media/assets/awards/Physics_Laboratory_Development_Appreciation.webp"
+      ],
+      "page_count": 1
+    },
+    {
+      "$id": "render:local:credential:community",
+      "asset_id": "local:credential:community",
+      "visibility": "public",
+      "render_type": "image",
+      "display_file_ids": [
+        "/media/assets/credentials/Community_Participation_Certificate_Taiz_Stars_Festival.webp"
+      ],
+      "page_count": 1
+    },
+    {
+      "$id": "render:local:credential:founding",
+      "asset_id": "local:credential:founding",
+      "visibility": "public",
+      "render_type": "image",
+      "display_file_ids": [
+        "/media/assets/credentials/Founding_Member_Certificate_Sinaa_Union.webp"
+      ],
+      "page_count": 1
+    },
+    {
+      "$id": "render:local:credential:training-participation",
+      "asset_id": "local:credential:training-participation",
+      "visibility": "public",
+      "render_type": "image",
+      "display_file_ids": [
+        "/media/assets/credentials/Training_and_Active_Participation_Certificate_Sinaa_Union.webp"
+      ],
+      "page_count": 1
+    },
+    {
+      "$id": "render:local:credential:translation",
+      "asset_id": "local:credential:translation",
+      "visibility": "public",
+      "render_type": "image",
+      "display_file_ids": [
+        "/media/assets/credentials/Translation_Course_Certificate_Al_Kindi_Institute.webp"
+      ],
+      "page_count": 1
+    },
+    {
+      "$id": "render:local:credential:genpack",
+      "asset_id": "local:credential:genpack",
+      "visibility": "public",
+      "render_type": "image",
+      "display_file_ids": [
+        "/media/assets/credentials/genpack_page_01.webp"
+      ],
+      "page_count": 1
+    },
+    {
+      "$id": "render:local:credential:nadfood",
+      "asset_id": "local:credential:nadfood",
+      "visibility": "public",
+      "render_type": "image",
+      "display_file_ids": [
+        "/media/assets/credentials/nadfood_page_01.webp"
+      ],
+      "page_count": 1
+    },
+    {
+      "$id": "render:local:credential:ycic",
+      "asset_id": "local:credential:ycic",
+      "visibility": "public",
+      "render_type": "image",
+      "display_file_ids": [
+        "/media/assets/credentials/ycic_page_01.webp"
+      ],
+      "page_count": 1
+    },
+    {
+      "$id": "render:local:credential:ieee-authorship",
+      "asset_id": "local:credential:ieee-authorship",
+      "visibility": "public",
+      "render_type": "image",
+      "display_file_ids": [
+        "/media/assets/credentials/11_IEEE_Authorship_Symposium.webp"
+      ],
+      "page_count": 1
+    },
+    {
+      "$id": "render:local:credential:computer-essentials",
+      "asset_id": "local:credential:computer-essentials",
+      "visibility": "public",
+      "render_type": "image",
+      "display_file_ids": [
+        "/media/assets/credentials/Computer_Essentials_Edraak.webp"
+      ],
+      "page_count": 1
+    },
+    {
+      "$id": "render:local:credential:leadership",
+      "asset_id": "local:credential:leadership",
+      "visibility": "public",
+      "render_type": "image",
+      "display_file_ids": [
+        "/media/assets/credentials/Influential_Leadership_and_Effective_Management_Edraak.webp"
+      ],
+      "page_count": 1
+    },
+    {
+      "$id": "render:local:credential:iot",
+      "asset_id": "local:credential:iot",
+      "visibility": "public",
+      "render_type": "image",
+      "display_file_ids": [
+        "/media/assets/credentials/Internet_of_Things_Edraak.webp"
+      ],
+      "page_count": 1
+    },
+    {
+      "$id": "render:local:credential:ai",
+      "asset_id": "local:credential:ai",
+      "visibility": "public",
+      "render_type": "image",
+      "display_file_ids": [
+        "/media/assets/credentials/Introduction_in_Artificial_Intelligence_Edraak.webp"
+      ],
+      "page_count": 1
+    },
+    {
+      "$id": "render:local:credential:trainer",
+      "asset_id": "local:credential:trainer",
+      "visibility": "public",
+      "render_type": "image",
+      "display_file_ids": [
+        "/media/assets/credentials/Train_the_Trainer_Novice_Level_IBCT_Edraak.webp"
+      ],
+      "page_count": 1
+    },
+    {
+      "$id": "render:local:experience:rassam-employment",
+      "asset_id": "local:experience:rassam-employment",
+      "visibility": "public",
+      "render_type": "image",
+      "display_file_ids": [
+        "/media/assets/experience/Salah_Faisal_Employment_Certificate_Ne_page_01.webp"
+      ],
+      "page_count": 1
+    },
+    {
+      "$id": "render:local:experience:rassam-research-mentorship",
+      "asset_id": "local:experience:rassam-research-mentorship",
+      "visibility": "public",
+      "render_type": "pdf_pages",
+      "display_file_ids": [
+        "/media/assets/experience/Salah_Faisal_Research_Mentorship_Experience_Letters_page_01.webp",
+        "/media/assets/experience/Salah_Faisal_Research_Mentorship_Experience_Letters_page_02.webp"
+      ],
+      "page_count": 2
+    },
+    {
+      "$id": "render:local:experience:asbahi",
+      "asset_id": "local:experience:asbahi",
+      "visibility": "public",
+      "render_type": "image",
+      "display_file_ids": [
+        "/media/assets/experience/Salah_Faisal_Al_Asbahi_Employment_Certificate_page_01.webp"
+      ],
+      "page_count": 1
+    },
+    {
+      "$id": "render:local:experience:al-mashreq",
+      "asset_id": "local:experience:al-mashreq",
+      "visibility": "public",
+      "render_type": "pdf_pages",
+      "display_file_ids": [
+        "/media/assets/experience/Salah_Faisal_Al_Mashreq_Certificates_page_01.webp",
+        "/media/assets/experience/Salah_Faisal_Al_Mashreq_Certificates_page_02.webp"
+      ],
+      "page_count": 2
+    },
+    {
+      "$id": "render:local:experience:al-hasab",
+      "asset_id": "local:experience:al-hasab",
+      "visibility": "public",
+      "render_type": "image",
+      "display_file_ids": [
+        "/media/assets/experience/Salah_Faisal_Industrial_Institute_Certificate_page_01.webp"
+      ],
+      "page_count": 1
+    },
+    {
+      "$id": "render:local:recommendation:al-kindi",
+      "asset_id": "local:recommendation:al-kindi",
+      "visibility": "public",
+      "render_type": "image",
+      "display_file_ids": [
+        "/media/assets/recommendations/Al_Kindi_Recommendation_Letter_page_01.webp"
+      ],
+      "page_count": 1
+    },
+    {
+      "$id": "render:local:recommendation:energy",
+      "asset_id": "local:recommendation:energy",
+      "visibility": "public",
+      "render_type": "image",
+      "display_file_ids": [
+        "/media/assets/recommendations/Energy_Systems_page_01.webp"
+      ],
+      "page_count": 1
+    },
+    {
+      "$id": "render:local:recommendation:kocaeli",
+      "asset_id": "local:recommendation:kocaeli",
+      "visibility": "public",
+      "render_type": "pdf_pages",
+      "display_file_ids": [
+        "/media/assets/recommendations/Recommendation_Letter_Kocaeli_University_page_01.webp",
+        "/media/assets/recommendations/Recommendation_Letter_Kocaeli_University_page_02.webp"
+      ],
+      "page_count": 2
+    },
+    {
+      "$id": "render:local:recommendation:academic",
+      "asset_id": "local:recommendation:academic",
+      "visibility": "public",
+      "render_type": "pdf_pages",
+      "display_file_ids": [
+        "/media/assets/recommendations/Salah_Faisal_Academic_Recommendation_page_01.webp",
+        "/media/assets/recommendations/Salah_Faisal_Academic_Recommendation_page_02.webp",
+        "/media/assets/recommendations/Salah_Faisal_Academic_Recommendation_page_03.webp",
+        "/media/assets/recommendations/Salah_Faisal_Academic_Recommendation_page_04.webp"
+      ],
+      "page_count": 4
+    },
+    {
+      "$id": "render:local:recommendation:combined",
+      "asset_id": "local:recommendation:combined",
+      "visibility": "public",
+      "render_type": "pdf_pages",
+      "display_file_ids": [
+        "/media/assets/recommendations/Salah_Faisal_Academic_Recommendation_Letters_page_01.webp",
+        "/media/assets/recommendations/Salah_Faisal_Academic_Recommendation_Letters_page_02.webp",
+        "/media/assets/recommendations/Salah_Faisal_Academic_Recommendation_Letters_page_03.webp",
+        "/media/assets/recommendations/Salah_Faisal_Academic_Recommendation_Letters_page_04.webp",
+        "/media/assets/recommendations/Salah_Faisal_Academic_Recommendation_Letters_page_05.webp",
+        "/media/assets/recommendations/Salah_Faisal_Academic_Recommendation_Letters_page_06.webp"
+      ],
+      "page_count": 6
+    },
+    {
+      "$id": "render:local:recommendation:software",
+      "asset_id": "local:recommendation:software",
+      "visibility": "public",
+      "render_type": "image",
+      "display_file_ids": [
+        "/media/assets/recommendations/Software_Engineering_page_01.webp"
+      ],
+      "page_count": 1
+    }
+  ],
   "publications": [
     {
       "$id": "fallback-pub-2026-ev-control",
@@ -230,7 +846,8 @@
       "description": "Best Paper Award for “Toward Trust-by-Design in Federated Learning for Healthcare: A Taxonomic Review of Privacy, Explainability, and Accountability.”",
       "featured": true,
       "visibility": "public",
-      "sort_order": 1
+      "sort_order": 1,
+      "asset_id": "local:award:best-paper-2026"
     },
     {
       "$id": "fallback-award-esmarta-2026",
@@ -241,7 +858,8 @@
       "description": "Conference participation and co-authorship of four presented papers covering EV charging, federated learning, and computational imaging.",
       "featured": true,
       "visibility": "public",
-      "sort_order": 2
+      "sort_order": 2,
+      "asset_id": "local:credential:esmarta-2026"
     },
     {
       "$id": "fallback-award-esmarta-2025",
@@ -251,7 +869,8 @@
       "category": "conference_recognition",
       "description": "Conference participation and co-authorship of four presented papers in measurement, robotics, robotic-manipulator error compensation, and tDCS.",
       "visibility": "public",
-      "sort_order": 3
+      "sort_order": 3,
+      "asset_id": "local:credential:esmarta-2025"
     },
     {
       "$id": "fallback-award-national-ranking",
@@ -262,7 +881,8 @@
       "description": "Recognition for outstanding performance in Industrial Control Systems / Electronics with a cumulative grade of 92.27% (Excellent).",
       "featured": true,
       "visibility": "public",
-      "sort_order": 4
+      "sort_order": 4,
+      "asset_id": "local:award:national-ranking"
     },
     {
       "$id": "fallback-award-cohort",
@@ -272,7 +892,8 @@
       "category": "academic_distinction",
       "description": "Recognition for excellent academic and practical performance during the first and second vocational levels in Industrial Control Systems / Electronics.",
       "visibility": "public",
-      "sort_order": 5
+      "sort_order": 5,
+      "asset_id": "local:award:cohort-ranking"
     },
     {
       "$id": "fallback-award-research-writing",
@@ -282,7 +903,8 @@
       "category": "professional_recognition",
       "description": "Recognition for contributions to scientific research mentorship and academic writing support.",
       "visibility": "public",
-      "sort_order": 6
+      "sort_order": 6,
+      "asset_id": "local:award:research-writing"
     },
     {
       "$id": "fallback-award-service",
@@ -292,7 +914,8 @@
       "category": "professional_recognition",
       "description": "Recognition for professional service, reliability, teamwork, problem solving, teaching, technical training, and academic guidance.",
       "visibility": "public",
-      "sort_order": 7
+      "sort_order": 7,
+      "asset_id": "local:award:professional-service"
     },
     {
       "$id": "fallback-award-lab",
@@ -302,7 +925,8 @@
       "category": "professional_recognition",
       "description": "Recognition for laboratory development, equipment organization, experiment preparation, troubleshooting, safety, and hands-on STEM learning.",
       "visibility": "public",
-      "sort_order": 8
+      "sort_order": 8,
+      "asset_id": "local:award:lab-development"
     },
     {
       "$id": "fallback-award-physics-lab",
@@ -312,7 +936,8 @@
       "category": "teaching_recognition",
       "description": "Recognition for physics-laboratory equipment preparation, electronic experiments, and practical learning support.",
       "visibility": "public",
-      "sort_order": 9
+      "sort_order": 9,
+      "asset_id": "local:award:physics-lab"
     }
   ],
   "credentials": [
@@ -324,7 +949,8 @@
       "category": "community_engagement",
       "description": "Certificate documenting community participation.",
       "visibility": "public",
-      "sort_order": 1
+      "sort_order": 1,
+      "asset_id": "local:credential:community"
     },
     {
       "$id": "fallback-cred-community-2",
@@ -334,7 +960,8 @@
       "category": "community_engagement",
       "description": "Certificate documenting founding-member participation and community engagement.",
       "visibility": "public",
-      "sort_order": 2
+      "sort_order": 2,
+      "asset_id": "local:credential:founding"
     },
     {
       "$id": "fallback-cred-community-3",
@@ -344,7 +971,8 @@
       "category": "community_engagement",
       "description": "Certificate documenting training-related involvement, teamwork, initiative planning, and active participation.",
       "visibility": "public",
-      "sort_order": 3
+      "sort_order": 3,
+      "asset_id": "local:credential:training-participation"
     },
     {
       "$id": "fallback-cred-translation",
@@ -354,7 +982,8 @@
       "category": "education_language_training",
       "description": "60-hour translation course completed with an Excellent grade (98%).",
       "visibility": "public",
-      "sort_order": 4
+      "sort_order": 4,
+      "asset_id": "local:credential:translation"
     },
     {
       "$id": "fallback-cred-genpack",
@@ -364,7 +993,8 @@
       "category": "industrial_training",
       "description": "Practical exposure to packaging production workflows, industrial operations, workplace practice, and engineering activities.",
       "visibility": "public",
-      "sort_order": 5
+      "sort_order": 5,
+      "asset_id": "local:credential:genpack"
     },
     {
       "$id": "fallback-cred-nadfood",
@@ -374,7 +1004,8 @@
       "category": "industrial_training",
       "description": "Engineering-department training covering production systems, maintenance operations, plant utilities, PLC-related control, and industrial equipment.",
       "visibility": "public",
-      "sort_order": 6
+      "sort_order": 6,
+      "asset_id": "local:credential:nadfood"
     },
     {
       "$id": "fallback-cred-ycic",
@@ -384,7 +1015,8 @@
       "category": "industrial_training",
       "description": "Practical training in electronic control systems and industrial-control applications.",
       "visibility": "public",
-      "sort_order": 7
+      "sort_order": 7,
+      "asset_id": "local:credential:ycic"
     },
     {
       "$id": "fallback-cred-esmarta-2025",
@@ -394,7 +1026,8 @@
       "category": "research_conference",
       "description": "Conference participation associated with four 2025 research papers.",
       "visibility": "public",
-      "sort_order": 8
+      "sort_order": 8,
+      "asset_id": "local:credential:esmarta-2025"
     },
     {
       "$id": "fallback-cred-esmarta-2026",
@@ -404,7 +1037,8 @@
       "category": "research_conference",
       "description": "Conference participation associated with four 2026 research papers.",
       "visibility": "public",
-      "sort_order": 9
+      "sort_order": 9,
+      "asset_id": "local:credential:esmarta-2026"
     },
     {
       "$id": "fallback-cred-ieee",
@@ -414,7 +1048,8 @@
       "category": "research_conference",
       "description": "Certificate of participation in a 90-minute IEEE authorship and open-access symposium.",
       "visibility": "public",
-      "sort_order": 10
+      "sort_order": 10,
+      "asset_id": "local:credential:ieee-authorship"
     },
     {
       "$id": "fallback-cred-computer",
@@ -424,7 +1059,8 @@
       "category": "technical_professional_development",
       "description": "Level-completion certificate covering computer fundamentals, devices, storage, networks, security, and general computer operation.",
       "visibility": "public",
-      "sort_order": 11
+      "sort_order": 11,
+      "asset_id": "local:credential:computer-essentials"
     },
     {
       "$id": "fallback-cred-leadership",
@@ -434,7 +1070,8 @@
       "category": "technical_professional_development",
       "description": "Level-completion certificate in leadership and effective management.",
       "visibility": "public",
-      "sort_order": 12
+      "sort_order": 12,
+      "asset_id": "local:credential:leadership"
     },
     {
       "$id": "fallback-cred-iot",
@@ -444,7 +1081,8 @@
       "category": "technical_professional_development",
       "description": "Level-completion certificate in Internet of Things fundamentals.",
       "visibility": "public",
-      "sort_order": 13
+      "sort_order": 13,
+      "asset_id": "local:credential:iot"
     },
     {
       "$id": "fallback-cred-ai",
@@ -454,7 +1092,8 @@
       "category": "technical_professional_development",
       "description": "Level-completion certificate covering foundational artificial intelligence, algorithms, problem solving, machine learning, neural networks, and practical AI applications.",
       "visibility": "public",
-      "sort_order": 14
+      "sort_order": 14,
+      "asset_id": "local:credential:ai"
     },
     {
       "$id": "fallback-cred-trainer",
@@ -464,7 +1103,8 @@
       "category": "technical_professional_development",
       "description": "Novice Trainer level-completion certificate.",
       "visibility": "public",
-      "sort_order": 15
+      "sort_order": 15,
+      "asset_id": "local:credential:trainer"
     }
   ],
   "experiences": [
@@ -491,7 +1131,11 @@
         "Research Mentorship"
       ],
       "visibility": "public",
-      "sort_order": 1
+      "sort_order": 1,
+      "evidence_asset_ids": [
+        "local:experience:rassam-employment",
+        "local:experience:rassam-research-mentorship"
+      ]
     },
     {
       "$id": "fallback-exp-asbahi",
@@ -513,7 +1157,10 @@
         "Technical Support"
       ],
       "visibility": "public",
-      "sort_order": 2
+      "sort_order": 2,
+      "evidence_asset_ids": [
+        "local:experience:asbahi"
+      ]
     },
     {
       "$id": "fallback-exp-ghad",
@@ -535,7 +1182,10 @@
         "Practical Learning"
       ],
       "visibility": "public",
-      "sort_order": 3
+      "sort_order": 3,
+      "evidence_asset_ids": [
+        "local:experience:al-mashreq"
+      ]
     },
     {
       "$id": "fallback-exp-alhasab",
@@ -557,7 +1207,10 @@
         "Technical Training"
       ],
       "visibility": "public",
-      "sort_order": 4
+      "sort_order": 4,
+      "evidence_asset_ids": [
+        "local:experience:al-hasab"
+      ]
     }
   ],
   "recommendations": [
@@ -567,7 +1220,8 @@
       "institution": "Al-Kindi Institute",
       "summary": "Academic recommendation supporting study, learning, and professional development.",
       "visibility": "public",
-      "sort_order": 1
+      "sort_order": 1,
+      "asset_id": "local:recommendation:al-kindi"
     },
     {
       "$id": "fallback-rec-energy",
@@ -580,7 +1234,8 @@
         "EV Fast Charging"
       ],
       "visibility": "public",
-      "sort_order": 2
+      "sort_order": 2,
+      "asset_id": "local:recommendation:energy"
     },
     {
       "$id": "fallback-rec-kocaeli",
@@ -588,7 +1243,8 @@
       "institution": "Kocaeli University",
       "summary": "Academic recommendation documenting research supervision and academic collaboration.",
       "visibility": "public",
-      "sort_order": 3
+      "sort_order": 3,
+      "asset_id": "local:recommendation:kocaeli"
     },
     {
       "$id": "fallback-rec-academic",
@@ -596,7 +1252,8 @@
       "institution": "Academic reference",
       "summary": "Academic recommendation supporting research, engineering study, and graduate-level academic development.",
       "visibility": "public",
-      "sort_order": 4
+      "sort_order": 4,
+      "asset_id": "local:recommendation:academic"
     },
     {
       "$id": "fallback-rec-combined",
@@ -604,7 +1261,8 @@
       "institution": "Academic and professional references",
       "summary": "Combined recommendation letters documenting academic, technical, teaching, and research-related strengths.",
       "visibility": "public",
-      "sort_order": 5
+      "sort_order": 5,
+      "asset_id": "local:recommendation:combined"
     },
     {
       "$id": "fallback-rec-software",
@@ -617,7 +1275,8 @@
         "Trustworthy AI"
       ],
       "visibility": "public",
-      "sort_order": 6
+      "sort_order": 6,
+      "asset_id": "local:recommendation:software"
     }
   ],
   "institutionalEvidence": [
