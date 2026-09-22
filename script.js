@@ -94,7 +94,6 @@ const LOCAL_EVIDENCE_MEDIA = {
     { id: "student-teaching", all: ["student", "teaching excellence"], files: ["/media/assets/credentials/Student_Appreciation_for_Teaching_Excellence.webp"] },
     { id: "english-basic-3", all: ["english", "basic 3"], files: ["/media/assets/credentials/English_Basic_3_Certificate_Al_Kindi_Institute.webp"] },
     { id: "english-beginner-1a", all: ["english", "beginner 1a"], files: ["/media/assets/credentials/English_Beginner_1A_Certificate_Global_Language_Institute.webp"] },
-    { id: "english-beginner", all: ["english", "beginner"], none: ["1a"], files: ["/media/assets/credentials/English_Beginner_Certificate_Academic_Sciences_Institute.webp"] }
   ],
   recommendations: [
     { id: "robotics-vision-control", assetIds: ["6a9340d8c13681504a19"], any: ["robotics", "computer vision"], files: [
