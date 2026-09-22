@@ -376,6 +376,18 @@ button{color:inherit}
 .media-category-heading p{margin:0;max-width:760px;color:var(--muted);font-size:.76rem}
 .media-category-heading>strong{white-space:nowrap;color:var(--muted);font-size:.68rem;font-weight:800;border:1px solid var(--border);padding:5px 8px;border-radius:999px}
 
+.project-hardware-showcase{scroll-margin-top:80px}
+.project-hardware-intro{margin-top:18px}
+.project-hardware-intro .media-library-stats{grid-template-columns:repeat(3,1fr)}
+.project-hardware-grid{margin-top:22px;align-items:stretch}
+.project-hardware-card{height:100%}
+.project-hardware-card .asset-caption{min-height:155px}
+.project-hardware-preview img{object-fit:contain}
+@media(max-width:760px){
+  .project-hardware-intro{grid-template-columns:1fr;gap:18px}
+  .project-hardware-intro .media-library-stats{grid-template-columns:repeat(3,1fr)}
+}
+
 .portfolio-gallery-grid{margin-top:22px;align-items:start}
 .portfolio-media-card{height:100%}
 .portfolio-media-card--featured{border-top:3px solid var(--gold)}
