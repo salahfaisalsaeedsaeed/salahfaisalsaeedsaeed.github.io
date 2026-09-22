@@ -28,6 +28,112 @@ const PUBLIC_FALLBACK = {
   cacheKey: "salah-faisal-public-data-v2"
 };
 
+const LOCAL_EVIDENCE_MEDIA = {
+  awards: [
+    { id: "best-paper-2026", all: ["best paper"], files: ["/media/assets/awards/eSmarTA_2026_Best_Paper_Award.webp"] },
+    { id: "esmarta-2026", all: ["esmarta 2026"], none: ["best paper"], files: [
+      "/media/assets/credentials/06_eSmarTA_2026_Attendance.webp",
+      "/media/assets/credentials/07_eSmarTA_2026_P202.webp",
+      "/media/assets/credentials/08_eSmarTA_2026_P203.webp",
+      "/media/assets/credentials/09_eSmarTA_2026_P204.webp",
+      "/media/assets/credentials/10_eSmarTA_2026_P277.webp"
+    ] },
+    { id: "esmarta-2025", all: ["esmarta 2025"], files: [
+      "/media/assets/credentials/01_eSmarTA_2025_Attendance.webp",
+      "/media/assets/credentials/02_eSmarTA_2025_P113.webp",
+      "/media/assets/credentials/03_eSmarTA_2025_P132.webp",
+      "/media/assets/credentials/04_eSmarTA_2025_P156.webp",
+      "/media/assets/credentials/05_eSmarTA_2025_P181.webp"
+    ] },
+    { id: "national-ranking", any: ["second nationally", "national ranking", "final result"], files: ["/media/assets/awards/Vocational_Diploma_Final_Result_and_National_Ranking.webp"] },
+    { id: "cohort-ranking", all: ["first rank", "cohort"], none: ["second nationally"], files: ["/media/assets/awards/Certificate_of_Academic_Distinction_and_Ranking.webp"] },
+    { id: "academic-distinction-ranking", all: ["academic distinction", "ranking"], none: ["second nationally"], files: ["/media/assets/awards/Certificate_of_Academic_Distinction_and_Ranking.webp"] },
+    { id: "vocational-transcript", all: ["vocational diploma", "academic transcript"], files: ["/media/assets/awards/Vocational_Diploma_Academic_Transcript_2014_2015.webp"] },
+    { id: "english-instruction-taiz", all: ["english language instruction", "taiz university"], files: ["/media/assets/awards/English_Language_Instruction_Certificate_Taiz_University.webp"] },
+    { id: "academic-achievement-taiz", all: ["academic achievement", "taiz university"], files: ["/media/assets/credentials/Certificate_of_Appreciation_Academic_Achievement_Taiz_University.webp"] },
+    { id: "research-writing", all: ["research", "academic writing"], files: ["/media/assets/credentials/Certificate_of_Appreciation_Research_and_Academic_Writing.webp"] },
+    { id: "professional-excellence", any: ["professional excellence", "dedicated service"], files: ["/media/assets/credentials/Certificate_of_Appreciation_Professional_Excellence_and_Service.webp"] },
+    { id: "physics-laboratory", all: ["physics", "laboratory"], files: ["/media/assets/credentials/Physics_Laboratory_Development_Appreciation.webp"] },
+    { id: "laboratory-development", all: ["laboratory development"], files: ["/media/assets/credentials/Certificate_of_Appreciation_Laboratory_Development.webp"] }
+  ],
+  credentials: [
+    { id: "esmarta-2026", all: ["esmarta 2026"], files: [
+      "/media/assets/credentials/06_eSmarTA_2026_Attendance.webp",
+      "/media/assets/credentials/07_eSmarTA_2026_P202.webp",
+      "/media/assets/credentials/08_eSmarTA_2026_P203.webp",
+      "/media/assets/credentials/09_eSmarTA_2026_P204.webp",
+      "/media/assets/credentials/10_eSmarTA_2026_P277.webp"
+    ] },
+    { id: "esmarta-2025", all: ["esmarta 2025"], files: [
+      "/media/assets/credentials/01_eSmarTA_2025_Attendance.webp",
+      "/media/assets/credentials/02_eSmarTA_2025_P113.webp",
+      "/media/assets/credentials/03_eSmarTA_2025_P132.webp",
+      "/media/assets/credentials/04_eSmarTA_2025_P156.webp",
+      "/media/assets/credentials/05_eSmarTA_2025_P181.webp"
+    ] },
+    { id: "ieee-authorship", all: ["ieee", "authorship"], files: ["/media/assets/credentials/11_IEEE_Authorship_Symposium.webp"] },
+    { id: "taiz-stars", all: ["taiz stars"], files: ["/media/assets/credentials/Community_Participation_Certificate_Taiz_Stars_Festival.webp"] },
+    { id: "sinaa-founding", all: ["founding", "sinaa"], files: ["/media/assets/credentials/Founding_Member_Certificate_Sinaa_Union.webp"] },
+    { id: "sinaa-training", all: ["training", "active participation", "sinaa"], files: ["/media/assets/credentials/Training_and_Active_Participation_Certificate_Sinaa_Union.webp"] },
+    { id: "translation", all: ["translation"], files: ["/media/assets/credentials/Translation_Course_Certificate_Al_Kindi_Institute.webp"] },
+    { id: "genpack", any: ["genpack", "general industries packages"], files: ["/media/assets/credentials/genpack_page_01.webp"] },
+    { id: "nadfood", any: ["nadfood", "national dairy food"], files: ["/media/assets/credentials/nadfood_page_01.webp"] },
+    { id: "ycic", any: ["ycic", "yemen company for industry commerce", "hsa group"], files: ["/media/assets/credentials/ycic_page_01.webp"] },
+    { id: "computer-essentials", all: ["computer essentials"], files: ["/media/assets/credentials/Computer_Essentials_Edraak.webp"] },
+    { id: "leadership", all: ["influential leadership"], files: ["/media/assets/credentials/Influential_Leadership_and_Effective_Management_Edraak.webp"] },
+    { id: "iot", any: ["internet of things", "iot"], files: ["/media/assets/credentials/Internet_of_Things_Edraak.webp"] },
+    { id: "ai", all: ["artificial intelligence"], files: ["/media/assets/credentials/Introduction_in_Artificial_Intelligence_Edraak.webp"] },
+    { id: "trainer", any: ["train the trainer", "novice trainer"], files: ["/media/assets/credentials/Train_the_Trainer_Novice_Level_IBCT_Edraak.webp"] },
+    { id: "english-subject", all: ["english subject", "achievement"], files: ["/media/assets/credentials/01_English_Subject_Achievement_Certificate_Enhanced.webp"] },
+    { id: "academic-achievement-taiz", all: ["academic achievement", "taiz university"], files: ["/media/assets/credentials/Certificate_of_Appreciation_Academic_Achievement_Taiz_University.webp"] },
+    { id: "al-haseb-appreciation", any: ["al haseb technical institute", "al hasab technical institute"], files: ["/media/assets/credentials/Certificate_of_Appreciation_Al_Haseb_Technical_Institute.webp"] },
+    { id: "laboratory-development", all: ["laboratory development"], files: ["/media/assets/credentials/Certificate_of_Appreciation_Laboratory_Development.webp"] },
+    { id: "professional-excellence", any: ["professional excellence", "dedicated service"], files: ["/media/assets/credentials/Certificate_of_Appreciation_Professional_Excellence_and_Service.webp"] },
+    { id: "research-writing", all: ["research", "academic writing"], files: ["/media/assets/credentials/Certificate_of_Appreciation_Research_and_Academic_Writing.webp"] },
+    { id: "physics-lab", all: ["physics", "laboratory"], files: ["/media/assets/credentials/Physics_Laboratory_Development_Appreciation.webp"] },
+    { id: "student-teaching", all: ["student", "teaching excellence"], files: ["/media/assets/credentials/Student_Appreciation_for_Teaching_Excellence.webp"] },
+    { id: "english-basic-3", all: ["english", "basic 3"], files: ["/media/assets/credentials/English_Basic_3_Certificate_Al_Kindi_Institute.webp"] },
+    { id: "english-beginner-1a", all: ["english", "beginner 1a"], files: ["/media/assets/credentials/English_Beginner_1A_Certificate_Global_Language_Institute.webp"] },
+    { id: "english-beginner", all: ["english", "beginner"], none: ["1a"], files: ["/media/assets/credentials/English_Beginner_Certificate_Academic_Sciences_Institute.webp"] }
+  ],
+  recommendations: [
+    { id: "robotics-vision-control", assetIds: ["6a9340d8c13681504a19"], any: ["robotics", "computer vision"], files: [
+      "/media/assets/recommendations/Recommendation_Letter_Kocaeli_University_page_01.webp",
+      "/media/assets/recommendations/Recommendation_Letter_Kocaeli_University_page_02.webp"
+    ] },
+    { id: "energy-systems", assetIds: ["6a9340d8c1375593bf7a"], all: ["energy systems"], files: ["/media/assets/recommendations/Energy_Systems_page_01.webp"] },
+    { id: "software-engineering", assetIds: ["6a9340d8c134823daa73"], any: ["software engineering", "cybersecurity", "trustworthy ai"], files: ["/media/assets/recommendations/Software_Engineering_page_01.webp"] },
+    { id: "technical-vocational-referees", assetIds: ["6a9340d8c12472da2382"], all: ["technical", "vocational", "referees"], files: [
+      "/media/assets/recommendations/Salah_Faisal_Academic_Recommendation_page_01.webp",
+      "/media/assets/recommendations/Salah_Faisal_Academic_Recommendation_page_02.webp",
+      "/media/assets/recommendations/Salah_Faisal_Academic_Recommendation_page_03.webp",
+      "/media/assets/recommendations/Salah_Faisal_Academic_Recommendation_page_04.webp"
+    ] },
+    { id: "supporting-academic-referees", assetIds: ["6a9340d8c1328fe91c97"], all: ["supporting", "academic", "referees"], files: [
+      "/media/assets/recommendations/Salah_Faisal_Academic_Recommendation_Letters_page_01.webp",
+      "/media/assets/recommendations/Salah_Faisal_Academic_Recommendation_Letters_page_02.webp",
+      "/media/assets/recommendations/Salah_Faisal_Academic_Recommendation_Letters_page_03.webp",
+      "/media/assets/recommendations/Salah_Faisal_Academic_Recommendation_Letters_page_04.webp",
+      "/media/assets/recommendations/Salah_Faisal_Academic_Recommendation_Letters_page_05.webp",
+      "/media/assets/recommendations/Salah_Faisal_Academic_Recommendation_Letters_page_06.webp"
+    ] },
+    { id: "al-kindi", assetIds: ["6a9340d8c1359bf648ee"], all: ["al kindi"], files: ["/media/assets/recommendations/Al_Kindi_Recommendation_Letter_page_01.webp"] }
+  ],
+  experiences: [
+    { id: "rassam-employment", any: ["rassam", "rassam school"], files: ["/media/assets/experience/Salah_Faisal_Employment_Certificate_Ne_page_01.webp"] },
+    { id: "rassam-research-mentorship", any: ["rassam", "rassam school"], files: [
+      "/media/assets/experience/Salah_Faisal_Research_Mentorship_Experience_Letters_page_01.webp",
+      "/media/assets/experience/Salah_Faisal_Research_Mentorship_Experience_Letters_page_02.webp"
+    ] },
+    { id: "asbahi", all: ["asbahi"], files: ["/media/assets/experience/Salah_Faisal_Al_Asbahi_Employment_Certificate_page_01.webp"] },
+    { id: "al-ghad-al-mushreq", any: ["al ghad al mushreq", "al mashreq"], files: [
+      "/media/assets/experience/Salah_Faisal_Al_Mashreq_Certificates_page_01.webp",
+      "/media/assets/experience/Salah_Faisal_Al_Mashreq_Certificates_page_02.webp"
+    ] },
+    { id: "al-hasab", any: ["al hasab", "technical industrial institute"], files: ["/media/assets/experience/Salah_Faisal_Industrial_Institute_Certificate_page_01.webp"] }
+  ]
+};
+
 const MEDIA_ORDER = [
   "student_videos_and_conference_presentations",
   "student_teaching_and_practical_training_activities",
@@ -795,7 +901,7 @@ function displayModelForAsset(data, asset) {
 }
 
 function modelForId(data, id) {
-  return displayModelForAsset(data, publicAsset(data, id));
+  return data.localModelMap?.get(id) || displayModelForAsset(data, publicAsset(data, id));
 }
 
 function assetIdsFromRecord(row) {
@@ -816,11 +922,60 @@ function referencedAssetIds(data) {
   return ids;
 }
 
-function recordAssets(data, row) {
-  return uniqueRows(assetIdsFromRecord(row).map(id => {
+function localEvidenceText(row) {
+  return normalizedKey([
+    row?.$id, row?.slug, row?.title, row?.issuer, row?.institution, row?.organization,
+    row?.location, row?.recommender_name, row?.recommender_title, row?.description,
+    row?.summary, row?.relationship_context, row?.category, row?.experience_type
+  ].filter(Boolean).join(" "));
+}
+
+function localEvidenceSpecMatches(spec, row) {
+  const ids = new Set(assetIdsFromRecord(row));
+  if ((spec.assetIds || []).some(id => ids.has(id))) return true;
+  const text = localEvidenceText(row);
+  const hasAll = (spec.all || []).every(token => text.includes(normalizedKey(token)));
+  const hasAny = !(spec.any || []).length || spec.any.some(token => text.includes(normalizedKey(token)));
+  const hasNone = !(spec.none || []).some(token => text.includes(normalizedKey(token)));
+  return hasAll && hasAny && hasNone;
+}
+
+function localEvidenceModels(data, row, collection, appwriteModels = []) {
+  const specs = (LOCAL_EVIDENCE_MEDIA[collection] || []).filter(spec => localEvidenceSpecMatches(spec, row));
+  const selected = collection === "experiences" ? specs : specs.slice(0, 1);
+  if (!selected.length) return [];
+
+  data.localModelMap ||= new Map();
+  return selected.map(spec => {
+    const fallbackModel = (spec.assetIds || []).length
+      ? appwriteModels.find(model => spec.assetIds.includes(model.$id)) || appwriteModels[0] || null
+      : appwriteModels[0] || null;
+    const model = {
+      $id: `local:${collection}:${spec.id}`,
+      title: row.title || fallbackModel?.title || "Supporting evidence",
+      description: row.description || row.summary || fallbackModel?.description || "",
+      alt_text: row.title || fallbackModel?.alt_text || "Supporting evidence",
+      asset_type: fallbackModel?.asset_type || collection,
+      media_type: "image",
+      render_type: "pdf_pages",
+      display_file_ids: spec.files,
+      page_count: spec.files.length,
+      fallback_display_file_ids: fallbackModel?.display_file_ids || [],
+      _localEvidence: true
+    };
+    data.localModelMap.set(model.$id, model);
+    return model;
+  });
+}
+
+function recordAssets(data, row, collection = "") {
+  const sourceItems = uniqueRows(assetIdsFromRecord(row).map(id => {
     const model = modelForId(data, id);
     return model || { $id: `private:${id}`, _privateEvidence: true };
   }), item => item.$id);
+  const appwriteModels = sourceItems.filter(item => item?.display_file_ids?.length && !item._localEvidence);
+  const localModels = collection ? localEvidenceModels(data, row, collection, appwriteModels) : [];
+  return localModels.length ? localModels : sourceItems;
 }
 
 function injectRenderingStyles() {
@@ -855,21 +1010,36 @@ function renderingFileUrl(model, pageIndex = 0) {
   return fileId ? storageFileView(fileId) : "";
 }
 
+function renderingFallbackUrl(model, pageIndex = 0) {
+  const ids = asArray(model?.fallback_display_file_ids);
+  const fileId = ids[pageIndex] || ids[0] || "";
+  return fileId ? storageFileView(fileId) : "";
+}
+
 function renderingPreviewMarkup(model, context = {}, pageIndex = 0) {
   const source = renderingFileUrl(model, pageIndex);
+  const fallbackSource = renderingFallbackUrl(model, pageIndex);
   const title = context.title || model?.title || "Supporting evidence";
   if (!source) return `<div class="asset-unavailable"><span>Preview</span><strong>${escapeHTML(title)}</strong><small>Content temporarily unavailable.</small></div>`;
   if (String(model.render_type || "").toLowerCase().includes("video") || String(model.media_type || "").toLowerCase() === "video") {
     return `<video controls preload="metadata" playsinline aria-label="${escapeAttr(title)}"><source src="${escapeAttr(source)}"></video>`;
   }
-  return `<img src="${escapeAttr(source)}" alt="${escapeAttr(model.alt_text || title)}" loading="lazy" decoding="async" data-rendering-preview>`;
+  const fallbackAttr = fallbackSource && fallbackSource !== source
+    ? ` data-fallback-src="${escapeAttr(fallbackSource)}"`
+    : "";
+  return `<img src="${escapeAttr(source)}" alt="${escapeAttr(model.alt_text || title)}" loading="lazy" decoding="async" data-rendering-preview${fallbackAttr}>`;
 }
 
 function initRenderingImageFallbacks() {
   document.addEventListener("error", event => {
     const image = event.target;
     if (!(image instanceof HTMLImageElement) || !image.matches("[data-rendering-preview]")) return;
-    const title = image.alt || "Supporting document";
+    const fallbackSource = image.dataset.fallbackSrc || "";
+    if (fallbackSource && image.dataset.fallbackTried !== "1") {
+      image.dataset.fallbackTried = "1";
+      image.src = fallbackSource;
+      return;
+    }
     const fallback = document.createElement("div");
     fallback.className = "asset-unavailable";
     fallback.innerHTML = `<span>FILE</span><strong>Document preview temporarily unavailable</strong><small>The verified record remains available while the display file is being prepared.</small>`;
@@ -906,7 +1076,7 @@ function inlineAssetStrip(data, items, context = {}, options = {}) {
 }
 
 function portfolioMediaCard(data, row, options = {}) {
-  const assets = recordAssets(data, row);
+  const assets = recordAssets(data, row, options.collection || "");
   const models = uniqueRows(assets.filter(item => item?.display_file_ids?.length), item => item.$id);
   const model = models[0] || null;
   const title = options.title || row.title || model?.title || "Portfolio record";
@@ -1007,7 +1177,7 @@ function bindAssetButtons(data) {
     if (button.dataset.bound === "1") return;
     button.dataset.bound = "1";
     button.addEventListener("click", () => {
-      const model = modelForId(data, button.dataset.displayAsset);
+      const model = data.localModelMap?.get(button.dataset.displayAsset) || modelForId(data, button.dataset.displayAsset);
       if (model) openAssetSet([model], button);
     });
   });
@@ -1063,7 +1233,7 @@ async function renderPublications() {
   });
   root.innerHTML = rows.map((publication, index) => {
     const category = publication.status === "published" ? "published" : "in_preparation";
-    const assets = recordAssets(data, publication);
+    const assets = recordAssets(data, publication, "publications");
     const isAward = /trust-by-design/i.test(publication.title || "");
     return `<article class="publication-record filter-item" data-category="${category}"><div class="publication-index">${String(index + 1).padStart(2, "0")}</div><div class="publication-content"><div class="record-eyebrow"><span class="status-badge ${category === "published" ? "status-published" : "status-prep"}">${escapeHTML(publication.status === "published" ? "Published" : prettyCategory(publication.status || "In preparation"))}</span>${isAward ? '<span class="status-badge award-badge">Best Paper Award</span>' : ""}<span class="publication-year">${escapeHTML(publication.year || "")}</span></div><h3>${escapeHTML(publication.title)}</h3><p class="pub-authors">${highlightSelf(publication.authors || "")}</p><p class="pub-venue">${escapeHTML(publication.venue || "")}</p>${publication.summary ? `<p class="record-summary">${escapeHTML(publication.summary)}</p>` : ""}${publication.doi_url ? `<div class="record-actions"><a class="text-link" href="${escapeAttr(publication.doi_url)}" target="_blank" rel="noopener">DOI / Publisher ↗</a></div>` : ""}${inlineAssetStrip(data, assets, { description: publication.summary || "" }, { compact: true, max: 2 })}</div></article>`;
   }).join("");
@@ -1080,7 +1250,7 @@ async function renderProjects() {
   const rows = uniqueRows((data.projects || []).filter(approvedRow), row => normalizedKey(row.slug || row.title));
   if (!rows.length) return renderError(root);
   root.innerHTML = rows.map((project, index) => {
-    const assets = recordAssets(data, project);
+    const assets = recordAssets(data, project, "projects");
     const technologies = asArray(project.technologies);
     const tags = technologies.length ? technologies : [prettyCategory(project.category || "Project")];
     return `<article class="project-record filter-item" id="${escapeAttr(project.slug || "")}" data-category="${escapeAttr(project.category || "other")}"><div class="project-index">${String(index + 1).padStart(2, "0")}</div><div class="project-main"><div class="project-top"><div><p class="record-type">${escapeHTML(prettyCategory(project.status || "Project"))}</p><h3>${escapeHTML(project.title)}</h3></div>${project.year ? `<time>${escapeHTML(project.year)}</time>` : ""}</div><p class="project-summary">${escapeHTML(project.short_description || project.overview || "")}</p><div class="project-tags">${tags.filter(Boolean).slice(0, 7).map(tag => `<span>${escapeHTML(tag)}</span>`).join("")}</div>${inlineAssetStrip(data, assets, { description: project.short_description || project.overview || "" }, { compact: true, max: 3 })}<details class="project-details"><summary>Project details</summary><dl>${project.role ? `<div><dt>Role</dt><dd>${escapeHTML(project.role)}</dd></div>` : ""}${project.objectives ? `<div><dt>Objectives</dt><dd>${escapeHTML(project.objectives)}</dd></div>` : ""}${project.methodology ? `<div><dt>Methodology</dt><dd>${escapeHTML(project.methodology)}</dd></div>` : ""}${project.results ? `<div><dt>Results / status</dt><dd>${escapeHTML(project.results)}</dd></div>` : ""}</dl></details></div></article>`;
@@ -1099,6 +1269,7 @@ async function renderAwards() {
 
   root.className = "asset-gallery-grid portfolio-gallery-grid";
   root.innerHTML = rows.map(award => portfolioMediaCard(data, award, {
+    collection: "awards",
     title: award.title,
     institution: award.issuer || "",
     description: award.description || "",
@@ -1125,6 +1296,7 @@ async function renderCredentials() {
 
   root.className = "asset-gallery-grid portfolio-gallery-grid";
   root.innerHTML = rows.map(credential => portfolioMediaCard(data, credential, {
+    collection: "credentials",
     title: credential.title,
     institution: credential.issuer || "",
     description: credential.description || "",
@@ -1150,7 +1322,7 @@ async function renderRecommendations() {
   // public rendering. Show that file once, not as repeated duplicate cards.
   const groups = new Map();
   rows.forEach(row => {
-    const publicModel = recordAssets(data, row).find(item => item?.display_file_ids?.length) || null;
+    const publicModel = recordAssets(data, row, "recommendations").find(item => item?.display_file_ids?.length) || null;
     const key = publicModel ? `asset:${publicModel.$id}` : `row:${row.$id || normalizedKey(row.title)}`;
     if (!groups.has(key)) groups.set(key, { rows: [], model: publicModel });
     groups.get(key).rows.push(row);
@@ -1183,6 +1355,7 @@ async function renderRecommendations() {
     if (focus.length) details.push(`Focus: ${focus.join(", ")}`);
 
     return portfolioMediaCard(data, first, {
+      collection: "recommendations",
       title,
       institution,
       description: details.join(" "),
@@ -1220,7 +1393,8 @@ async function renderExperiences() {
     ],
     tags: ["Industrial Control", "Electronics", "Technical Training"],
     visibility: "public",
-    sort_order: 99
+    sort_order: 99,
+    _collection: "experiences"
   };
 
   const hasAlHasab = appwriteRows.some(row => {
@@ -1233,7 +1407,7 @@ async function renderExperiences() {
   root.innerHTML = rows.map(experience => {
     const responsibilities = asArray(experience.responsibilities);
     const tags = asArray(experience.tags);
-    const assets = recordAssets(data, experience);
+    const assets = recordAssets(data, experience, "experiences");
     return `<article class="timeline-record"><div class="record-date">${escapeHTML(formatExperienceRange(experience))}</div><div class="record-body"><p class="record-type">${escapeHTML(prettyCategory(experience.experience_type || "Experience"))}</p><h3>${escapeHTML(experience.title)}</h3><p class="institution">${escapeHTML(experience.organization || "")}${experience.location ? ` · ${escapeHTML(experience.location)}` : ""}</p>${experience.summary ? `<p class="record-summary">${escapeHTML(experience.summary)}</p>` : ""}${responsibilities.length ? `<ul class="record-bullets">${responsibilities.map(item => `<li>${escapeHTML(item)}</li>`).join("")}</ul>` : ""}${tags.length ? `<div class="project-tags">${tags.map(tag => `<span>${escapeHTML(tag)}</span>`).join("")}</div>` : ""}${inlineAssetStrip(data, assets, { description: experience.summary || "" }, { compact: true, max: 3 })}</div></article>`;
   }).join("");
   bindAssetButtons(data);
@@ -1258,7 +1432,7 @@ async function renderInstitutionalEvidence() {
   const rows = uniqueRows((data.institutionalEvidence || []).filter(approvedRow), row => row.source_url || normalizedKey(row.title));
   if (!rows.length) return renderError(root, "No institutional source records are currently available.");
   root.innerHTML = rows.map((row, index) => {
-    const assets = recordAssets(data, row);
+    const assets = recordAssets(data, row, "institutionalEvidence");
     const description = curatedInstitutionalDescription(row);
     const date = row.event_date && row.event_date !== "null" ? formatDate(row.event_date, { year: "numeric", month: "long", day: "numeric" }) : "";
     return `<article class="institutional-record"><div class="institutional-record-number">${String(index + 1).padStart(2, "0")}</div><div class="institutional-record-main"><div class="institutional-meta"><span>${escapeHTML(prettyCategory(row.evidence_type || "Institutional evidence"))}</span>${date ? `<time>${escapeHTML(date)}</time>` : ""}</div><h3>${escapeHTML(row.title)}</h3>${row.institution ? `<p class="institution">${escapeHTML(row.institution)}</p>` : ""}<p class="institutional-description">${escapeHTML(description)}</p>${inlineAssetStrip(data, assets, { title: row.title, description, date }, { compact: true, max: 2 })}${row.source_url ? `<div class="institutional-source"><a href="${escapeAttr(row.source_url)}" target="_blank" rel="noopener">Institutional Source ↗</a></div>` : ""}</div></article>`;
