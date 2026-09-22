@@ -24,7 +24,7 @@ const APPWRITE = {
 };
 
 const PUBLIC_FALLBACK = {
-  url: "/data/public-fallback.json?v=20260920-1",
+  url: "/data/public-fallback.json?v=20260922-local-media",
   cacheKey: "salah-faisal-public-data-v2"
 };
 
@@ -862,7 +862,19 @@ function renderingPreviewMarkup(model, context = {}, pageIndex = 0) {
   if (String(model.render_type || "").toLowerCase().includes("video") || String(model.media_type || "").toLowerCase() === "video") {
     return `<video controls preload="metadata" playsinline aria-label="${escapeAttr(title)}"><source src="${escapeAttr(source)}"></video>`;
   }
-  return `<img src="${escapeAttr(source)}" alt="${escapeAttr(model.alt_text || title)}" loading="lazy" decoding="async">`;
+  return `<img src="${escapeAttr(source)}" alt="${escapeAttr(model.alt_text || title)}" loading="lazy" decoding="async" data-rendering-preview>`;
+}
+
+function initRenderingImageFallbacks() {
+  document.addEventListener("error", event => {
+    const image = event.target;
+    if (!(image instanceof HTMLImageElement) || !image.matches("[data-rendering-preview]")) return;
+    const title = image.alt || "Supporting document";
+    const fallback = document.createElement("div");
+    fallback.className = "asset-unavailable";
+    fallback.innerHTML = `<span>FILE</span><strong>Document preview temporarily unavailable</strong><small>The verified record remains available while the display file is being prepared.</small>`;
+    image.replaceWith(fallback);
+  }, true);
 }
 
 function assetWindowCard(model, context = {}, options = {}) {
@@ -1542,7 +1554,7 @@ document.addEventListener("DOMContentLoaded", () => {
   injectRenderingStyles();
   initNavigation();
   initTheme();
-  initYear();
+  initRenderingImageFallbacks();initYear();
   initReveal();
   initScrollUI();
   initCopyEmail();
