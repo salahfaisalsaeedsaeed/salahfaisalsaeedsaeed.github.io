@@ -61,6 +61,9 @@ jobs:
       - name: Portfolio evidence rendering regression test
         run: node tests/portfolio-evidence-rendering.test.js
 
+      - name: GitHub evidence media fallback test
+        run: node tests/github-evidence-media.test.js
+
       - name: Al-Hasab teaching experience regression test
         run: node tests/al-hasab-experience.test.js
 
