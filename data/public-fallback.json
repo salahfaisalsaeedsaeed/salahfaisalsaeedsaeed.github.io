@@ -1,6 +1,6 @@
 {
   "version": 3,
-  "generated_at": "2026-09-20",
+  "generated_at": "2026-09-22",
   "note": "Static public-profile fallback with local GitHub/Vercel display-derivative paths. Private originals remain outside the public repository.",
   "assets": [
     {
@@ -1239,27 +1239,27 @@
     },
     {
       "$id": "fallback-rec-kocaeli",
-      "title": "Academic Recommendation — Kocaeli University",
+      "title": "Academic & Research Recommendation — Robotics, Computer Vision and Control Systems",
       "institution": "Kocaeli University",
-      "summary": "Academic recommendation documenting research supervision and academic collaboration.",
+      "summary": "Academic and research recommendation highlighting graduation-project supervision, robotics, computer vision, control systems, scholarly publishing, research potential, and postgraduate-study readiness.",
       "visibility": "public",
       "sort_order": 3,
       "asset_id": "local:recommendation:kocaeli"
     },
     {
       "$id": "fallback-rec-academic",
-      "title": "Academic Recommendation",
+      "title": "Academic Recommendation Letters — Technical and Vocational Referees",
       "institution": "Academic reference",
-      "summary": "Academic recommendation supporting research, engineering study, and graduate-level academic development.",
+      "summary": "Multi-page collection of academic recommendation letters from earlier technical and vocational education.",
       "visibility": "public",
       "sort_order": 4,
       "asset_id": "local:recommendation:academic"
     },
     {
       "$id": "fallback-rec-combined",
-      "title": "Academic & Technical Recommendation Letters",
+      "title": "Academic Recommendation Letters — Supporting Academic Referees",
       "institution": "Academic and professional references",
-      "summary": "Combined recommendation letters documenting academic, technical, teaching, and research-related strengths.",
+      "summary": "Multi-page collection of supporting academic recommendation letters documenting academic performance, technical learning, motivation, and readiness for further study.",
       "visibility": "public",
       "sort_order": 5,
       "asset_id": "local:recommendation:combined"
