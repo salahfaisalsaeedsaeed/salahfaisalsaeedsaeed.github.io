@@ -6,7 +6,7 @@ const fallback = JSON.parse(fs.readFileSync("data/public-fallback.json", "utf8")
 const failures = [];
 
 for (const token of [
-  'url: "/data/public-fallback.json?v=20260920-1"',
+  'url: "/data/public-fallback.json?v=20260922-local-media"',
   'cacheKey: "salah-faisal-public-data-v2"',
   "function requiredDataKeys()",
   "function readCachedPublicData()",
