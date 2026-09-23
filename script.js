@@ -1398,12 +1398,8 @@ async function renderProjects() {
   initFilters();
 }
 
-async function renderAwards() {
-  const root = $("#awardsList");
-  if (!root) return;
-  const data = await loadData();
-
-  const taizResearchExcellence = {
+function taizResearchExcellenceAward() {
+  return {
     $id: "site:taiz-university-scientific-research-excellence-2026",
     slug: "taiz-university-scientific-research-excellence-2026",
     title: "Certificate of Appreciation — Scientific Research Excellence",
@@ -1414,14 +1410,24 @@ async function renderAwards() {
     visibility: "public",
     featured: true
   };
+}
 
-  const appwriteRows = (data.awards || []).filter(approvedRow);
-  const hasTaizResearchExcellence = appwriteRows.some(row => {
+function mergeTaizResearchExcellenceAward(rows = []) {
+  const award = taizResearchExcellenceAward();
+  const exists = rows.some(row => {
     const key = normalizedKey([row.title, row.issuer, row.description].filter(Boolean).join(" "));
     return key.includes("scientific research excellence") && key.includes("taiz university");
   });
+  return exists ? rows : [...rows, award];
+}
+
+async function renderAwards() {
+  const root = $("#awardsList");
+  if (!root) return;
+  const data = await loadData();
+
   let rows = uniqueRows(
-    hasTaizResearchExcellence ? appwriteRows : [...appwriteRows, taizResearchExcellence],
+    mergeTaizResearchExcellenceAward((data.awards || []).filter(approvedRow)),
     row => row.asset_id || normalizedKey(row.title)
   );
   if (!rows.length) return renderError(root);
@@ -1725,7 +1731,7 @@ async function renderHome() {
   const data = await loadData();
   const publications = uniqueRows((data.publications || []).filter(row => approvedRow(row) && row.status === "published"), row => normalizedKey(row.doi_url || row.title));
   const projects = uniqueRows((data.projects || []).filter(approvedRow), row => normalizedKey(row.slug || row.title));
-  const awards = uniqueRows((data.awards || []).filter(approvedRow), row => row.asset_id || normalizedKey(row.title));
+  const awards = uniqueRows(mergeTaizResearchExcellenceAward((data.awards || []).filter(approvedRow)), row => row.asset_id || normalizedKey(row.title));
   const metricPublications = $("#metricPublications");
   if (metricPublications) metricPublications.textContent = publications.length || 8;
   const publicationRoot = $("#homeFeaturedPublications");
