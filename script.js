@@ -31,6 +31,7 @@ const PUBLIC_FALLBACK = {
 const LOCAL_EVIDENCE_MEDIA = {
   awards: [
     { id: "best-paper-2026", all: ["best paper"], files: ["/media/assets/awards/eSmarTA_2026_Best_Paper_Award.webp"] },
+    { id: "taiz-research-excellence-2026", all: ["scientific research excellence"], files: ["/media/assets/awards/Taiz_University_Scientific_Research_Excellence_Appreciation_2026.jpeg"] },
     { id: "esmarta-2026", all: ["esmarta 2026"], none: ["best paper"], files: [
       "/media/assets/credentials/06_eSmarTA_2026_Attendance.webp",
       "/media/assets/credentials/07_eSmarTA_2026_P202.webp",
@@ -1401,7 +1402,28 @@ async function renderAwards() {
   const root = $("#awardsList");
   if (!root) return;
   const data = await loadData();
-  let rows = uniqueRows((data.awards || []).filter(approvedRow), row => row.asset_id || normalizedKey(row.title));
+
+  const taizResearchExcellence = {
+    $id: "site:taiz-university-scientific-research-excellence-2026",
+    slug: "taiz-university-scientific-research-excellence-2026",
+    title: "Certificate of Appreciation — Scientific Research Excellence",
+    issuer: "Taiz University",
+    year: 2026,
+    category: "academic_distinction",
+    description: "Recognition from Taiz University for outstanding excellence in scientific research and distinguished scholarly contributions that enhanced the University's academic presence and reputation in the international research community.",
+    visibility: "public",
+    featured: true
+  };
+
+  const appwriteRows = (data.awards || []).filter(approvedRow);
+  const hasTaizResearchExcellence = appwriteRows.some(row => {
+    const key = normalizedKey([row.title, row.issuer, row.description].filter(Boolean).join(" "));
+    return key.includes("scientific research excellence") && key.includes("taiz university");
+  });
+  let rows = uniqueRows(
+    hasTaizResearchExcellence ? appwriteRows : [...appwriteRows, taizResearchExcellence],
+    row => row.asset_id || normalizedKey(row.title)
+  );
   if (!rows.length) return renderError(root);
   rows = [...rows].sort((a, b) => Number(asBool(b.featured)) - Number(asBool(a.featured)) || (Number(b.year) || 0) - (Number(a.year) || 0));
 
