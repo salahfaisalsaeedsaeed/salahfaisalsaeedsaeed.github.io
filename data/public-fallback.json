@@ -266,6 +266,14 @@
       "visibility": "public",
       "media_type": "image",
       "asset_type": "public_display_derivative"
+    },
+    {
+      "$id": "local:award:taiz-research-excellence-2026",
+      "title": "Certificate of Appreciation — Scientific Research Excellence",
+      "description": "Recognition from Taiz University for outstanding excellence in scientific research and distinguished scholarly contributions.",
+      "visibility": "public",
+      "media_type": "image",
+      "asset_type": "public_display_derivative"
     }
   ],
   "assetRenderings": [
@@ -618,6 +626,16 @@
         "/media/assets/recommendations/Software_Engineering_page_01.webp"
       ],
       "page_count": 1
+    },
+    {
+      "$id": "render:local:award:taiz-research-excellence-2026",
+      "asset_id": "local:award:taiz-research-excellence-2026",
+      "visibility": "public",
+      "render_type": "image",
+      "display_file_ids": [
+        "/media/assets/awards/Taiz_University_Scientific_Research_Excellence_Appreciation_2026.jpeg"
+      ],
+      "page_count": 1
     }
   ],
   "publications": [
@@ -938,6 +956,18 @@
       "visibility": "public",
       "sort_order": 9,
       "asset_id": "local:award:physics-lab"
+    },
+    {
+      "$id": "fallback-award-taiz-research-excellence-2026",
+      "title": "Certificate of Appreciation — Scientific Research Excellence",
+      "issuer": "Taiz University",
+      "year": "2026",
+      "category": "academic_distinction",
+      "description": "Recognition from Taiz University for outstanding excellence in scientific research and distinguished scholarly contributions that enhanced the University's academic presence and reputation in the international research community.",
+      "featured": true,
+      "visibility": "public",
+      "sort_order": 2,
+      "asset_id": "local:award:taiz-research-excellence-2026"
     }
   ],
   "credentials": [
