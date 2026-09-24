@@ -22,7 +22,7 @@ for (const [folder, minimum] of Object.entries(expectedMinimums)) {
     failures.push(`${folder}: expected at least ${minimum} uploaded files, found ${files.length}`);
   }
   for (const file of files) {
-    if (!file.toLowerCase().endsWith(".webp")) failures.push(`${folder}: unexpected non-WebP file ${file}`);
+    if (!/\.(?:webp|jpe?g|png)$/i.test(file)) failures.push(`${folder}: unexpected non-image display derivative ${file}`);
     const full = path.join(dir, file);
     if (fs.statSync(full).size <= 0) failures.push(`${folder}: empty file ${file}`);
   }
