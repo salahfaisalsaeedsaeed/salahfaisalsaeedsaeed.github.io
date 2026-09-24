@@ -1,6 +1,6 @@
 {
-  "version": 3,
-  "generated_at": "2026-09-22",
+  "version": 4,
+  "generated_at": "2026-09-24",
   "note": "Static public-profile fallback with local GitHub/Vercel display-derivative paths. Private originals remain outside the public repository.",
   "assets": [
     {
@@ -38,30 +38,6 @@
     {
       "$id": "local:award:cohort-ranking",
       "title": "Academic Distinction and Cohort Ranking",
-      "description": "",
-      "visibility": "public",
-      "media_type": "image",
-      "asset_type": "public_display_derivative"
-    },
-    {
-      "$id": "local:award:research-writing",
-      "title": "Certificate of Appreciation — Research & Academic Writing",
-      "description": "",
-      "visibility": "public",
-      "media_type": "image",
-      "asset_type": "public_display_derivative"
-    },
-    {
-      "$id": "local:award:professional-service",
-      "title": "Certificate of Appreciation — Professional Excellence and Dedicated Service",
-      "description": "",
-      "visibility": "public",
-      "media_type": "image",
-      "asset_type": "public_display_derivative"
-    },
-    {
-      "$id": "local:award:lab-development",
-      "title": "Certificate of Appreciation — Laboratory Development",
       "description": "",
       "visibility": "public",
       "media_type": "image",
@@ -174,22 +150,6 @@
     {
       "$id": "local:credential:trainer",
       "title": "Train-the-Trainer — Novice Trainer Level",
-      "description": "",
-      "visibility": "public",
-      "media_type": "image",
-      "asset_type": "public_display_derivative"
-    },
-    {
-      "$id": "local:experience:rassam-employment",
-      "title": "Al-Shaheeda Ne’mah Rassam Employment Certificate",
-      "description": "",
-      "visibility": "public",
-      "media_type": "image",
-      "asset_type": "public_display_derivative"
-    },
-    {
-      "$id": "local:experience:rassam-research-mentorship",
-      "title": "Research Mentorship Experience Letters",
       "description": "",
       "visibility": "public",
       "media_type": "image",
@@ -337,36 +297,6 @@
       "page_count": 2
     },
     {
-      "$id": "render:local:award:research-writing",
-      "asset_id": "local:award:research-writing",
-      "visibility": "public",
-      "render_type": "image",
-      "display_file_ids": [
-        "/media/assets/awards/Certificate_of_Appreciation_Research_and_Academic_Writing.webp"
-      ],
-      "page_count": 1
-    },
-    {
-      "$id": "render:local:award:professional-service",
-      "asset_id": "local:award:professional-service",
-      "visibility": "public",
-      "render_type": "image",
-      "display_file_ids": [
-        "/media/assets/awards/Certificate_of_Appreciation_Professional_Excellence_and_Service.webp"
-      ],
-      "page_count": 1
-    },
-    {
-      "$id": "render:local:award:lab-development",
-      "asset_id": "local:award:lab-development",
-      "visibility": "public",
-      "render_type": "image",
-      "display_file_ids": [
-        "/media/assets/awards/Certificate_of_Appreciation_Laboratory_Development.webp"
-      ],
-      "page_count": 1
-    },
-    {
       "$id": "render:local:award:physics-lab",
       "asset_id": "local:award:physics-lab",
       "visibility": "public",
@@ -505,27 +435,6 @@
         "/media/assets/credentials/Train_the_Trainer_Novice_Level_IBCT_Edraak.webp"
       ],
       "page_count": 1
-    },
-    {
-      "$id": "render:local:experience:rassam-employment",
-      "asset_id": "local:experience:rassam-employment",
-      "visibility": "public",
-      "render_type": "image",
-      "display_file_ids": [
-        "/media/assets/experience/Salah_Faisal_Employment_Certificate_Ne_page_01.webp"
-      ],
-      "page_count": 1
-    },
-    {
-      "$id": "render:local:experience:rassam-research-mentorship",
-      "asset_id": "local:experience:rassam-research-mentorship",
-      "visibility": "public",
-      "render_type": "pdf_pages",
-      "display_file_ids": [
-        "/media/assets/experience/Salah_Faisal_Research_Mentorship_Experience_Letters_page_01.webp",
-        "/media/assets/experience/Salah_Faisal_Research_Mentorship_Experience_Letters_page_02.webp"
-      ],
-      "page_count": 2
     },
     {
       "$id": "render:local:experience:asbahi",
@@ -914,39 +823,6 @@
       "asset_id": "local:award:cohort-ranking"
     },
     {
-      "$id": "fallback-award-research-writing",
-      "title": "Certificate of Appreciation — Research & Academic Writing",
-      "issuer": "Al-Shaheeda Ne’mah Rassam School, Taiz, Yemen",
-      "year": "2026",
-      "category": "professional_recognition",
-      "description": "Recognition for contributions to scientific research mentorship and academic writing support.",
-      "visibility": "public",
-      "sort_order": 6,
-      "asset_id": "local:award:research-writing"
-    },
-    {
-      "$id": "fallback-award-service",
-      "title": "Certificate of Appreciation — Professional Excellence and Dedicated Service",
-      "issuer": "Al-Shaheeda Ne’mah Rassam School, Taiz, Yemen",
-      "year": "2026",
-      "category": "professional_recognition",
-      "description": "Recognition for professional service, reliability, teamwork, problem solving, teaching, technical training, and academic guidance.",
-      "visibility": "public",
-      "sort_order": 7,
-      "asset_id": "local:award:professional-service"
-    },
-    {
-      "$id": "fallback-award-lab",
-      "title": "Certificate of Appreciation — Laboratory Development",
-      "issuer": "Al-Shaheeda Ne’mah Rassam School, Taiz, Yemen",
-      "year": "2026",
-      "category": "professional_recognition",
-      "description": "Recognition for laboratory development, equipment organization, experiment preparation, troubleshooting, safety, and hands-on STEM learning.",
-      "visibility": "public",
-      "sort_order": 8,
-      "asset_id": "local:award:lab-development"
-    },
-    {
       "$id": "fallback-award-physics-lab",
       "title": "Physics Laboratory Development Appreciation",
       "issuer": "Al-Ghad Al-Mushreq School, Taiz, Yemen",
@@ -1139,33 +1015,57 @@
   ],
   "experiences": [
     {
-      "$id": "fallback-exp-rassam",
-      "slug": "al-shaheeda-nemah-rassam-school",
-      "title": "STEM Technical Education Specialist, Laboratory Engineer & Scientific Research Mentor",
-      "organization": "Al-Shaheeda Ne’mah Rassam School",
+      "$id": "fallback-exp-rassam-stem",
+      "slug": "al-shaheeda-nemah-rassam-school-stem-laboratory-engineer",
+      "title": "STEM Technical Education Specialist & Laboratory Engineer",
+      "organization": "Al-Shaheeda Ne’mah Ahmed Rassam Basic and Secondary School for Girls",
       "location": "Taiz, Yemen",
       "start_date": "2022-01-15",
       "current": true,
       "experience_type": "Full-time · On-site",
-      "summary": "STEM technical education, laboratory engineering, electronics and measurement instruction, physics-laboratory support, technical troubleshooting, robotics-laboratory development, and student research mentorship.",
+      "summary": "Full-time STEM technical education and laboratory-engineering role combining practical electronics and robotics training, laboratory development, engineering simulation, project supervision, and student research mentorship.",
       "responsibilities": [
-        "Teach electronics and measurement instruments through classroom instruction and laboratory practice.",
-        "Support physics laboratory preparation, equipment maintenance, troubleshooting, and safety supervision.",
-        "Contribute to robotics laboratory development, prototyping workflows, and technical documentation.",
-        "Mentor students in STEM projects, scientific research, academic writing, and publication-oriented revision."
+        "Delivered a six-month technical training program for physics teachers covering electrical fundamentals, electronic components, analog and digital circuits, measurement principles, experimental verification, circuit construction, Multisim-based simulation, and practical electronics applications.",
+        "Established the school's Robotics and Prototyping Laboratory, organized its technical resources and hands-on activities, and equipped it with sensors, motors, Arduino and ESP32 platforms, and an Original Prusa MK4S 3D printer assembled from a kit.",
+        "Selected and trained student groups through a progressive pathway from basic electricity, electronics, measurement, and circuit construction to Arduino, ESP32, sensors, motors, embedded systems, robotics, IoT, C++ fundamentals, and PCB design using Proteus.",
+        "Trained students in MATLAB and Simulink for engineering modeling and simulation, and in the Artificial Bee Colony (ABC) optimization algorithm using MATLAB.",
+        "Mentored students for robotics, AI, embedded-systems, scientific-research, innovation, and science-communication competitions through project development, implementation, testing, research, presentations, and competition preparation.",
+        "Established the annual Engineering Research and Academic Writing Training Program in 2024 and provides structured research training, academic-writing instruction, and ongoing mentorship from research fundamentals to manuscript and conference-paper preparation."
       ],
       "tags": [
-        "STEM Education",
+        "STEM Technical Education",
         "Laboratory Engineering",
-        "Electronics",
+        "Robotics",
+        "Embedded Systems",
         "Research Mentorship"
       ],
       "visibility": "public",
-      "sort_order": 1,
-      "evidence_asset_ids": [
-        "local:experience:rassam-employment",
-        "local:experience:rassam-research-mentorship"
-      ]
+      "sort_order": 1
+    },
+    {
+      "$id": "fallback-exp-rassam-physics",
+      "slug": "al-shaheeda-nemah-rassam-school-physics-grade-11",
+      "title": "Physics Teacher — Second Secondary (Grade 11)",
+      "organization": "Al-Shaheeda Ne’mah Ahmed Rassam Basic and Secondary School for Girls",
+      "location": "Taiz, Yemen",
+      "period_label": "Aug 2023 – May 2025",
+      "current": false,
+      "experience_type": "Part-time · On-site",
+      "summary": "Grade 11 physics teaching with practical laboratory integration, demonstrations, measurement, and safe use of experimental resources.",
+      "responsibilities": [
+        "Taught Grade 11 Physics, explaining key concepts clearly and supporting practical understanding of physical principles.",
+        "Conducted and supported physics laboratory experiments, demonstrations, and hands-on activities related to classroom topics.",
+        "Connected theoretical physics with observation, measurement, laboratory work, and experimental activities.",
+        "Supported the safe and effective use of physics-laboratory equipment and experimental resources during lessons and practical sessions."
+      ],
+      "tags": [
+        "Physics Teaching",
+        "Grade 11",
+        "Laboratory Instruction",
+        "Practical Learning"
+      ],
+      "visibility": "public",
+      "sort_order": 2
     },
     {
       "$id": "fallback-exp-asbahi",
@@ -1187,7 +1087,7 @@
         "Technical Support"
       ],
       "visibility": "public",
-      "sort_order": 2,
+      "sort_order": 3,
       "evidence_asset_ids": [
         "local:experience:asbahi"
       ]
@@ -1212,7 +1112,7 @@
         "Practical Learning"
       ],
       "visibility": "public",
-      "sort_order": 3,
+      "sort_order": 4,
       "evidence_asset_ids": [
         "local:experience:al-mashreq"
       ]
@@ -1237,7 +1137,7 @@
         "Technical Training"
       ],
       "visibility": "public",
-      "sort_order": 4,
+      "sort_order": 5,
       "evidence_asset_ids": [
         "local:experience:al-hasab"
       ]
