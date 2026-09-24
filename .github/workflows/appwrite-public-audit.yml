@@ -1,16 +1,9 @@
 name: Appwrite Public Rendering Audit
 
+# Deliberately manual-only: this audit opens many public rendering files and
+# can consume Appwrite bandwidth. Run it only when a full evidence audit is needed.
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - 'script.js'
-      - '.github/workflows/appwrite-public-audit.yml'
-  pull_request:
-    paths:
-      - 'script.js'
-      - '.github/workflows/appwrite-public-audit.yml'
 
 permissions:
   contents: read
@@ -86,6 +79,8 @@ jobs:
           for table in TABLES:
               print(f"COUNT|{table}|{len(tables[table])}")
           print("COUNTS_END")
+
+
 
           for rendering in renderings:
               asset_id = rendering.get("asset_id")

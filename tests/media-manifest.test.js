@@ -15,7 +15,7 @@ for (const category of fs.readdirSync(root)) {
     if (!fs.statSync(full).isFile()) continue;
     if (!supported.has(path.extname(file).toLowerCase())) continue;
 
-    if (!script.includes(JSON.stringify(file))) {
+    if (!script.includes(file)) {
       missing.push(path.posix.join("media/assets", category, file));
     }
   }

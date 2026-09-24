@@ -8,6 +8,7 @@ on:
       - '**/*.html'
       - '.github/workflows/finalize-site.yml'
       - 'tests/**'
+      - 'data/**'
       - 'media/assets/**'
       - 'scripts/generate_pdf_previews.py'
   push:
@@ -36,11 +37,23 @@ jobs:
       - name: Academic color palette regression test
         run: node tests/academic-color-palette.test.js
 
+      - name: Professional editorial copy regression test
+        run: node tests/professional-editorial-copy.test.js
+
+      - name: Portfolio information architecture regression test
+        run: node tests/portfolio-information-architecture.test.js
+
       - name: GitHub media path regression test
         run: node tests/media-paths.test.js
 
       - name: GitHub media manifest coverage test
         run: node tests/media-manifest.test.js
+
+      - name: Media and Activities library regression test
+        run: node tests/media-activities-library.test.js
+
+      - name: Projects hardware gallery regression test
+        run: node tests/project-hardware-gallery.test.js
 
       - name: In-site PDF viewer regression test
         run: node tests/media-pdf-viewer.test.js
@@ -53,6 +66,28 @@ jobs:
 
       - name: Long reveal section regression test
         run: node tests/reveal-long-sections.test.js
+
+      - name: Portfolio evidence rendering regression test
+        run: node tests/portfolio-evidence-rendering.test.js
+
+      - name: GitHub evidence media fallback test
+        run: node tests/github-evidence-media.test.js
+
+      - name: Al-Hasab teaching experience regression test
+        run: node tests/al-hasab-experience.test.js
+
+      - name: Rassam unsigned-document privacy regression test
+        run: node tests/rassam-unsigned-documents-hidden.test.js
+
+      - name: Vercel Appwrite preview fallback syntax check
+        run: node --check api/appwrite-table.js
+
+      - name: Vercel Appwrite preview fallback regression test
+        run: node tests/vercel-appwrite-fallback.test.js
+
+      - name: Public data fallback regression test
+        run: node tests/public-data-fallback.test.js
+
 
       - name: Enforce safe Appwrite rendering architecture
         shell: python
