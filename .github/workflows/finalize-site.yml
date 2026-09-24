@@ -40,6 +40,9 @@ jobs:
       - name: Professional editorial copy regression test
         run: node tests/professional-editorial-copy.test.js
 
+      - name: Portfolio information architecture regression test
+        run: node tests/portfolio-information-architecture.test.js
+
       - name: GitHub media path regression test
         run: node tests/media-paths.test.js
 
