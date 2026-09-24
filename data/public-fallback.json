@@ -1,5 +1,5 @@
 {
-  "version": 4,
+  "version": 5,
   "generated_at": "2026-09-24",
   "note": "Static public-profile fallback with local GitHub/Vercel display-derivative paths. Private originals remain outside the public repository.",
   "assets": [
@@ -844,6 +844,54 @@
       "visibility": "public",
       "sort_order": 2,
       "asset_id": "local:award:taiz-research-excellence-2026"
+    },
+    {
+      "$id": "fallback-award-rassam-research-writing-2026",
+      "title": "Certificate of Appreciation — Engineering Research & Academic Writing Program",
+      "issuer": "Al-Shaheeda Ne’mah Ahmed Rassam Basic and Secondary School for Girls",
+      "year": "2026",
+      "category": "professional_recognition",
+      "description": "Recognition for a leading role in establishing and implementing the school's Engineering Research and Academic Writing Training Program, providing structured training in scientific research, academic writing, critical reading, literature review, manuscript preparation, research ethics, and ongoing student research mentorship.",
+      "featured": false,
+      "visibility": "public",
+      "text_only": true,
+      "sort_order": 61
+    },
+    {
+      "$id": "fallback-award-rassam-laboratory-development-2026",
+      "title": "Certificate of Appreciation — Laboratory Development",
+      "issuer": "Al-Shaheeda Ne’mah Ahmed Rassam Basic and Secondary School for Girls",
+      "year": "2026",
+      "category": "professional_recognition",
+      "description": "Recognition for laboratory development and improvement, including laboratory readiness, equipment organization, experiment preparation and development, technical troubleshooting, circuit testing, fault diagnosis, preventive and corrective maintenance, safe laboratory practice, and support for hands-on STEM learning.",
+      "featured": false,
+      "visibility": "public",
+      "text_only": true,
+      "sort_order": 62
+    },
+    {
+      "$id": "fallback-award-rassam-professional-service-2026",
+      "title": "Certificate of Appreciation — Professional Excellence & Dedicated Service",
+      "issuer": "Al-Shaheeda Ne’mah Ahmed Rassam Basic and Secondary School for Girls",
+      "year": "2026",
+      "category": "professional_recognition",
+      "description": "Recognition for professional service and contribution to the school's academic and technical environment, including responsibility, reliability, initiative, teamwork, practical problem-solving, technical training, STEM education, laboratory support, practical projects, and student guidance.",
+      "featured": false,
+      "visibility": "public",
+      "text_only": true,
+      "sort_order": 63
+    },
+    {
+      "$id": "fallback-award-rassam-robotics-lab-2026",
+      "title": "Certificate of Appreciation — Robotics & Prototyping Laboratory Development",
+      "issuer": "Al-Shaheeda Ne’mah Ahmed Rassam Basic and Secondary School for Girls",
+      "year": "2026",
+      "category": "professional_recognition",
+      "description": "Recognition for developing the existing electronics laboratory and establishing the Robotics and Prototyping Laboratory, defining technical needs and specifications, selecting equipment and components, preparing laboratory resources and engineering software, and providing ongoing hands-on training, technical guidance, and project support.",
+      "featured": false,
+      "visibility": "public",
+      "text_only": true,
+      "sort_order": 64
     }
   ],
   "credentials": [
