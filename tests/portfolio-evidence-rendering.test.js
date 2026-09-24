@@ -36,10 +36,10 @@ if (!css.includes(".portfolio-gallery-grid{") || !css.includes(".portfolio-media
 
 for (const page of ["awards/index.html", "credentials/index.html"]) {
   const html = fs.readFileSync(page, "utf8");
-  if (!html.includes('/script.js?v=20260924-taiz-research-award-v1')) {
+  if (!html.includes('/script.js?v=20260924-portfolio-restructure-v1')) {
     failures.push(`${page} does not force the current portfolio renderer`);
   }
-  if (!html.includes('/style.css?v=20260919-portfolio-media')) {
+  if (!html.includes('/style.css?v=20260924-portfolio-restructure-v1')) {
     failures.push(`${page} does not force the current portfolio styles`);
   }
 }
@@ -51,7 +51,7 @@ for (const filterKey of ["research_conference", "technical_professional_developm
   }
 }
 const recommendationsHtml = fs.readFileSync("recommendations/index.html", "utf8");
-if (!recommendationsHtml.includes('/script.js?v=20260924-taiz-research-award-v1')) {
+if (!recommendationsHtml.includes('/script.js?v=20260924-portfolio-restructure-v1')) {
   failures.push("recommendations/index.html does not force the current public recommendation renderer");
 }
 const recommendationsStart = source.indexOf("async function renderRecommendations()");
@@ -68,4 +68,4 @@ if (failures.length) {
   process.exit(1);
 }
 
-console.log("PASS|Awards, Credentials, and Recommendations use Media & Activities-style evidence cards");
+console.log("PASS|Honors, certifications, and references use contextual portfolio evidence cards");
