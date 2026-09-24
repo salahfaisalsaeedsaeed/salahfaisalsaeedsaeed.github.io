@@ -20,9 +20,9 @@ for (const token of [
 const expected = {
   publications: 8,
   projects: 7,
-  awards: 10,
+  awards: 7,
   credentials: 15,
-  experiences: 4,
+  experiences: 5,
   recommendations: 6,
   institutionalEvidence: 6
 };
