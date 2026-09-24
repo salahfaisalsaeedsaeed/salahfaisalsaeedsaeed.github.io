@@ -73,6 +73,9 @@ jobs:
       - name: Al-Hasab teaching experience regression test
         run: node tests/al-hasab-experience.test.js
 
+      - name: Rassam unsigned-document privacy regression test
+        run: node tests/rassam-unsigned-documents-hidden.test.js
+
       - name: Vercel Appwrite preview fallback syntax check
         run: node --check api/appwrite-table.js
 
