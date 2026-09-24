@@ -28,6 +28,15 @@ const PUBLIC_FALLBACK = {
   cacheKey: "salah-faisal-public-data-v2"
 };
 
+const WITHHELD_NEMAH_RASSAM_DOCUMENTS = new Set([
+  "Certificate_of_Appreciation_Laboratory_Development.webp",
+  "Certificate_of_Appreciation_Professional_Excellence_and_Service.webp",
+  "Certificate_of_Appreciation_Research_and_Academic_Writing.webp",
+  "Salah_Faisal_Employment_Certificate_Ne_page_01.webp",
+  "Salah_Faisal_Research_Mentorship_Experience_Letters_page_01.webp",
+  "Salah_Faisal_Research_Mentorship_Experience_Letters_page_02.webp"
+]);
+
 const LOCAL_EVIDENCE_MEDIA = {
   awards: [
     { id: "best-paper-2026", all: ["best paper"], files: ["/media/assets/awards/eSmarTA_2026_Best_Paper_Award.webp"] },
@@ -52,8 +61,6 @@ const LOCAL_EVIDENCE_MEDIA = {
     { id: "vocational-transcript", all: ["vocational diploma", "academic transcript"], files: ["/media/assets/awards/Vocational_Diploma_Academic_Transcript_2014_2015.webp"] },
     { id: "english-instruction-taiz", all: ["english language instruction", "taiz university"], files: ["/media/assets/awards/English_Language_Instruction_Certificate_Taiz_University.webp"] },
     { id: "academic-achievement-taiz", all: ["academic achievement", "taiz university"], files: ["/media/assets/credentials/Certificate_of_Appreciation_Academic_Achievement_Taiz_University.webp"] },
-    { id: "research-writing", all: ["research", "academic writing"], files: ["/media/assets/credentials/Certificate_of_Appreciation_Research_and_Academic_Writing.webp"] },
-    { id: "professional-excellence", any: ["professional excellence", "dedicated service"], files: ["/media/assets/credentials/Certificate_of_Appreciation_Professional_Excellence_and_Service.webp"] },
     { id: "physics-laboratory", all: ["physics", "laboratory"], files: ["/media/assets/credentials/Physics_Laboratory_Development_Appreciation.webp"] },
     { id: "laboratory-development", all: ["laboratory development"], files: ["/media/assets/credentials/Certificate_of_Appreciation_Laboratory_Development.webp"] }
   ],
@@ -88,9 +95,6 @@ const LOCAL_EVIDENCE_MEDIA = {
     { id: "english-subject", all: ["english subject", "achievement"], files: ["/media/assets/credentials/01_English_Subject_Achievement_Certificate_Enhanced.webp"] },
     { id: "academic-achievement-taiz", all: ["academic achievement", "taiz university"], files: ["/media/assets/credentials/Certificate_of_Appreciation_Academic_Achievement_Taiz_University.webp"] },
     { id: "al-haseb-appreciation", any: ["al haseb technical institute", "al hasab technical institute"], files: ["/media/assets/credentials/Certificate_of_Appreciation_Al_Haseb_Technical_Institute.webp"] },
-    { id: "laboratory-development", all: ["laboratory development"], files: ["/media/assets/credentials/Certificate_of_Appreciation_Laboratory_Development.webp"] },
-    { id: "professional-excellence", any: ["professional excellence", "dedicated service"], files: ["/media/assets/credentials/Certificate_of_Appreciation_Professional_Excellence_and_Service.webp"] },
-    { id: "research-writing", all: ["research", "academic writing"], files: ["/media/assets/credentials/Certificate_of_Appreciation_Research_and_Academic_Writing.webp"] },
     { id: "physics-lab", all: ["physics", "laboratory"], files: ["/media/assets/credentials/Physics_Laboratory_Development_Appreciation.webp"] },
     { id: "student-teaching", all: ["student", "teaching excellence"], files: ["/media/assets/credentials/Student_Appreciation_for_Teaching_Excellence.webp"] },
     { id: "english-basic-3", all: ["english", "basic 3"], files: ["/media/assets/credentials/English_Basic_3_Certificate_Al_Kindi_Institute.webp"] },
@@ -120,11 +124,6 @@ const LOCAL_EVIDENCE_MEDIA = {
     { id: "al-kindi", assetIds: ["6a9340d8c1359bf648ee"], all: ["al kindi"], files: ["/media/assets/recommendations/Al_Kindi_Recommendation_Letter_page_01.webp"] }
   ],
   experiences: [
-    { id: "rassam-employment", any: ["rassam", "rassam school"], files: ["/media/assets/experience/Salah_Faisal_Employment_Certificate_Ne_page_01.webp"] },
-    { id: "rassam-research-mentorship", any: ["rassam", "rassam school"], files: [
-      "/media/assets/experience/Salah_Faisal_Research_Mentorship_Experience_Letters_page_01.webp",
-      "/media/assets/experience/Salah_Faisal_Research_Mentorship_Experience_Letters_page_02.webp"
-    ] },
     { id: "asbahi", all: ["asbahi"], files: ["/media/assets/experience/Salah_Faisal_Al_Asbahi_Employment_Certificate_page_01.webp"] },
     { id: "al-ghad-al-mushreq", any: ["al ghad al mushreq", "al mashreq"], files: [
       "/media/assets/experience/Salah_Faisal_Al_Mashreq_Certificates_page_01.webp",
@@ -1058,6 +1057,14 @@ function referencedAssetIds(data) {
   return ids;
 }
 
+function isNemahRassamRecord(row) {
+  const text = normalizedKey([
+    row?.title, row?.issuer, row?.institution, row?.organization, row?.description,
+    row?.summary, row?.relationship_context, row?.slug
+  ].filter(Boolean).join(" "));
+  return text.includes("ne mah rassam") || text.includes("nemah rassam") || text.includes("rassam school") || text.includes("ahmed rassam");
+}
+
 function localEvidenceText(row) {
   return normalizedKey([
     row?.$id, row?.slug, row?.title, row?.issuer, row?.institution, row?.organization,
@@ -1105,6 +1112,7 @@ function localEvidenceModels(data, row, collection, appwriteModels = []) {
 }
 
 function recordAssets(data, row, collection = "") {
+  if (["awards", "credentials", "experiences", "recommendations", "institutionalEvidence"].includes(collection) && isNemahRassamRecord(row)) return [];
   const sourceItems = uniqueRows(assetIdsFromRecord(row).map(id => {
     const model = modelForId(data, id);
     return model || { $id: `private:${id}`, _privateEvidence: true };
@@ -1478,6 +1486,7 @@ function mergeTaizResearchExcellenceAward(rows = []) {
 }
 
 function isHonorRecord(row) {
+  if (isNemahRassamRecord(row)) return false;
   const key = normalizedKey([row?.title, row?.category, row?.description].filter(Boolean).join(" "));
   if (key.includes("conference participation") || key.includes("certificate of attendance")) return false;
   if (key.includes("academic transcript") || key.includes("language instruction") || key.includes("medium of instruction")) return false;
@@ -1589,7 +1598,54 @@ async function renderExperiences() {
   const root = $("#experienceList");
   if (!root) return;
   const data = await loadData();
-  const appwriteRows = uniqueRows((data.experiences || []).filter(approvedRow), row => normalizedKey(row.slug || row.title));
+  const appwriteRows = uniqueRows((data.experiences || []).filter(approvedRow), row => normalizedKey(row.slug || row.title))
+    .filter(row => !isNemahRassamRecord(row));
+
+  const rassamStemExperience = {
+    $id: "site:rassam-stem-laboratory-engineer",
+    slug: "al-shaheeda-nemah-rassam-school-stem-laboratory-engineer",
+    title: "STEM Technical Education Specialist & Laboratory Engineer",
+    organization: "Al-Shaheeda Ne'mah Ahmed Rassam Basic and Secondary School for Girls",
+    location: "Taiz, Yemen",
+    start_date: "2022-01-15",
+    current: true,
+    experience_type: "Full-time · On-site",
+    summary: "Full-time STEM technical education and laboratory-engineering role combining practical electronics and robotics training, laboratory development, engineering simulation, project supervision, and student research mentorship.",
+    responsibilities: [
+      "Delivered a six-month technical training program for physics teachers covering electrical fundamentals, electronic components, analog and digital circuits, measurement principles, experimental verification, circuit construction, Multisim-based simulation, and practical electronics applications.",
+      "Established the school's Robotics and Prototyping Laboratory, organized its technical resources and hands-on activities, and equipped it with sensors, motors, Arduino and ESP32 platforms, and an Original Prusa MK4S 3D printer assembled from a kit.",
+      "Selected and trained student groups through a progressive pathway from basic electricity, electronics, measurement, and circuit construction to Arduino, ESP32, sensors, motors, embedded systems, robotics, IoT, C++ fundamentals, and PCB design using Proteus.",
+      "Trained students in MATLAB and Simulink for engineering modeling and simulation, and in the Artificial Bee Colony (ABC) optimization algorithm using MATLAB.",
+      "Mentored students for robotics, AI, embedded-systems, scientific-research, innovation, and science-communication competitions through project development, implementation, testing, research, presentations, and competition preparation.",
+      "Established the annual Engineering Research and Academic Writing Training Program in 2024 and provides structured research training, academic-writing instruction, and ongoing mentorship from research fundamentals to manuscript and conference-paper preparation."
+    ],
+    tags: ["STEM Technical Education", "Laboratory Engineering", "Robotics", "Embedded Systems", "Research Mentorship"],
+    visibility: "public",
+    sort_order: 1,
+    _collection: "experiences"
+  };
+
+  const rassamPhysicsExperience = {
+    $id: "site:rassam-physics-grade-11",
+    slug: "al-shaheeda-nemah-rassam-school-physics-grade-11",
+    title: "Physics Teacher — Second Secondary (Grade 11)",
+    organization: "Al-Shaheeda Ne'mah Ahmed Rassam Basic and Secondary School for Girls",
+    location: "Taiz, Yemen",
+    period_label: "Aug 2023 – May 2025",
+    current: false,
+    experience_type: "Part-time · On-site",
+    summary: "Grade 11 physics teaching with practical laboratory integration, demonstrations, measurement, and safe use of experimental resources.",
+    responsibilities: [
+      "Taught Grade 11 Physics, explaining key concepts clearly and supporting practical understanding of physical principles.",
+      "Conducted and supported physics laboratory experiments, demonstrations, and hands-on activities related to classroom topics.",
+      "Connected theoretical physics with observation, measurement, laboratory work, and experimental activities.",
+      "Supported the safe and effective use of physics-laboratory equipment and experimental resources during lessons and practical sessions."
+    ],
+    tags: ["Physics Teaching", "Grade 11", "Laboratory Instruction", "Practical Learning"],
+    visibility: "public",
+    sort_order: 2,
+    _collection: "experiences"
+  };
 
   const alHasabExperience = {
     $id: "site:technical-industrial-institute-al-hasab",
@@ -1616,7 +1672,12 @@ async function renderExperiences() {
     const key = normalizedKey([row.title, row.organization, row.location].filter(Boolean).join(" "));
     return key.includes("al hasab") || key.includes("technical industrial institute");
   });
-  const rows = hasAlHasab ? appwriteRows : [...appwriteRows, alHasabExperience];
+  const rows = [
+    rassamStemExperience,
+    rassamPhysicsExperience,
+    ...appwriteRows,
+    ...(hasAlHasab ? [] : [alHasabExperience])
+  ];
 
   if (!rows.length) return renderError(root);
   root.innerHTML = rows.map(experience => {
@@ -1775,7 +1836,7 @@ async function renderHome() {
   const data = await loadData();
   const publications = uniqueRows((data.publications || []).filter(row => approvedRow(row) && row.status === "published"), row => normalizedKey(row.doi_url || row.title));
   const projects = uniqueRows((data.projects || []).filter(approvedRow), row => normalizedKey(row.slug || row.title));
-  const awards = uniqueRows(mergeTaizResearchExcellenceAward((data.awards || []).filter(approvedRow)), row => row.asset_id || normalizedKey(row.title));
+  const awards = uniqueRows(mergeTaizResearchExcellenceAward((data.awards || []).filter(approvedRow).filter(isHonorRecord)), row => row.asset_id || normalizedKey(row.title));
   const metricPublications = $("#metricPublications");
   if (metricPublications) metricPublications.textContent = publications.length || 8;
   const publicationRoot = $("#homeFeaturedPublications");
