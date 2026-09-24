@@ -1476,6 +1476,80 @@ function taizResearchExcellenceAward() {
   };
 }
 
+function rassamTextOnlyHonors() {
+  const issuer = "Al-Shaheeda Ne'mah Ahmed Rassam Basic and Secondary School for Girls";
+  return [
+    {
+      $id: "site:rassam-research-writing-appreciation-2026",
+      title: "Certificate of Appreciation — Engineering Research & Academic Writing Program",
+      issuer,
+      year: 2026,
+      category: "professional_recognition",
+      description: "Recognition for a leading role in establishing and implementing the school's Engineering Research and Academic Writing Training Program, providing structured training in scientific research, academic writing, critical reading, literature review, manuscript preparation, research ethics, and ongoing student research mentorship.",
+      visibility: "public",
+      featured: false,
+      text_only: true,
+      sort_order: 61
+    },
+    {
+      $id: "site:rassam-laboratory-development-appreciation-2026",
+      title: "Certificate of Appreciation — Laboratory Development",
+      issuer,
+      year: 2026,
+      category: "professional_recognition",
+      description: "Recognition for laboratory development and improvement, including laboratory readiness, equipment organization, experiment preparation and development, technical troubleshooting, circuit testing, fault diagnosis, preventive and corrective maintenance, safe laboratory practice, and support for hands-on STEM learning.",
+      visibility: "public",
+      featured: false,
+      text_only: true,
+      sort_order: 62
+    },
+    {
+      $id: "site:rassam-professional-service-appreciation-2026",
+      title: "Certificate of Appreciation — Professional Excellence & Dedicated Service",
+      issuer,
+      year: 2026,
+      category: "professional_recognition",
+      description: "Recognition for professional service and contribution to the school's academic and technical environment, including responsibility, reliability, initiative, teamwork, practical problem-solving, technical training, STEM education, laboratory support, practical projects, and student guidance.",
+      visibility: "public",
+      featured: false,
+      text_only: true,
+      sort_order: 63
+    },
+    {
+      $id: "site:rassam-robotics-lab-appreciation-2026",
+      title: "Certificate of Appreciation — Robotics & Prototyping Laboratory Development",
+      issuer,
+      year: 2026,
+      category: "professional_recognition",
+      description: "Recognition for developing the existing electronics laboratory and establishing the Robotics and Prototyping Laboratory, defining technical needs and specifications, selecting equipment and components, preparing laboratory resources and engineering software, and providing ongoing hands-on training, technical guidance, and project support.",
+      visibility: "public",
+      featured: false,
+      text_only: true,
+      sort_order: 64
+    }
+  ];
+}
+
+function mergeRassamTextOnlyHonors(rows = []) {
+  const additions = rassamTextOnlyHonors();
+  const keys = new Set(rows.map(row => normalizedKey(row.title)));
+  return [...rows, ...additions.filter(row => !keys.has(normalizedKey(row.title)))];
+}
+
+function honorTextCard(row) {
+  const title = row.title || "Certificate of Appreciation";
+  const institution = row.issuer || "";
+  const description = row.description || "";
+  const year = row.year || "";
+  const category = prettyCategory(row.category || "Recognition");
+  return `<article class="honor-text-card">
+    <div class="honor-text-card-head"><span>${escapeHTML(category)}</span>${year ? `<time>${escapeHTML(year)}</time>` : ""}</div>
+    <h4>${escapeHTML(title)}</h4>
+    ${institution ? `<p class="portfolio-card-institution">${escapeHTML(institution)}</p>` : ""}
+    ${description ? `<p>${escapeHTML(description)}</p>` : ""}
+  </article>`;
+}
+
 function mergeTaizResearchExcellenceAward(rows = []) {
   const award = taizResearchExcellenceAward();
   const exists = rows.some(row => {
@@ -1498,18 +1572,21 @@ async function renderAwards() {
   if (!root) return;
   const data = await loadData();
   let rows = uniqueRows(
-    mergeTaizResearchExcellenceAward((data.awards || []).filter(approvedRow).filter(isHonorRecord)),
+    mergeRassamTextOnlyHonors(mergeTaizResearchExcellenceAward((data.awards || []).filter(approvedRow).filter(isHonorRecord))),
     row => row.asset_id || normalizedKey(row.title)
   );
   if (!rows.length) return renderError(root);
   rows = [...rows].sort((a, b) => Number(asBool(b.featured)) - Number(asBool(a.featured)) || (Number(b.year) || 0) - (Number(a.year) || 0));
   root.className = "asset-gallery-grid portfolio-gallery-grid";
-  root.innerHTML = rows.map(award => portfolioMediaCard(data, award, {
-    collection: "awards", title: award.title, institution: award.issuer || "",
-    description: award.description || "", year: award.year || "",
-    categoryLabel: prettyCategory(award.category || "Honor"), fallbackCategory: "Honor",
-    extraClass: asBool(award.featured) ? "portfolio-media-card--featured" : ""
-  })).join("");
+  root.innerHTML = rows.map(award => award.text_only
+    ? honorTextCard(award)
+    : portfolioMediaCard(data, award, {
+        collection: "awards", title: award.title, institution: award.issuer || "",
+        description: award.description || "", year: award.year || "",
+        categoryLabel: prettyCategory(award.category || "Honor"), fallbackCategory: "Honor",
+        extraClass: asBool(award.featured) ? "portfolio-media-card--featured" : ""
+      })
+  ).join("");
   const summary = $("#awardsSummary");
   if (summary) summary.innerHTML = `<span><strong>${rows.length}</strong> honors & awards</span><span><strong>${rows.filter(row => asBool(row.featured)).length}</strong> featured distinctions</span>`;
   bindAssetButtons(data);
@@ -1836,7 +1913,7 @@ async function renderHome() {
   const data = await loadData();
   const publications = uniqueRows((data.publications || []).filter(row => approvedRow(row) && row.status === "published"), row => normalizedKey(row.doi_url || row.title));
   const projects = uniqueRows((data.projects || []).filter(approvedRow), row => normalizedKey(row.slug || row.title));
-  const awards = uniqueRows(mergeTaizResearchExcellenceAward((data.awards || []).filter(approvedRow).filter(isHonorRecord)), row => row.asset_id || normalizedKey(row.title));
+  const awards = uniqueRows(mergeRassamTextOnlyHonors(mergeTaizResearchExcellenceAward((data.awards || []).filter(approvedRow).filter(isHonorRecord))), row => row.asset_id || normalizedKey(row.title));
   const metricPublications = $("#metricPublications");
   if (metricPublications) metricPublications.textContent = publications.length || 8;
   const publicationRoot = $("#homeFeaturedPublications");
