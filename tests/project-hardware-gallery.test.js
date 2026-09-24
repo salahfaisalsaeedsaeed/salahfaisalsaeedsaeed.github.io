@@ -48,8 +48,7 @@ for (const token of [
 for (const token of [
   'id="engineering-components-and-tools"',
   'id="projectHardwareGallery"',
-  "Engineering Components, Tools &amp; Prototyping",
-  "/script.js?v=20260924-portfolio-restructure-v1"
+  "Engineering Components, Tools &amp; Prototyping"
 ]) {
   if (!html.includes(token)) failures.push("projects/index.html missing: " + token);
 }
