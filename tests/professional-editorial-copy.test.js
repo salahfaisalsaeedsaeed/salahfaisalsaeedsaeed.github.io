@@ -50,11 +50,15 @@ const bannedPhrases = [
 const requiredPhrases = [
   "Professional &amp; Academic Profile",
   "Mechatronics &amp; Robotics Engineer · Physics/STEM Educator · Researcher",
-  "Selected visual records of research mentorship, practical teaching, teacher development, STEM laboratory practice, technical maintenance, engineering activities, conference presentations, and academic milestones.",
-  "Selected institutional announcements documenting teaching, technical training, student research mentorship, publication activities, and professional development.",
-  "Selected academic and professional documents supporting education, research, training, awards, and professional experience.",
+  "A structured overview of selected engineering, teaching, research, and technical evidence, with media presented in the section where it is most meaningful.",
+  "Independent institutional sources and selected academic documents supporting key claims across teaching, research mentorship, technical training, academic achievement, and professional applications.",
+  "Verification & Documents",
   "Peer-reviewed IEEE conference publications spanning robotics, computer vision, energy systems, artificial intelligence, and related engineering research.",
   "Professional Experience",
+  "Portfolio Highlights",
+  "Honors & Awards",
+  "Certifications & Training",
+  "Recommendations & References",
   "Cybersecurity &amp; AI-Assisted Security",
   "Python · C++ · MATLAB"
 ];
