@@ -49,6 +49,9 @@ jobs:
       - name: GitHub media manifest coverage test
         run: node tests/media-manifest.test.js
 
+      - name: Media and Activities library regression test
+        run: node tests/media-activities-library.test.js
+
       - name: Projects hardware gallery regression test
         run: node tests/project-hardware-gallery.test.js
 
