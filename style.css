@@ -633,3 +633,13 @@ button{color:inherit}
   .portfolio-highlight-grid,.verification-document-grid{grid-template-columns:1fr}
   .context-media-group>summary{align-items:flex-start}
 }
+
+
+/* Text-only honors: record is public, source document intentionally not displayed */
+.honor-text-card{padding:24px;border:1px solid var(--border);border-top:3px solid var(--gold);border-radius:var(--radius);background:var(--surface);box-shadow:var(--shadow-soft);min-height:100%}
+.honor-text-card-head{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:10px;color:var(--muted);font-size:.63rem;text-transform:uppercase;letter-spacing:.07em;font-weight:800}
+.honor-text-card-head span{color:var(--blue)}
+.honor-text-card-head time{white-space:nowrap}
+.honor-text-card h4{margin:0 0 8px;color:var(--navy);font-family:Georgia,serif;font-size:1.08rem;line-height:1.35}
+.honor-text-card .portfolio-card-institution{margin:0 0 10px;color:var(--blue);font-size:.74rem;font-weight:700}
+.honor-text-card>p:last-child{margin:0;color:var(--muted);font-size:.78rem;line-height:1.7}
