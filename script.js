@@ -1422,6 +1422,19 @@ function projectHardwareCard(item, index) {
   </figure>`;
 }
 
+function bindProjectHardwareButtons(root = document) {
+  const models = PROJECT_HARDWARE_MEDIA.map(projectHardwareModel);
+  $("[data-project-hardware-index]", root).forEach(button => {
+    if (button.dataset.bound === "1") return;
+    button.dataset.bound = "1";
+    button.addEventListener("click", () => {
+      const index = Number(button.dataset.projectHardwareIndex);
+      const model = models[index];
+      if (model) openAssetSet([model], button);
+    });
+  });
+}
+
 function renderProjectHardware() {
   const root = $("#projectHardwareGallery");
   if (!root) return;
@@ -1430,19 +1443,11 @@ function renderProjectHardware() {
   const videoCount = PROJECT_HARDWARE_MEDIA.filter(item => item.type === "video").length;
   const stats = $("#projectHardwareStats");
   if (stats) {
-    stats.innerHTML = `<div><dt>${PROJECT_HARDWARE_MEDIA.length}</dt><dd>media items</dd></div><div><dt>${imageCount}</dt><dd>images</dd></div><div><dt>${videoCount}</dt><dd>video</dd></div>`;
+    stats.innerHTML = `<div><dt>${PROJECT_HARDWARE_MEDIA.length}</dt><dd>media items</dd></div><div><dt>${imageCount}</dt><dd>images</dd></div><div><dt>${videoCount}</dt><dd>videos</dd></div>`;
   }
 
   root.innerHTML = PROJECT_HARDWARE_MEDIA.map(projectHardwareCard).join("");
-  const models = PROJECT_HARDWARE_MEDIA.map(projectHardwareModel);
-  $("[data-project-hardware-index]", root);
-  $("[data-project-hardware-index]", root).forEach(button => {
-    button.addEventListener("click", () => {
-      const index = Number(button.dataset.projectHardwareIndex);
-      const model = models[index];
-      if (model) openAssetSet([model], button);
-    });
-  });
+  bindProjectHardwareButtons(root);
 }
 
 async function renderProjects() {
@@ -1856,8 +1861,8 @@ function openGithubPdf(category, fileName, title, trigger = null) {
   setTimeout(() => $(".modal-close", modal)?.focus(), 0);
 }
 
-function bindGithubPdfButtons() {
-  $("[data-github-pdf]").forEach(button => {
+function bindGithubPdfButtons(root = document) {
+  $("[data-github-pdf]", root).forEach(button => {
     if (button.dataset.bound === "1") return;
     button.dataset.bound = "1";
     button.addEventListener("click", () => openGithubPdf(
@@ -1891,21 +1896,73 @@ function renderContextMedia() {
   bindGithubPdfButtons();
 }
 
+function mediaLibrarySection(key) {
+  const items = GITHUB_MEDIA[key] || [];
+  if (!items.length) return "";
+  const meta = MEDIA_META[key] || { title: prettyCategory(key), description: "" };
+  return `<section class="media-library-group" id="media-${escapeAttr(key.replaceAll("_", "-"))}">
+    <div class="media-library-group-heading">
+      <div>
+        <p class="section-label">Media Collection</p>
+        <h3>${escapeHTML(meta.title)}</h3>
+        <p>${escapeHTML(meta.description || "")}</p>
+      </div>
+      <span class="media-library-count">${items.length} items</span>
+    </div>
+    <div class="asset-gallery-grid media-library-grid">${items.map(item => githubMediaCard(key, item)).join("")}</div>
+  </section>`;
+}
+
 async function renderMedia() {
   const root = $("#mediaLibrary");
   if (!root) return;
-  const researchCount = (GITHUB_MEDIA.student_videos_and_conference_presentations || []).length;
-  const teachingCount = (GITHUB_MEDIA.student_teaching_and_practical_training_activities || []).length + (GITHUB_MEDIA.teacher_training_and_professional_development_programs || []).length + (GITHUB_MEDIA["3d_printing_and_stem_laboratory_activities"] || []).length;
-  const technicalCount = (GITHUB_MEDIA.technical_maintenance_and_troubleshooting_work || []).length;
-  const engineeringCount = PROJECT_HARDWARE_MEDIA.length;
-  const cards = [
-    {label:"Engineering & Prototyping",count:engineeringCount,title:"Research & Engineering Projects",text:"Embedded hardware, electronics, prototyping, Original Prusa MK4S assembly, digital fabrication, and engineering project evidence.",href:"/projects/"},
-    {label:"Teaching Portfolio",count:teachingCount,title:"Teaching & Mentorship",text:"Physics/STEM instruction, practical electronics, laboratory work, teacher development, 3D-printing activities, and student technical training.",href:"/teaching/"},
-    {label:"Research Communication",count:researchCount,title:"Publications & Research Mentorship",text:"Conference presentations and research-oriented student work connected to publication and mentorship activities.",href:"/teaching/#teaching-media"},
-    {label:"Technical Practice",count:technicalCount,title:"Professional Experience",text:"Documented maintenance, diagnostics, troubleshooting, computer hardware, printers, electronic boards, and system verification.",href:"/experience/#experience-media"}
+
+  const githubItems = MEDIA_ORDER.flatMap(key => GITHUB_MEDIA[key] || []);
+  const allItems = [...PROJECT_HARDWARE_MEDIA, ...githubItems];
+  const imageCount = allItems.filter(item => item.type === "image").length;
+  const videoCount = allItems.filter(item => item.type === "video").length;
+  const pdfCount = allItems.filter(item => item.type === "pdf").length;
+  const groups = MEDIA_ORDER.filter(key => (GITHUB_MEDIA[key] || []).length);
+
+  const quickLinks = [
+    { href: "#media-engineering-components-and-tools", label: "Engineering Components & Prototyping", count: PROJECT_HARDWARE_MEDIA.length },
+    ...groups.map(key => ({
+      href: `#media-${key.replaceAll("_", "-")}`,
+      label: MEDIA_META[key]?.title || prettyCategory(key),
+      count: (GITHUB_MEDIA[key] || []).length
+    }))
   ];
-  root.innerHTML = `<div class="portfolio-highlight-grid">${cards.map(card => `<article class="portfolio-highlight-card"><div class="portfolio-highlight-meta"><span>${escapeHTML(card.label)}</span><strong>${card.count}</strong></div><h3>${escapeHTML(card.title)}</h3><p>${escapeHTML(card.text)}</p><a class="text-link" href="${escapeAttr(card.href)}">Explore evidence in context →</a></article>`).join("")}</div><p class="portfolio-highlight-note">Media are presented in the section where they provide the strongest academic or professional context, avoiding duplicate galleries across the site.</p>`;
+
+  const hardwareSection = `<section class="media-library-group" id="media-engineering-components-and-tools">
+    <div class="media-library-group-heading">
+      <div>
+        <p class="section-label">Engineering Media</p>
+        <h3>Engineering Components, Tools & Prototyping</h3>
+        <p>Embedded hardware, electronics, laboratory equipment, Original Prusa MK4S assembly, digital fabrication, motion components, and prototyping resources used in hands-on engineering work.</p>
+      </div>
+      <span class="media-library-count">${PROJECT_HARDWARE_MEDIA.length} items</span>
+    </div>
+    <div class="asset-gallery-grid media-library-grid">${PROJECT_HARDWARE_MEDIA.map(projectHardwareCard).join("")}</div>
+  </section>`;
+
+  root.innerHTML = `
+    <div class="media-library-summary" aria-label="Media library summary">
+      <div><strong>${allItems.length}</strong><span>Total media items</span></div>
+      <div><strong>${imageCount}</strong><span>Images</span></div>
+      <div><strong>${videoCount}</strong><span>Videos</span></div>
+      <div><strong>${pdfCount}</strong><span>Presentations / PDFs</span></div>
+    </div>
+    <nav class="media-library-index" aria-label="Media categories">
+      ${quickLinks.map(item => `<a href="${escapeAttr(item.href)}"><span>${escapeHTML(item.label)}</span><b>${item.count}</b></a>`).join("")}
+    </nav>
+    ${hardwareSection}
+    ${groups.map(mediaLibrarySection).join("")}
+  `;
+
+  bindGithubPdfButtons(root);
+  bindProjectHardwareButtons(root);
 }
+
 
 async function renderHome() {
   if (!$("#homeFeaturedPublications") && !$("#metricPublications")) return;
@@ -1940,7 +1997,7 @@ function initNavigation() {
     link.classList.toggle("active", active);
     if (active) link.setAttribute("aria-current", "page"); else link.removeAttribute("aria-current");
     if (href === "/institutional-evidence/") link.textContent = "Verification & Documents";
-    if (href === "/media/") link.textContent = "Portfolio Highlights";
+    if (href === "/media/") link.textContent = "Media & Activities";
     if (href === "/awards/") link.textContent = "Honors & Awards";
     if (href === "/credentials/") link.textContent = "Certifications & Training";
     if (href === "/recommendations/") link.textContent = "Recommendations & References";
