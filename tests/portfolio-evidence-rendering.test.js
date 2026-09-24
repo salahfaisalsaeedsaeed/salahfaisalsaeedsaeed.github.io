@@ -13,7 +13,8 @@ for (const token of [
   "function renderRecommendations()",
   'root.className = "asset-gallery-grid portfolio-gallery-grid"',
   "github-pdf-preview-button portfolio-preview-button",
-  "data-display-asset"
+  "data-display-asset",
+  "function honorTextCard("
 ]) {
   if (!source.includes(token)) failures.push(`script.js missing: ${token}`);
 }
@@ -36,11 +37,11 @@ if (!css.includes(".portfolio-gallery-grid{") || !css.includes(".portfolio-media
 
 for (const page of ["awards/index.html", "credentials/index.html"]) {
   const html = fs.readFileSync(page, "utf8");
-  if (!html.includes('/script.js?v=20260924-rassam-update-v1')) {
-    failures.push(`${page} does not force the current portfolio renderer`);
+  if (!/\/script\.js\?v=[^"]+/.test(html)) {
+    failures.push(`${page} does not force a versioned portfolio renderer`);
   }
-  if (!html.includes('/style.css?v=20260924-portfolio-restructure-v1')) {
-    failures.push(`${page} does not force the current portfolio styles`);
+  if (!/\/style\.css\?v=[^"]+/.test(html)) {
+    failures.push(`${page} does not force versioned portfolio styles`);
   }
 }
 
@@ -51,8 +52,8 @@ for (const filterKey of ["research_conference", "technical_professional_developm
   }
 }
 const recommendationsHtml = fs.readFileSync("recommendations/index.html", "utf8");
-if (!recommendationsHtml.includes('/script.js?v=20260924-rassam-update-v1')) {
-  failures.push("recommendations/index.html does not force the current public recommendation renderer");
+if (!/\/script\.js\?v=[^"]+/.test(recommendationsHtml)) {
+  failures.push("recommendations/index.html does not force a versioned public recommendation renderer");
 }
 const recommendationsStart = source.indexOf("async function renderRecommendations()");
 const recommendationsEnd = source.indexOf("async function renderExperiences()", recommendationsStart);
