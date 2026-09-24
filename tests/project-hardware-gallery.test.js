@@ -17,7 +17,15 @@ const files = [
   "Electronics_Lab_Storage_Cabinet.jpg",
   "Micro_Servo_Motors.jpg",
   "Relay_Module.jpg",
-  "Stepper_Motor.jpg"
+  "Stepper_Motor.jpg",
+  "Prusa_Printer_Components_01.jpg",
+  "Prusa_Printer_Components_02.jpg",
+  "Prusa_Printer_Tools_and_Parts.jpg",
+  "Prusa_Printer_Assembled_01.jpg",
+  "Prusa_Printer_Assembled_02.jpg",
+  "Prusa_Printer_Assembled_03.jpg",
+  "Prusa_Printer_Assembled_04.jpg",
+  "Prusa_Printer_Components_Overview.mp4"
 ];
 
 for (const file of files) {
@@ -31,7 +39,8 @@ for (const token of [
   "function renderProjectHardware()",
   "function projectHardwareCard(",
   "function projectHardwarePath(",
-  "renderProjectHardware();"
+  "renderProjectHardware();",
+  "Original Prusa MK4S"
 ]) {
   if (!script.includes(token)) failures.push("script.js missing: " + token);
 }
@@ -40,7 +49,7 @@ for (const token of [
   'id="engineering-components-and-tools"',
   'id="projectHardwareGallery"',
   "Engineering Components, Tools &amp; Prototyping",
-  "/script.js?v=20260922-project-hardware-v1"
+  "/script.js?v=20260924-portfolio-restructure-v1"
 ]) {
   if (!html.includes(token)) failures.push("projects/index.html missing: " + token);
 }
