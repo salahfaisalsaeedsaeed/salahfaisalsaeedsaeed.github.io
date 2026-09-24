@@ -62,7 +62,6 @@ const LOCAL_EVIDENCE_MEDIA = {
     { id: "english-instruction-taiz", all: ["english language instruction", "taiz university"], files: ["/media/assets/awards/English_Language_Instruction_Certificate_Taiz_University.webp"] },
     { id: "academic-achievement-taiz", all: ["academic achievement", "taiz university"], files: ["/media/assets/credentials/Certificate_of_Appreciation_Academic_Achievement_Taiz_University.webp"] },
     { id: "physics-laboratory", all: ["physics", "laboratory"], files: ["/media/assets/credentials/Physics_Laboratory_Development_Appreciation.webp"] },
-    { id: "laboratory-development", all: ["laboratory development"], files: ["/media/assets/credentials/Certificate_of_Appreciation_Laboratory_Development.webp"] }
   ],
   credentials: [
     { id: "esmarta-2026", all: ["esmarta 2026"], files: [
