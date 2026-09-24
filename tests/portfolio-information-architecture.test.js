@@ -14,7 +14,7 @@ const pages = {
 const source = fs.readFileSync("script.js","utf8");
 
 const requiredLabels = [
-  "Portfolio Highlights",
+  "Media &amp; Activities",
   "Honors &amp; Awards",
   "Certifications &amp; Training",
   "Recommendations &amp; References",
@@ -46,7 +46,7 @@ for (const token of [
   "function renderContextMedia()",
   "function contextualMediaSection(",
   "function isHonorRecord(",
-  'link.textContent = "Portfolio Highlights"',
+  'link.textContent = "Media & Activities"',
   'link.textContent = "Honors & Awards"',
   'link.textContent = "Certifications & Training"',
   'link.textContent = "Recommendations & References"',
@@ -63,4 +63,4 @@ if (failures.length) {
   console.error(failures.map(x=>"FAIL|"+x).join("\n"));
   process.exit(1);
 }
-console.log("PASS|portfolio content is distributed by academic context without a duplicate Documents navigation window");
+console.log("PASS|portfolio navigation includes Media & Activities while contextual evidence and merged Documents remain organized");
