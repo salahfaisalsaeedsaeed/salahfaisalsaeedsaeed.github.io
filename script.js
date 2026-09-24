@@ -176,8 +176,8 @@ const PROJECT_HARDWARE_MEDIA = [
     file: "3D_Printer.jpg",
     type: "image",
     category: "Digital Fabrication",
-    title: "Original Prusa i3 MK3S 3D Printer",
-    description: "3D-printing equipment used for prototype parts, mounts, enclosures, and mechanical components during engineering development."
+    title: "Original Prusa MK4S 3D Printer",
+    description: "Original Prusa MK4S used for digital fabrication of prototype parts, mounts, enclosures, and mechanical components during engineering development."
   },
   {
     file: "Arduino_Mega_2560_Board.jpg",
@@ -241,6 +241,62 @@ const PROJECT_HARDWARE_MEDIA = [
     category: "Motion Control",
     title: "Compact Motion-Control Motor Assembly",
     description: "Compact motor assembly used for positioning and motion-control prototyping in electromechanical experiments."
+  },
+  {
+    file: "Prusa_Printer_Components_01.jpg",
+    type: "image",
+    category: "Digital Fabrication",
+    title: "Prusa MK4S Kit Components",
+    description: "Preparation stage documenting the Original Prusa MK4S kit, packaged components, assembly materials, and supporting parts before final setup."
+  },
+  {
+    file: "Prusa_Printer_Components_02.jpg",
+    type: "image",
+    category: "Digital Fabrication",
+    title: "Prusa MK4S Assembly Preparation",
+    description: "Additional view of the printer kit and components during preparation for hands-on assembly."
+  },
+  {
+    file: "Prusa_Printer_Tools_and_Parts.jpg",
+    type: "image",
+    category: "Digital Fabrication",
+    title: "Prusa MK4S Assembly Tools & Parts",
+    description: "Hand tools, driver bits, pliers, small parts, and supporting hardware used during printer assembly and setup."
+  },
+  {
+    file: "Prusa_Printer_Assembled_01.jpg",
+    type: "image",
+    category: "Digital Fabrication",
+    title: "Original Prusa MK4S — Completed Assembly",
+    description: "Completed printer setup showing the assembled frame, print bed, toolhead, control interface, and filament handling hardware."
+  },
+  {
+    file: "Prusa_Printer_Assembled_02.jpg",
+    type: "image",
+    category: "Digital Fabrication",
+    title: "Original Prusa MK4S — Completed Assembly",
+    description: "Additional documentation of the fully assembled printer within the engineering prototyping workspace."
+  },
+  {
+    file: "Prusa_Printer_Assembled_03.jpg",
+    type: "image",
+    category: "Digital Fabrication",
+    title: "Original Prusa MK4S — Completed Assembly",
+    description: "Detailed view of the assembled digital-fabrication platform used for engineering prototyping."
+  },
+  {
+    file: "Prusa_Printer_Assembled_04.jpg",
+    type: "image",
+    category: "Digital Fabrication",
+    title: "Original Prusa MK4S — Completed Assembly",
+    description: "Completed MK4S configuration with filament spool and operating hardware in place."
+  },
+  {
+    file: "Prusa_Printer_Components_Overview.mp4",
+    type: "video",
+    category: "Digital Fabrication",
+    title: "Prusa MK4S Components & Engineering Workspace Overview",
+    description: "Video overview of the MK4S components, assembly preparation, and surrounding electronics and prototyping workspace."
   },
   {
     file: "Electronics_Lab_Inventory_Overview.mp4",
@@ -1421,32 +1477,32 @@ function mergeTaizResearchExcellenceAward(rows = []) {
   return exists ? rows : [...rows, award];
 }
 
+function isHonorRecord(row) {
+  const key = normalizedKey([row?.title, row?.category, row?.description].filter(Boolean).join(" "));
+  if (key.includes("conference participation") || key.includes("certificate of attendance")) return false;
+  if (key.includes("academic transcript") || key.includes("language instruction") || key.includes("medium of instruction")) return false;
+  return true;
+}
+
 async function renderAwards() {
   const root = $("#awardsList");
   if (!root) return;
   const data = await loadData();
-
   let rows = uniqueRows(
-    mergeTaizResearchExcellenceAward((data.awards || []).filter(approvedRow)),
+    mergeTaizResearchExcellenceAward((data.awards || []).filter(approvedRow).filter(isHonorRecord)),
     row => row.asset_id || normalizedKey(row.title)
   );
   if (!rows.length) return renderError(root);
   rows = [...rows].sort((a, b) => Number(asBool(b.featured)) - Number(asBool(a.featured)) || (Number(b.year) || 0) - (Number(a.year) || 0));
-
   root.className = "asset-gallery-grid portfolio-gallery-grid";
   root.innerHTML = rows.map(award => portfolioMediaCard(data, award, {
-    collection: "awards",
-    title: award.title,
-    institution: award.issuer || "",
-    description: award.description || "",
-    year: award.year || "",
-    categoryLabel: prettyCategory(award.category || "Recognition"),
-    fallbackCategory: "Recognition",
+    collection: "awards", title: award.title, institution: award.issuer || "",
+    description: award.description || "", year: award.year || "",
+    categoryLabel: prettyCategory(award.category || "Honor"), fallbackCategory: "Honor",
     extraClass: asBool(award.featured) ? "portfolio-media-card--featured" : ""
   })).join("");
-
   const summary = $("#awardsSummary");
-  if (summary) summary.innerHTML = `<span><strong>${rows.length}</strong> recognitions</span><span><strong>${rows.filter(row => asBool(row.featured)).length}</strong> featured distinctions</span>`;
+  if (summary) summary.innerHTML = `<span><strong>${rows.length}</strong> honors & awards</span><span><strong>${rows.filter(row => asBool(row.featured)).length}</strong> featured distinctions</span>`;
   bindAssetButtons(data);
 }
 
@@ -1484,8 +1540,6 @@ async function renderRecommendations() {
   const rows = uniqueRows((data.recommendations || []).filter(approvedRow), row => row.$id || normalizedKey(row.slug || row.title));
   if (!rows.length) return renderError(root);
 
-  // Multiple recommendation records may intentionally point to one combined
-  // public rendering. Show that file once, not as repeated duplicate cards.
   const groups = new Map();
   rows.forEach(row => {
     const publicModel = recordAssets(data, row, "recommendations").find(item => item?.display_file_ids?.length) || null;
@@ -1494,46 +1548,41 @@ async function renderRecommendations() {
     groups.get(key).rows.push(row);
   });
 
-  root.className = "asset-gallery-grid portfolio-gallery-grid";
-  root.innerHTML = [...groups.values()].map(group => {
+  const cardForGroup = group => {
     const first = group.rows[0];
     const recommenders = [...new Set(group.rows.map(row => row.recommender_name || row.title).filter(Boolean))];
     const institutions = [...new Set(group.rows.map(row => row.institution).filter(Boolean))];
     const titles = [...new Set(group.rows.map(row => row.recommender_title).filter(Boolean))];
     const focus = [...new Set(group.rows.flatMap(row => asArray(row.focus_areas)).filter(Boolean))];
     const summaries = [...new Set(group.rows.map(row => row.summary || row.relationship_context).filter(Boolean))];
-    const issuedDates = group.rows
-      .map(row => row.issued_date && row.issued_date !== "null"
-        ? formatDate(row.issued_date, { year: "numeric", month: "short", day: "numeric" })
-        : "")
-      .filter(Boolean);
-
     const multi = group.rows.length > 1;
-    const title = multi
-      ? "Academic & Technical Recommendations"
-      : (recommenders[0] || first.title || "Recommendation");
-    const institution = multi
-      ? [`${group.rows.length} recommendation letters`, ...institutions].filter(Boolean).join(" · ")
-      : [titles[0], institutions[0]].filter(Boolean).join(" · ");
+    const title = multi ? "Academic & Technical Recommendations" : (recommenders[0] || first.title || "Recommendation");
+    const institution = multi ? [`${group.rows.length} recommendation letters`, ...institutions].filter(Boolean).join(" · ") : [titles[0], institutions[0]].filter(Boolean).join(" · ");
     const details = [];
     if (multi && recommenders.length) details.push(`Recommenders: ${recommenders.join(", ")}.`);
     if (summaries.length) details.push(summaries.join(" "));
     if (focus.length) details.push(`Focus: ${focus.join(", ")}`);
-
     return portfolioMediaCard(data, first, {
-      collection: "recommendations",
-      title,
-      institution,
-      description: details.join(" "),
-      year: issuedDates[0] || "",
-      categoryLabel: multi ? `${group.rows.length} Recommendations` : "Recommendation",
-      fallbackCategory: "Recommendation",
-      placeholderKind: "LETTER",
-      placeholderTitle: "Recommendation letter",
+      collection: "recommendations", title, institution, description: details.join(" "),
+      categoryLabel: "Recommendation", fallbackCategory: "Recommendation",
+      placeholderKind: "LETTER", placeholderTitle: "Recommendation letter",
       placeholderText: "Supporting file not currently available"
     });
-  }).join("");
+  };
 
+  const allGroups = [...groups.values()];
+  const research = allGroups.filter(group => {
+    const key = normalizedKey(group.rows.map(r => [r.title, r.summary, ...(asArray(r.focus_areas))].join(" ")).join(" "));
+    return key.includes("research") || key.includes("energy systems") || key.includes("robotics") || key.includes("cybersecurity") || key.includes("trustworthy ai");
+  });
+  const researchKeys = new Set(research);
+  const academic = allGroups.filter(group => !researchKeys.has(group));
+
+  root.className = "recommendation-sections";
+  root.innerHTML = [
+    research.length ? `<section class="recommendation-group"><div class="section-title-row"><div><p class="section-label">Research References</p><h3>Research Recommendations</h3></div></div><div class="asset-gallery-grid portfolio-gallery-grid">${research.map(cardForGroup).join("")}</div></section>` : "",
+    academic.length ? `<section class="recommendation-group"><div class="section-title-row"><div><p class="section-label">Academic References</p><h3>Academic & Technical Recommendations</h3></div></div><div class="asset-gallery-grid portfolio-gallery-grid">${academic.map(cardForGroup).join("")}</div></section>` : ""
+  ].join("");
   bindAssetButtons(data);
 }
 async function renderExperiences() {
@@ -1623,7 +1672,7 @@ async function renderDocuments() {
 
 function githubMediaPath(category, fileName) {
   const folder = String(category || "").replaceAll("_", "-");
-  return `https://raw.githubusercontent.com/salahfaisalsaeedsaeed/salahfaisalsaeedsaeed.github.io/main/media/assets/${encodeURIComponent(folder)}/${encodeURIComponent(fileName)}`;
+  return `/media/assets/${encodeURIComponent(folder)}/${encodeURIComponent(fileName)}`;
 }
 
 function githubMediaVisual(category, item) {
@@ -1683,47 +1732,42 @@ function bindGithubPdfButtons() {
   });
 }
 
+function contextualMediaSection(key, heading = "") {
+  const items = GITHUB_MEDIA[key] || [];
+  if (!items.length) return "";
+  const meta = MEDIA_META[key] || { title: heading || prettyCategory(key), description: "" };
+  return `<details class="context-media-group"><summary><span><strong>${escapeHTML(heading || meta.title)}</strong><small>${escapeHTML(meta.description)}</small></span><b>${items.length} items</b></summary><div class="asset-gallery-grid context-media-grid">${items.map(item => githubMediaCard(key, item)).join("")}</div></details>`;
+}
+
+function renderContextMedia() {
+  const teachingRoot = $("#teachingMediaPortfolio");
+  if (teachingRoot) {
+    teachingRoot.innerHTML = [
+      contextualMediaSection("student_videos_and_conference_presentations", "Research Mentorship Presentations"),
+      contextualMediaSection("student_teaching_and_practical_training_activities", "Teaching & Practical Laboratory Activities"),
+      contextualMediaSection("teacher_training_and_professional_development_programs", "Teacher Professional Development"),
+      contextualMediaSection("3d_printing_and_stem_laboratory_activities", "3D Printing & STEM Learning Activities")
+    ].join("");
+  }
+  const experienceRoot = $("#experienceMediaPortfolio");
+  if (experienceRoot) experienceRoot.innerHTML = contextualMediaSection("technical_maintenance_and_troubleshooting_work", "Technical Maintenance & Troubleshooting Evidence");
+  bindGithubPdfButtons();
+}
+
 async function renderMedia() {
   const root = $("#mediaLibrary");
   if (!root) return;
-
-  const populatedCategories = MEDIA_ORDER.filter(key => (GITHUB_MEDIA[key] || []).length);
-  const items = populatedCategories.flatMap(key => GITHUB_MEDIA[key] || []);
-  const imageCount = items.filter(item => item.type === "image").length;
-  const videoCount = items.filter(item => item.type === "video").length;
-  const pdfCount = items.filter(item => item.type === "pdf").length;
-
-  root.innerHTML = `
-    <div class="media-library-intro">
-      <div>
-        <p class="section-label">Selected Activities</p>
-        <h3>Selected Academic & Professional Activities</h3>
-        <p>Photographs, videos, and presentations documenting practical teaching, laboratory work, engineering activities, technical training, research communication, and professional development.</p>
-      </div>
-      <dl class="media-library-stats">
-        <div><dt>${items.length}</dt><dd>items</dd></div>
-        <div><dt>${imageCount}</dt><dd>images</dd></div>
-        <div><dt>${videoCount}</dt><dd>videos</dd></div>
-        <div><dt>${pdfCount}</dt><dd>PDFs</dd></div>
-      </dl>
-    </div>
-    <div class="media-sections">
-      ${populatedCategories.map((key, index) => {
-        const meta = MEDIA_META[key];
-        const group = GITHUB_MEDIA[key] || [];
-        return `<section class="media-category-section" id="media-${escapeAttr(key.replaceAll("_", "-"))}">
-          <div class="media-category-heading">
-            <div>
-              <span class="media-category-index">${String(index + 1).padStart(2, "0")}</span>
-              <div><h3>${escapeHTML(meta.title)}</h3><p>${escapeHTML(meta.description)}</p></div>
-            </div>
-            <strong>${group.length} item${group.length === 1 ? "" : "s"}</strong>
-          </div>
-          <div class="asset-gallery-grid">${group.map(item => githubMediaCard(key, item)).join("")}</div>
-        </section>`;
-      }).join("")}
-    </div>`;
-  bindGithubPdfButtons();
+  const researchCount = (GITHUB_MEDIA.student_videos_and_conference_presentations || []).length;
+  const teachingCount = (GITHUB_MEDIA.student_teaching_and_practical_training_activities || []).length + (GITHUB_MEDIA.teacher_training_and_professional_development_programs || []).length + (GITHUB_MEDIA["3d_printing_and_stem_laboratory_activities"] || []).length;
+  const technicalCount = (GITHUB_MEDIA.technical_maintenance_and_troubleshooting_work || []).length;
+  const engineeringCount = PROJECT_HARDWARE_MEDIA.length;
+  const cards = [
+    {label:"Engineering & Prototyping",count:engineeringCount,title:"Research & Engineering Projects",text:"Embedded hardware, electronics, prototyping, Original Prusa MK4S assembly, digital fabrication, and engineering project evidence.",href:"/projects/"},
+    {label:"Teaching Portfolio",count:teachingCount,title:"Teaching & Mentorship",text:"Physics/STEM instruction, practical electronics, laboratory work, teacher development, 3D-printing activities, and student technical training.",href:"/teaching/"},
+    {label:"Research Communication",count:researchCount,title:"Publications & Research Mentorship",text:"Conference presentations and research-oriented student work connected to publication and mentorship activities.",href:"/teaching/#teaching-media"},
+    {label:"Technical Practice",count:technicalCount,title:"Professional Experience",text:"Documented maintenance, diagnostics, troubleshooting, computer hardware, printers, electronic boards, and system verification.",href:"/experience/#experience-media"}
+  ];
+  root.innerHTML = `<div class="portfolio-highlight-grid">${cards.map(card => `<article class="portfolio-highlight-card"><div class="portfolio-highlight-meta"><span>${escapeHTML(card.label)}</span><strong>${card.count}</strong></div><h3>${escapeHTML(card.title)}</h3><p>${escapeHTML(card.text)}</p><a class="text-link" href="${escapeAttr(card.href)}">Explore evidence in context →</a></article>`).join("")}</div><p class="portfolio-highlight-note">Media are presented in the section where they provide the strongest academic or professional context, avoiding duplicate galleries across the site.</p>`;
 }
 
 async function renderHome() {
@@ -1758,8 +1802,11 @@ function initNavigation() {
     const active = href === "/" ? currentPath === "/" : currentPath.startsWith(href);
     link.classList.toggle("active", active);
     if (active) link.setAttribute("aria-current", "page"); else link.removeAttribute("aria-current");
-    if (href === "/institutional-evidence/") link.textContent = "Institutional Evidence";
-    if (href === "/media/") link.textContent = "Media & Activities";
+    if (href === "/institutional-evidence/") link.textContent = "Verification & Documents";
+    if (href === "/media/") link.textContent = "Portfolio Highlights";
+    if (href === "/awards/") link.textContent = "Honors & Awards";
+    if (href === "/credentials/") link.textContent = "Certifications & Training";
+    if (href === "/recommendations/") link.textContent = "Recommendations & References";
   });
   const menuToggle = $("#menuToggle");
   const sidebar = $("#sidebar");
@@ -1884,6 +1931,7 @@ function absorbGraduationProjectDuplicate() {
 async function runDynamicRenderers() {
   const jobs = [renderHome(), renderPublications(), renderProjects(), renderAwards(), renderCredentials(), renderExperiences(), renderRecommendations(), renderInstitutionalEvidence(), renderDocuments(), renderMedia()];
   renderProjectHardware();
+  renderContextMedia();
   await Promise.allSettled(jobs);
   bindRenderingImageFallbacks();
   initFilters();
