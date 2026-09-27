@@ -1,3 +1,17 @@
+// Vercel Web Analytics (private dashboard; no public analytics UI)
+(function initVercelWebAnalytics() {
+  if (window.__sfVercelAnalyticsInitialized) return;
+  window.__sfVercelAnalyticsInitialized = true;
+  window.va = window.va || function () {
+    (window.vaq = window.vaq || []).push(arguments);
+  };
+  const script = document.createElement("script");
+  script.defer = true;
+  script.src = "/_vercel/insights/script.js";
+  script.setAttribute("data-sf-analytics", "vercel");
+  document.head.appendChild(script);
+})();
+
 const SITE = {
   email: "salahfaisal589@gmail.com",
   scholar: "https://scholar.google.com/citations?hl=ar&user=kV3STigAAAAJ",
