@@ -55,6 +55,9 @@ jobs:
       - name: Projects hardware gallery regression test
         run: node tests/project-hardware-gallery.test.js
 
+      - name: EV and quadrotor project media regression test
+        run: node tests/project-research-media.test.js
+
       - name: In-site PDF viewer regression test
         run: node tests/media-pdf-viewer.test.js
 

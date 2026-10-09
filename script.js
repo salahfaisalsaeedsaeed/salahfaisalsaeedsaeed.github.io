@@ -305,6 +305,113 @@ const PROJECT_HARDWARE_MEDIA = [
   }
 ];
 
+const PROJECT_RESEARCH_MEDIA = {
+  ev_fast_charging: {
+    slug: "ev-fast-charging-system",
+    title: "EV Fast-Charging System",
+    description: "Project presentation media documenting EV fast-charging research and control-system development.",
+    items: [
+      {
+        folder: "EV1",
+        file: "EVFastCharging_Presentation_20261008_013537.mp4",
+        type: "video",
+        category: "EV Fast Charging",
+        title: "EV Fast-Charging System Presentation",
+        description: "Video presentation documenting the EV fast-charging research project and its engineering and control-system scope."
+      }
+    ]
+  },
+  quadrotor_uav_control: {
+    slug: "quadrotor-uav-control",
+    title: "Quadrotor UAV Control & Disturbance Rejection",
+    description: "Simulation, tracking, disturbance, control-contribution, and animation results associated with the Hybrid Geometric–Sliding-Mode Control of Quadrotor UAVs with Optimized Disturbance Rejection project.",
+    items: [
+      {
+        folder: "DRONE",
+        file: "01_3d_tracking_view.png",
+        type: "image",
+        category: "3D Tracking",
+        title: "3D Quadrotor Tracking View",
+        description: "Three-dimensional visualization of the quadrotor tracking response."
+      },
+      {
+        folder: "DRONE",
+        file: "02_performance_overview.png",
+        type: "image",
+        category: "Performance",
+        title: "Quadrotor Performance Overview",
+        description: "Consolidated performance visualization for the quadrotor control study."
+      },
+      {
+        folder: "DRONE",
+        file: "03_state_tracking.png",
+        type: "image",
+        category: "State Tracking",
+        title: "Quadrotor State Tracking",
+        description: "State-tracking results from the quadrotor control simulation."
+      },
+      {
+        folder: "DRONE",
+        file: "04_disturbance_profile.png",
+        type: "image",
+        category: "Disturbance Rejection",
+        title: "Disturbance Profile",
+        description: "Disturbance profile used to evaluate controller robustness and rejection performance."
+      },
+      {
+        folder: "DRONE",
+        file: "05_smc_contribution.png",
+        type: "image",
+        category: "Sliding-Mode Control",
+        title: "Sliding-Mode Control Contribution",
+        description: "Visualization of the sliding-mode-control contribution within the hybrid control study."
+      },
+      {
+        folder: "DRONE",
+        file: "06_overview_animation_final_frame.png",
+        type: "image",
+        category: "Simulation",
+        title: "Quadrotor Overview Animation — Final Frame",
+        description: "Final-frame view from the quadrotor overview animation."
+      },
+      {
+        folder: "DRONE",
+        file: "06_quadrotor_overview_animation.mp4",
+        poster: "06_overview_animation_final_frame.png",
+        type: "video",
+        category: "Simulation Video",
+        title: "Quadrotor Overview Animation",
+        description: "Animated overview of the quadrotor simulation and control response."
+      },
+      {
+        folder: "DRONE",
+        file: "07_tracking_animation_final_frame.png",
+        type: "image",
+        category: "Tracking",
+        title: "Quadrotor Tracking Animation — Final Frame",
+        description: "Final-frame view from the quadrotor tracking animation."
+      },
+      {
+        folder: "DRONE",
+        file: "07_quadrotor_tracking_animation.mp4",
+        poster: "07_tracking_animation_final_frame.png",
+        type: "video",
+        category: "Tracking Video",
+        title: "Quadrotor Tracking Animation",
+        description: "Animated visualization of the quadrotor trajectory-tracking response."
+      },
+      {
+        folder: "DRONE",
+        file: "08_quadrotor_showcase_animation.mp4",
+        type: "video",
+        category: "Project Showcase",
+        title: "Quadrotor Control Showcase Animation",
+        description: "Project showcase animation presenting the quadrotor control simulation."
+      }
+    ]
+  }
+};
+
 const GITHUB_MEDIA = {
   student_videos_and_conference_presentations: [
     {
@@ -1422,6 +1529,56 @@ function projectHardwareCard(item, index) {
   </figure>`;
 }
 
+function projectResearchMediaPath(item, fileName = item.file) {
+  return `/media/assets/projects/${encodeURIComponent(item.folder)}/${encodeURIComponent(fileName)}`;
+}
+
+function projectResearchMediaCard(item) {
+  const source = projectResearchMediaPath(item);
+  const isVideo = item.type === "video";
+  const poster = item.poster ? ` poster="${escapeAttr(projectResearchMediaPath(item, item.poster))}"` : "";
+  const visual = isVideo
+    ? `<video controls preload="metadata" playsinline${poster} aria-label="${escapeAttr(item.title)}"><source src="${escapeAttr(source)}" type="video/mp4">Your browser does not support embedded video.</video>`
+    : `<a class="github-pdf-preview-button portfolio-preview-button project-hardware-preview" href="${escapeAttr(source)}" target="_blank" rel="noopener" aria-label="Open ${escapeAttr(item.title)}">
+        <img src="${escapeAttr(source)}" alt="${escapeAttr(item.title)}" loading="lazy" decoding="async">
+        <span class="github-pdf-preview-overlay"><span class="file-kind">VIEW</span><strong>Open full view ↗</strong></span>
+      </a>`;
+
+  return `<figure class="asset-evidence-card github-media-card project-hardware-card">
+    <div class="asset-window asset-window--${isVideo ? "video" : "image"}">${visual}</div>
+    <figcaption class="asset-caption">
+      <div class="asset-caption-head"><span>${escapeHTML(item.category || (isVideo ? "Video" : "Image"))}</span></div>
+      <h4>${escapeHTML(item.title)}</h4>
+      <p>${escapeHTML(item.description || "")}</p>
+    </figcaption>
+  </figure>`;
+}
+
+function projectResearchMediaSection(collection, context = "media") {
+  const items = collection.items || [];
+  if (!items.length) return "";
+  const id = `${context}-${collection.slug}`;
+  return `<section class="media-library-group" id="${escapeAttr(id)}">
+    <div class="media-library-group-heading">
+      <div>
+        <p class="section-label">Project Media</p>
+        <h3>${escapeHTML(collection.title)}</h3>
+        <p>${escapeHTML(collection.description || "")}</p>
+      </div>
+      <span class="media-library-count">${items.length} items</span>
+    </div>
+    <div class="asset-gallery-grid media-library-grid">${items.map(projectResearchMediaCard).join("")}</div>
+  </section>`;
+}
+
+function renderProjectResearchMedia() {
+  const root = $("#projectResearchMedia");
+  if (!root) return;
+  root.innerHTML = Object.values(PROJECT_RESEARCH_MEDIA)
+    .map(collection => projectResearchMediaSection(collection, "project"))
+    .join("");
+}
+
 function bindProjectHardwareButtons(root = document) {
   const models = PROJECT_HARDWARE_MEDIA.map(projectHardwareModel);
   $("[data-project-hardware-index]", root).forEach(button => {
@@ -1918,7 +2075,9 @@ async function renderMedia() {
   if (!root) return;
 
   const githubItems = MEDIA_ORDER.flatMap(key => GITHUB_MEDIA[key] || []);
-  const allItems = [...PROJECT_HARDWARE_MEDIA, ...githubItems];
+  const projectCollections = Object.values(PROJECT_RESEARCH_MEDIA);
+  const projectItems = projectCollections.flatMap(collection => collection.items || []);
+  const allItems = [...PROJECT_HARDWARE_MEDIA, ...projectItems, ...githubItems];
   const imageCount = allItems.filter(item => item.type === "image").length;
   const videoCount = allItems.filter(item => item.type === "video").length;
   const pdfCount = allItems.filter(item => item.type === "pdf").length;
@@ -1926,6 +2085,11 @@ async function renderMedia() {
 
   const quickLinks = [
     { href: "#media-engineering-components-and-tools", label: "Engineering Components & Prototyping", count: PROJECT_HARDWARE_MEDIA.length },
+    ...projectCollections.map(collection => ({
+      href: `#media-${collection.slug}`,
+      label: collection.title,
+      count: (collection.items || []).length
+    })),
     ...groups.map(key => ({
       href: `#media-${key.replaceAll("_", "-")}`,
       label: MEDIA_META[key]?.title || prettyCategory(key),
@@ -1956,6 +2120,7 @@ async function renderMedia() {
       ${quickLinks.map(item => `<a href="${escapeAttr(item.href)}"><span>${escapeHTML(item.label)}</span><b>${item.count}</b></a>`).join("")}
     </nav>
     ${hardwareSection}
+    ${projectCollections.map(collection => projectResearchMediaSection(collection, "media")).join("")}
     ${groups.map(mediaLibrarySection).join("")}
   `;
 
@@ -2125,6 +2290,7 @@ function absorbGraduationProjectDuplicate() {
 async function runDynamicRenderers() {
   const jobs = [renderHome(), renderPublications(), renderProjects(), renderAwards(), renderCredentials(), renderExperiences(), renderRecommendations(), renderInstitutionalEvidence(), renderDocuments(), renderMedia()];
   renderProjectHardware();
+  renderProjectResearchMedia();
   renderContextMedia();
   await Promise.allSettled(jobs);
   bindRenderingImageFallbacks();
