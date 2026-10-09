@@ -2561,10 +2561,9 @@ function initNavigation() {
     if (href === "/institutional-evidence/") link.textContent = "Verification & Documents";
     if (href === "/media/") link.textContent = "Media & Activities";
     if (href === "/awards/") link.textContent = "Honors & Distinctions";
-    if (href === "/credentials/") link.textContent = "Credentials & Recognition";
-    if (href === "/research-conferences/") link.textContent = "Research & Conferences";
-    if (href === "/industrial-training/") link.textContent = "Industrial Training";
-    if (href === "/professional-development/") link.textContent = "Professional Development";
+        if (href === "/research-conferences/") link.textContent = "Research & Conferences";
+    if (href === "/industrial-training/") link.textContent = "Industrial Training & Engineering Practice";
+    if (href === "/professional-development/") link.textContent = "Courses & Professional Development";
     if (href === "/recommendations/") link.textContent = "Recommendations & References";
   });
   const menuToggle = $("#menuToggle");

@@ -2,7 +2,7 @@ const fs = require("fs");
 
 const failures = [];
 const pages = {
-  overview: fs.readFileSync("credentials/index.html","utf8"),
+  legacy: fs.readFileSync("credentials/index.html","utf8"),
   honors: fs.readFileSync("awards/index.html","utf8"),
   research: fs.readFileSync("research-conferences/index.html","utf8"),
   industrial: fs.readFileSync("industrial-training/index.html","utf8"),
@@ -12,7 +12,6 @@ const source = fs.readFileSync("script.js","utf8");
 const sitemap = fs.readFileSync("sitemap.xml","utf8");
 
 const pageTokens = {
-  overview: ["Credentials & Recognition", 'id="credentialDirectory"', 'id="credentialOverviewHighlights"', "Selected Credentials & Distinctions"],
   honors: ["Honors & Distinctions", "#research-awards", "#academic-distinction", "#teaching-recognition", "#community-recognition"],
   research: ["Research, Conferences & Scholarly Engagement", 'id="researchConferenceContent"', "#esmarta-2026", "#scholarly-symposia"],
   industrial: ["Industrial Training & Engineering Practice", 'id="industrialTrainingList"'],
@@ -28,7 +27,6 @@ for (const token of [
   "function isResearchConferenceCredential(",
   "function isIndustrialTrainingCredential(",
   "function isLanguageCredential(",
-  "function selectedCredentialHighlights(",
   "async function renderResearchConferences()",
   "async function renderIndustrialTraining()",
   "async function renderProfessionalDevelopment()",
@@ -41,15 +39,16 @@ for (const token of [
   if (!source.includes(token)) failures.push("script.js missing: " + token);
 }
 
-for (const route of ["/research-conferences/","/industrial-training/","/professional-development/"]) {
+for (const route of ["/awards/","/research-conferences/","/industrial-training/","/professional-development/"]) {
   if (!sitemap.includes("https://salah-faisal.vercel.app" + route)) failures.push("sitemap missing " + route);
 }
 
-if (pages.overview.includes('id="credentialsList"')) failures.push("overview still exposes the legacy all-certificates grid");
+if (!pages.legacy.includes('url=/professional-development/') || !pages.legacy.includes('noindex,follow')) failures.push("legacy credentials route must redirect to the independent professional-development page");
+if (sitemap.includes("https://salah-faisal.vercel.app/credentials/")) failures.push("retired combined credentials hub remains in sitemap");
 if (pages.honors.includes("Honors &amp; Awards")) failures.push("legacy Honors & Awards label remains on honors page");
 
 if (failures.length) {
   console.error(failures.map(x => "FAIL|" + x).join("\n"));
   process.exit(1);
 }
-console.log("PASS|credentials and recognition are organized into honors, scholarly engagement, industrial practice, and professional development");
+console.log("PASS|four independent credential windows are published without a combined credentials hub");

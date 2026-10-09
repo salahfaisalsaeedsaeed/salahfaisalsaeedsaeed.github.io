@@ -18,17 +18,16 @@ const source = fs.readFileSync("script.js","utf8");
 
 const requiredLabels = [
   "Media &amp; Activities",
-  "Credentials &amp; Recognition",
   "Honors &amp; Distinctions",
   "Research &amp; Conferences",
-  "Industrial Training",
-  "Professional Development",
+  "Industrial Training &amp; Engineering Practice",
+  "Courses &amp; Professional Development",
   "Recommendations &amp; References",
   "Verification &amp; Documents"
 ];
 
 for (const [name, html] of Object.entries(pages)) {
-  if (name === "documents") continue;
+  if (name === "documents" || name === "credentials") continue;
   for (const label of requiredLabels) {
     if (!html.includes(label)) failures.push(`${name}: missing portfolio navigation label ${label}`);
   }
@@ -54,10 +53,9 @@ for (const token of [
   "function isHonorRecord(",
   'link.textContent = "Media & Activities"',
   'link.textContent = "Honors & Distinctions"',
-  'link.textContent = "Credentials & Recognition"',
   'link.textContent = "Research & Conferences"',
-  'link.textContent = "Industrial Training"',
-  'link.textContent = "Professional Development"',
+  'link.textContent = "Industrial Training & Engineering Practice"',
+  'link.textContent = "Courses & Professional Development"',
   'link.textContent = "Recommendations & References"',
   'link.textContent = "Verification & Documents"'
 ]) {
@@ -72,4 +70,4 @@ if (failures.length) {
   console.error(failures.map(x=>"FAIL|"+x).join("\n"));
   process.exit(1);
 }
-console.log("PASS|portfolio navigation exposes the structured credentials and recognition architecture");
+console.log("PASS|portfolio navigation exposes four independent credential and recognition pages");
