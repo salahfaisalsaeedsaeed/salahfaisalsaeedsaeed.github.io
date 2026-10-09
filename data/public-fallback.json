@@ -909,6 +909,17 @@
       "visibility": "public",
       "text_only": true,
       "sort_order": 64
+    },
+    {
+      "$id": "fallback-award-taiz-academic-achievement",
+      "title": "Academic Achievement Recognition — Taiz University",
+      "issuer": "Mechatronics and Robotics Engineering Department, Taiz University",
+      "year": "2024–2025",
+      "category": "academic_distinction",
+      "description": "Certificate of appreciation recognizing scholarly achievement during the Mechatronics and Robotics Engineering graduation cycle for the 2024–2025 academic year.",
+      "visibility": "public",
+      "sort_order": 6.5,
+      "asset_id": "local:award:academic-achievement-taiz"
     }
   ],
   "credentials": [

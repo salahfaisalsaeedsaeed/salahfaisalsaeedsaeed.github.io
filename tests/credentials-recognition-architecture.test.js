@@ -66,6 +66,20 @@ if (!englishRecordBlock.includes('category: "education_language_achievement"')) 
 
 if (!pages.legacy.includes('url=/professional-development/') || !pages.legacy.includes('noindex,follow')) failures.push("legacy credentials route must redirect to the independent professional-development page");
 if (sitemap.includes("https://salah-faisal.vercel.app/credentials/")) failures.push("retired combined credentials hub remains in sitemap");
+const taizLocalCredentialOccurrences = (source.match(/site:taiz-academic-achievement-appreciation/g) || []).length;
+if (taizLocalCredentialOccurrences !== 0) {
+  failures.push("duplicate hard-coded Taiz academic achievement credential remains");
+}
+
+const fallback = JSON.parse(fs.readFileSync("data/public-fallback.json","utf8"));
+const taizFallback = (fallback.awards || []).filter(row =>
+  /academic achievement recognition/i.test(String(row.title || "")) &&
+  /taiz university/i.test(String(row.title || "") + " " + String(row.issuer || ""))
+);
+if (taizFallback.length !== 1) {
+  failures.push("fallback must contain exactly one canonical Taiz academic achievement honor");
+}
+
 if (pages.honors.includes("Honors &amp; Awards")) failures.push("legacy Honors & Awards label remains on honors page");
 
 if (failures.length) {
