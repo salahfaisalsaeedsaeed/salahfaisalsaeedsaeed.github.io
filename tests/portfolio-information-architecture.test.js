@@ -5,6 +5,9 @@ const pages = {
   media: fs.readFileSync("media/index.html","utf8"),
   awards: fs.readFileSync("awards/index.html","utf8"),
   credentials: fs.readFileSync("credentials/index.html","utf8"),
+  researchConferences: fs.readFileSync("research-conferences/index.html","utf8"),
+  industrialTraining: fs.readFileSync("industrial-training/index.html","utf8"),
+  professionalDevelopment: fs.readFileSync("professional-development/index.html","utf8"),
   recommendations: fs.readFileSync("recommendations/index.html","utf8"),
   verification: fs.readFileSync("institutional-evidence/index.html","utf8"),
   teaching: fs.readFileSync("teaching/index.html","utf8"),
@@ -15,8 +18,11 @@ const source = fs.readFileSync("script.js","utf8");
 
 const requiredLabels = [
   "Media &amp; Activities",
-  "Honors &amp; Awards",
-  "Certifications &amp; Training",
+  "Credentials &amp; Recognition",
+  "Honors &amp; Distinctions",
+  "Research &amp; Conferences",
+  "Industrial Training",
+  "Professional Development",
   "Recommendations &amp; References",
   "Verification &amp; Documents"
 ];
@@ -47,8 +53,11 @@ for (const token of [
   "function contextualMediaSection(",
   "function isHonorRecord(",
   'link.textContent = "Media & Activities"',
-  'link.textContent = "Honors & Awards"',
-  'link.textContent = "Certifications & Training"',
+  'link.textContent = "Honors & Distinctions"',
+  'link.textContent = "Credentials & Recognition"',
+  'link.textContent = "Research & Conferences"',
+  'link.textContent = "Industrial Training"',
+  'link.textContent = "Professional Development"',
   'link.textContent = "Recommendations & References"',
   'link.textContent = "Verification & Documents"'
 ]) {
@@ -63,4 +72,4 @@ if (failures.length) {
   console.error(failures.map(x=>"FAIL|"+x).join("\n"));
   process.exit(1);
 }
-console.log("PASS|portfolio navigation includes Media & Activities while contextual evidence and merged Documents remain organized");
+console.log("PASS|portfolio navigation exposes the structured credentials and recognition architecture");
