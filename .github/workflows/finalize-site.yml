@@ -43,6 +43,9 @@ jobs:
       - name: Portfolio information architecture regression test
         run: node tests/portfolio-information-architecture.test.js
 
+      - name: Credentials and recognition architecture regression test
+        run: node tests/credentials-recognition-architecture.test.js
+
       - name: GitHub media path regression test
         run: node tests/media-paths.test.js
 
