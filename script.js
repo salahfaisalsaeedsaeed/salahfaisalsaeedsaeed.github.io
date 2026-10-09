@@ -1828,7 +1828,7 @@ function isCommunityRecognitionCredential(row) {
   if (String(row?.category || "") === "community_engagement") return true;
   return [
     "student appreciation", "teaching excellence", "academic achievement",
-    "english subject achievement", "al haseb technical institute",
+    "al haseb technical institute",
     "al hasab technical institute"
   ].some(token => key.includes(token));
 }
@@ -1849,8 +1849,8 @@ function isIndustrialTrainingCredential(row) {
 
 function isLanguageCredential(row) {
   const key = recordSearchKey(row);
-  return String(row?.category || "") === "education_language_training"
-    || ["english language", "english beginner", "english basic", "translation", "language course"].some(token => key.includes(token));
+  return ["education_language_training", "education_language_achievement"].includes(String(row?.category || ""))
+    || ["english subject achievement", "english language", "english beginner", "english basic", "translation", "language course"].some(token => key.includes(token));
 }
 
 function isTeachingLeadershipCredential(row) {
@@ -1966,7 +1966,7 @@ function currentCredentialRecords() {
       title: "English Subject Achievement Certificate",
       issuer: "Technical Industrial Institute — Baghdad Street",
       year: "2015/2016",
-      category: "academic_recognition",
+      category: "education_language_achievement",
       description: "Certificate of appreciation for outstanding achievement in the English subject during the second vocational level.",
       visibility: "public",
       sort_order: 15.4
