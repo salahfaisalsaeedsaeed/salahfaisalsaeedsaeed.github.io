@@ -20,7 +20,7 @@ for (const token of [
 const expected = {
   publications: 8,
   projects: 8,
-  awards: 11,
+  awards: 12,
   credentials: 16,
   experiences: 5,
   recommendations: 6,
