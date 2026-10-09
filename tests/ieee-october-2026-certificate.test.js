@@ -14,7 +14,8 @@ for (const token of [
   "October 2, 2026",
   'render_type: directPdf ? "pdf_file" : "pdf_pages"',
   'if (renderType === "pdf_file")',
-  'const isPdfFile = String(model.render_type || "").toLowerCase() === "pdf_file"'
+  'const isPdfFile = String(model.render_type || "").toLowerCase() === "pdf_file"',
+  "if (!all.length && !any.length) return false;"
 ]) {
   if (!script.includes(token)) failures.push("script.js missing: " + token);
 }
