@@ -13,7 +13,7 @@ const sitemap = fs.readFileSync("sitemap.xml","utf8");
 
 const pageTokens = {
   overview: ["Credentials & Recognition", 'id="credentialDirectory"', 'id="credentialOverviewHighlights"', "Selected Credentials & Distinctions"],
-  honors: ["Honors & Distinctions", 'id="research-awards"', 'id="academic-distinction"', 'id="teaching-recognition"', 'id="community-recognition"'],
+  honors: ["Honors & Distinctions", "#research-awards", "#academic-distinction", "#teaching-recognition", "#community-recognition"],
   research: ["Research, Conferences & Scholarly Engagement", 'id="researchConferenceContent"', "#esmarta-2026", "#scholarly-symposia"],
   industrial: ["Industrial Training & Engineering Practice", 'id="industrialTrainingList"'],
   development: ["Courses & Professional Development", 'id="professionalDevelopmentContent"', "#technology-skills", "#languages-communication"]
