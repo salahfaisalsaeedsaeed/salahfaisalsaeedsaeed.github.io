@@ -1985,7 +1985,7 @@ function currentCredentialRecords() {
     {
       $id: "site:al-haseb-library-appreciation",
       slug: "al-haseb-technical-institute-library-appreciation",
-      title: "Certificate of Appreciation — Independent Learning & Research",
+      title: "Certificate of Appreciation — Al-Hasab Technical Institute Library",
       issuer: "Technical Industrial Institute — Al-Hasab Library",
       year: "",
       category: "professional_recognition",
