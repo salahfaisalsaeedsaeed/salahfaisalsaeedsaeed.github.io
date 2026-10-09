@@ -1972,17 +1972,6 @@ function currentCredentialRecords() {
       sort_order: 15.4
     },
     {
-      $id: "site:taiz-academic-achievement-appreciation",
-      slug: "taiz-university-academic-achievement-appreciation",
-      title: "Certificate of Appreciation — Academic Achievement",
-      issuer: "Taiz University · Al-Saeed Faculty for Engineering & Information Technology",
-      year: "2024–2025",
-      category: "academic_recognition",
-      description: "Graduation-related recognition for academic effort and achievement throughout the Mechatronics and Robotics Engineering program.",
-      visibility: "public",
-      sort_order: 15.5
-    },
-    {
       $id: "site:al-haseb-library-appreciation",
       slug: "al-haseb-technical-institute-library-appreciation",
       title: "Certificate of Appreciation — Al-Hasab Technical Institute Library",
