@@ -21,7 +21,7 @@ const expected = {
   publications: 8,
   projects: 8,
   awards: 11,
-  credentials: 15,
+  credentials: 16,
   experiences: 5,
   recommendations: 6,
   institutionalEvidence: 6
