@@ -1607,17 +1607,72 @@ function renderProjectHardware() {
   bindProjectHardwareButtons(root);
 }
 
+function currentResearchProjectRecords() {
+  return [
+    {
+      $id: "site:ev-fast-charging-system",
+      slug: "ev-fast-charging-system",
+      title: "EV Fast-Charging System",
+      category: "ev_charging",
+      status: "research in progress",
+      year: "2026",
+      short_description: "Ongoing academic and engineering research on EV fast-charging system modelling, simulation, control development, and system-level validation.",
+      technologies: ["EV Fast Charging", "MATLAB/Simulink", "Control Systems", "Power Electronics"],
+      visibility: "public",
+      featured: false,
+      sort_order: 4
+    }
+  ];
+}
+
+function mergeCurrentResearchProjects(rows = []) {
+  const merged = [...rows];
+  for (const local of currentResearchProjectRecords()) {
+    const index = merged.findIndex(row => normalizedKey(row.slug || row.title) === normalizedKey(local.slug || local.title));
+    if (index >= 0) merged[index] = { ...merged[index], ...local };
+    else merged.push(local);
+  }
+  return merged;
+}
+
+function projectResearchMediaForProject(project) {
+  const slug = normalizedKey(project?.slug || "");
+  const title = normalizedKey(project?.title || "");
+  if (slug === "ev fast charging system" || title === "ev fast charging system") {
+    return PROJECT_RESEARCH_MEDIA.ev_fast_charging;
+  }
+  if (slug === "quadrotor hybrid control" || title.includes("quadrotor")) {
+    return PROJECT_RESEARCH_MEDIA.quadrotor_uav_control;
+  }
+  return null;
+}
+
+function projectInlineResearchMedia(project) {
+  const collection = projectResearchMediaForProject(project);
+  const items = collection?.items || [];
+  if (!items.length) return "";
+  return `<details class="project-media-details" open>
+    <summary><span>Project media</span><b>${items.length} item${items.length === 1 ? "" : "s"}</b></summary>
+    <p class="project-media-intro">${escapeHTML(collection.description || "")}</p>
+    <div class="asset-gallery-grid project-inline-media-grid">${items.map(projectResearchMediaCard).join("")}</div>
+  </details>`;
+}
+
 async function renderProjects() {
   const root = $("#projectsList");
   if (!root) return;
   const data = await loadData();
-  const rows = uniqueRows((data.projects || []).filter(approvedRow), row => normalizedKey(row.slug || row.title));
+  const rows = uniqueRows(
+    mergeCurrentResearchProjects((data.projects || []).filter(approvedRow)),
+    row => normalizedKey(row.slug || row.title)
+  );
   if (!rows.length) return renderError(root);
   root.innerHTML = rows.map((project, index) => {
     const assets = recordAssets(data, project, "projects");
     const technologies = asArray(project.technologies);
     const tags = technologies.length ? technologies : [prettyCategory(project.category || "Project")];
-    return `<article class="project-record filter-item" id="${escapeAttr(project.slug || "")}" data-category="${escapeAttr(project.category || "other")}"><div class="project-index">${String(index + 1).padStart(2, "0")}</div><div class="project-main"><div class="project-top"><div><p class="record-type">${escapeHTML(prettyCategory(project.status || "Project"))}</p><h3>${escapeHTML(project.title)}</h3></div>${project.year ? `<time>${escapeHTML(project.year)}</time>` : ""}</div><p class="project-summary">${escapeHTML(project.short_description || project.overview || "")}</p><div class="project-tags">${tags.filter(Boolean).slice(0, 7).map(tag => `<span>${escapeHTML(tag)}</span>`).join("")}</div>${inlineAssetStrip(data, assets, { description: project.short_description || project.overview || "" }, { compact: true, max: 3 })}<details class="project-details"><summary>Project details</summary><dl>${project.role ? `<div><dt>Role</dt><dd>${escapeHTML(project.role)}</dd></div>` : ""}${project.objectives ? `<div><dt>Objectives</dt><dd>${escapeHTML(project.objectives)}</dd></div>` : ""}${project.methodology ? `<div><dt>Methodology</dt><dd>${escapeHTML(project.methodology)}</dd></div>` : ""}${project.results ? `<div><dt>Results / status</dt><dd>${escapeHTML(project.results)}</dd></div>` : ""}</dl></details></div></article>`;
+    const projectMedia = projectInlineResearchMedia(project);
+    return `<article class="project-record filter-item" id="${escapeAttr(project.slug || "")}" data-category="${escapeAttr(project.category || "other")}"><div class="project-index">${String(index + 1).padStart(2, "0")}</div><div class="project-main"><div class="project-top"><div><p class="record-type">${escapeHTML(prettyCategory(project.status || "Project"))}</p><h3>${escapeHTML(project.title)}</h3></div>${project.year ? `<time>${escapeHTML(project.year)}</time>` : ""}</div><p class="project-summary">${escapeHTML(project.short_description || project.overview || "")}</p><div class="project-tags">${tags.filter(Boolean).slice(0, 7).map(tag => `<span>${escapeHTML(tag)}</span>`).join("")}</div>${projectMedia}${inlineAssetStrip(data, assets, { description: project.short_description || project.overview || "" }, { compact: true, max: 3 })}<details class="project-details"><summary>Project details</summary><dl>${project.role ? `<div><dt>Role</dt><dd>${escapeHTML(project.role)}</dd></div>` : ""}${project.objectives ? `<div><dt>Objectives</dt><dd>${escapeHTML(project.objectives)}</dd></div>` : ""}${project.methodology ? `<div><dt>Methodology</dt><dd>${escapeHTML(project.methodology)}</dd></div>` : ""}${project.results ? `<div><dt>Results / status</dt><dd>${escapeHTML(project.results)}</dd></div>` : ""}</dl></details></div></article>`;
   }).join("");
   bindAssetButtons(data);
   initFilters();
