@@ -761,6 +761,23 @@
       ],
       "visibility": "public",
       "sort_order": 7
+    },
+    {
+      "$id": "fallback-project-ev-fast-charging-system",
+      "slug": "ev-fast-charging-system",
+      "title": "EV Fast-Charging System",
+      "category": "ev_charging",
+      "status": "research in progress",
+      "year": "2026",
+      "short_description": "Ongoing academic and engineering research on EV fast-charging system modelling, simulation, control development, and system-level validation.",
+      "technologies": [
+        "EV Fast Charging",
+        "MATLAB/Simulink",
+        "Control Systems",
+        "Power Electronics"
+      ],
+      "visibility": "public",
+      "sort_order": 4
     }
   ],
   "awards": [
