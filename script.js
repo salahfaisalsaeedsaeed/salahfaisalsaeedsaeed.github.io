@@ -1182,11 +1182,21 @@ function localEvidenceText(row) {
 
 function localEvidenceSpecMatches(spec, row) {
   const ids = new Set(assetIdsFromRecord(row));
-  if ((spec.assetIds || []).some(id => ids.has(id))) return true;
+  const assetIds = spec.assetIds || [];
+  if (assetIds.some(id => ids.has(id))) return true;
+
+  const all = spec.all || [];
+  const any = spec.any || [];
+  const none = spec.none || [];
+
+  // An asset-ID-only rule is exact. If its ID does not match this record,
+  // it must not fall through and accidentally match every record.
+  if (!all.length && !any.length) return false;
+
   const text = localEvidenceText(row);
-  const hasAll = (spec.all || []).every(token => text.includes(normalizedKey(token)));
-  const hasAny = !(spec.any || []).length || spec.any.some(token => text.includes(normalizedKey(token)));
-  const hasNone = !(spec.none || []).some(token => text.includes(normalizedKey(token)));
+  const hasAll = all.every(token => text.includes(normalizedKey(token)));
+  const hasAny = !any.length || any.some(token => text.includes(normalizedKey(token)));
+  const hasNone = !none.some(token => text.includes(normalizedKey(token)));
   return hasAll && hasAny && hasNone;
 }
 
