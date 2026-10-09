@@ -59,7 +59,6 @@ const requiredPhrases = [
   "Peer-reviewed IEEE conference publications spanning robotics, computer vision, energy systems, artificial intelligence, and related engineering research.",
   "Professional Experience",
   "Media & Activities",
-  "Credentials & Recognition",
   "Honors & Distinctions",
   "Research, Conferences & Scholarly Engagement",
   "Industrial Training & Engineering Practice",
