@@ -687,3 +687,38 @@ button{color:inherit}
   .project-inline-media-grid{grid-template-columns:1fr}
   .project-inline-media-grid .asset-window{height:210px}
 }
+
+
+/* Credentials & Recognition architecture */
+.nav-subitem a{padding-left:28px;font-size:.79rem;color:var(--muted)}
+.nav-subitem a::before{content:"—";margin-right:7px;color:var(--border-strong)}
+.nav-subitem a.active{color:var(--blue)}
+.credential-hub-intro{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(250px,.6fr);gap:26px;align-items:start}
+.credential-hub-note{padding:18px 20px;border:1px solid var(--border);background:var(--surface-soft);border-radius:10px}
+.credential-hub-note strong{display:block;margin-bottom:7px;color:var(--navy);font-size:.86rem}
+.credential-hub-note p{margin:0;color:var(--muted);font-size:.78rem;line-height:1.65}
+.credential-directory-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin-top:20px}
+.credential-directory-card{position:relative;display:block;min-height:180px;padding:24px 58px 22px 22px;border:1px solid var(--border);border-radius:10px;background:var(--surface);text-decoration:none;box-shadow:0 8px 30px rgba(15,35,55,.04);transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease}
+.credential-directory-card:hover{transform:translateY(-2px);border-color:var(--border-strong);box-shadow:0 12px 34px rgba(15,35,55,.08)}
+.credential-directory-card h3{margin:0 0 9px;color:var(--navy);font-size:1rem}
+.credential-directory-card p{margin:0 0 18px;color:var(--muted);font-size:.78rem;line-height:1.65}
+.credential-directory-count{position:absolute;top:18px;right:18px;display:inline-flex;align-items:center;justify-content:center;min-width:34px;height:34px;padding:0 8px;border:1px solid var(--border);border-radius:999px;background:var(--surface-soft);color:var(--blue);font-size:.7rem;font-weight:850}
+.credential-sections{display:grid;gap:44px}
+.credential-group{scroll-margin-top:24px}
+.credential-group-heading{align-items:end;margin-bottom:18px}
+.credential-group-heading>div>p:last-child{max-width:860px;margin:7px 0 0;color:var(--muted);font-size:.8rem;line-height:1.65}
+.credential-group-count{display:inline-flex;align-items:center;justify-content:center;min-width:36px;height:30px;padding:0 10px;border:1px solid var(--border);border-radius:999px;color:var(--blue);font-size:.68rem;font-weight:850;background:var(--surface-soft)}
+.section-jump-nav{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.section-jump-nav a{display:inline-flex;align-items:center;min-height:34px;padding:7px 11px;border:1px solid var(--border);border-radius:999px;background:var(--surface);color:var(--text);font-size:.7rem;font-weight:760;text-decoration:none}
+.section-jump-nav a:hover{border-color:var(--border-strong);color:var(--blue)}
+.credential-context-strip{margin-bottom:22px}
+@media(max-width:860px){
+  .credential-hub-intro{grid-template-columns:1fr}
+  .credential-directory-grid{grid-template-columns:1fr}
+}
+@media(max-width:700px){
+  .nav-subitem a{padding-left:22px}
+  .credential-directory-card{min-height:0}
+  .credential-sections{gap:34px}
+  .credential-group-heading{align-items:flex-start}
+}

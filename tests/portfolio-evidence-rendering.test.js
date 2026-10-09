@@ -23,8 +23,11 @@ for (const renderer of ["renderAwards", "renderCredentials", "renderRecommendati
   const start = source.indexOf(`async function ${renderer}()`);
   const next = source.indexOf("\nasync function ", start + 1);
   const block = start >= 0 ? source.slice(start, next >= 0 ? next : source.length) : "";
-  if (!block.includes("portfolioMediaCard(data,")) {
-    failures.push(`${renderer} is not using the Media-style portfolio card renderer`);
+  const usesPortfolioCards = block.includes("portfolioMediaCard(data,") ||
+    block.includes("portfolioRecordCard(data,") ||
+    block.includes("groupedPortfolioSection(data,");
+  if (!usesPortfolioCards) {
+    failures.push(`${renderer} is not using the Media-style portfolio card architecture`);
   }
   if (!block.includes("bindAssetButtons(data)")) {
     failures.push(`${renderer} does not bind document viewer buttons`);
@@ -46,10 +49,11 @@ for (const page of ["awards/index.html", "credentials/index.html"]) {
 }
 
 const credentialsHtml = fs.readFileSync("credentials/index.html", "utf8");
-for (const filterKey of ["research_conference", "technical_professional_development", "industrial_training", "education_language_training", "community_engagement"]) {
-  if (!credentialsHtml.includes(`data-filter="${filterKey}"`)) {
-    failures.push(`credentials/index.html missing live Appwrite filter key: ${filterKey}`);
-  }
+for (const token of ['id="credentialDirectory"', 'id="credentialOverviewHighlights"', "Selected Credentials & Distinctions"]) {
+  if (!credentialsHtml.includes(token)) failures.push("credentials/index.html missing structured credential hub token: " + token);
+}
+for (const page of ["research-conferences/index.html", "industrial-training/index.html", "professional-development/index.html"]) {
+  if (!fs.existsSync(page)) failures.push("missing structured credential page: " + page);
 }
 const recommendationsHtml = fs.readFileSync("recommendations/index.html", "utf8");
 if (!/\/script\.js\?v=[^"]+/.test(recommendationsHtml)) {
@@ -69,4 +73,4 @@ if (failures.length) {
   process.exit(1);
 }
 
-console.log("PASS|Honors, certifications, and references use contextual portfolio evidence cards");
+console.log("PASS|Honors, credential sections, and references use contextual portfolio evidence cards");

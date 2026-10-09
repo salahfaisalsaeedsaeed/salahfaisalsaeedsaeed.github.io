@@ -42,8 +42,8 @@ for (const token of [
   "data.localModelMap",
   "function renderingFallbackUrl(",
   "data-fallback-src",
-  'collection: "awards"',
-  'collection: "credentials"',
+  'sourceRecord(row, "awards")',
+  'sourceRecord(row, "credentials")',
   'collection: "recommendations"',
   'recordAssets(data, experience, "experiences")'
 ]) {

@@ -1031,8 +1031,8 @@ function requiredDataKeys() {
   if ($("#homeFeaturedPublications") || $("#metricPublications")) add("publications", "projects", "awards");
   if ($("#publicationsList")) add("publications", "assets", "assetRenderings");
   if ($("#projectsList") || $("#graduationProjectActions")) add("projects", "assets", "assetRenderings");
-  if ($("#awardsList")) add("awards", "assets", "assetRenderings");
-  if ($("#credentialsList")) add("credentials", "awards", "assets", "assetRenderings");
+  if ($("#awardsList")) add("awards", "credentials", "assets", "assetRenderings");
+  if ($("#credentialsList") || $("#credentialOverviewHighlights") || $("#researchConferenceContent") || $("#industrialTrainingList") || $("#professionalDevelopmentContent")) add("credentials", "awards", "assets", "assetRenderings");
   if ($("#experienceList")) add("experiences", "assets", "assetRenderings");
   if ($("#recommendationsList")) add("recommendations", "assets", "assetRenderings");
   if ($("#institutionalEvidenceList")) add("institutionalEvidence", "assets", "assetRenderings");
@@ -1803,33 +1803,196 @@ function isHonorRecord(row) {
   return true;
 }
 
+function sourceRecord(row, collection) {
+  return { ...row, _sourceCollection: collection };
+}
+
+function credentialRowsForDisplay(data) {
+  const awardAssetIds = new Set((data.awards || []).map(row => row.asset_id).filter(Boolean));
+  const awardTitles = new Set((data.awards || []).map(row => normalizedKey(row.title)).filter(Boolean));
+  return uniqueRows(
+    mergeCurrentCredentialRecords((data.credentials || []).filter(approvedRow))
+      .filter(row => !awardAssetIds.has(row.asset_id) && !awardTitles.has(normalizedKey(row.title))),
+    row => row.asset_id || normalizedKey(row.title)
+  );
+}
+
+function recordSearchKey(row) {
+  return normalizedKey([
+    row?.title, row?.issuer, row?.category, row?.description, row?.slug
+  ].filter(Boolean).join(" "));
+}
+
+function isCommunityRecognitionCredential(row) {
+  const key = recordSearchKey(row);
+  if (String(row?.category || "") === "community_engagement") return true;
+  return [
+    "student appreciation", "teaching excellence", "academic achievement",
+    "english subject achievement", "al haseb technical institute",
+    "al hasab technical institute"
+  ].some(token => key.includes(token));
+}
+
+function isResearchConferenceCredential(row) {
+  const key = recordSearchKey(row);
+  return String(row?.category || "") === "research_conference"
+    || key.includes("esmarta")
+    || key.includes("ieee authorship")
+    || key.includes("symposium");
+}
+
+function isIndustrialTrainingCredential(row) {
+  const key = recordSearchKey(row);
+  return String(row?.category || "") === "industrial_training"
+    || ["genpack", "nadfood", "ycic", "industrial training", "electronic control training"].some(token => key.includes(token));
+}
+
+function isLanguageCredential(row) {
+  const key = recordSearchKey(row);
+  return String(row?.category || "") === "education_language_training"
+    || ["english language", "english beginner", "english basic", "translation", "language course"].some(token => key.includes(token));
+}
+
+function isTeachingLeadershipCredential(row) {
+  const key = recordSearchKey(row);
+  return ["train the trainer", "novice trainer", "leadership", "management", "teaching methods", "pedagogy", "classroom"].some(token => key.includes(token));
+}
+
+function isTechnologyCredential(row) {
+  const key = recordSearchKey(row);
+  return ["computer essentials", "internet of things", " artificial intelligence", "artificial intelligence", "digital", "programming", "matlab", "embedded", "robotics"].some(token => key.includes(token));
+}
+
+function portfolioRecordCard(data, row, options = {}) {
+  if (row.text_only) return honorTextCard(row);
+  return portfolioMediaCard(data, row, {
+    collection: row._sourceCollection || options.collection || "credentials",
+    title: row.title,
+    institution: row.issuer || "",
+    description: row.description || "",
+    year: row.year || "",
+    categoryLabel: options.categoryLabel || prettyCategory(row.category || options.fallbackCategory || "Credential"),
+    fallbackCategory: options.fallbackCategory || "Credential",
+    extraClass: options.featured || asBool(row.featured) ? "portfolio-media-card--featured" : ""
+  });
+}
+
+function groupedPortfolioSection(data, id, label, title, description, rows, options = {}) {
+  if (!rows.length) return "";
+  return `<section class="credential-group" id="${escapeAttr(id)}">
+    <div class="section-title-row credential-group-heading">
+      <div><p class="section-label">${escapeHTML(label)}</p><h3>${escapeHTML(title)}</h3>${description ? `<p>${escapeHTML(description)}</p>` : ""}</div>
+      <span class="credential-group-count">${rows.length}</span>
+    </div>
+    <div class="asset-gallery-grid portfolio-gallery-grid">${rows.map(row => portfolioRecordCard(data, row, options)).join("")}</div>
+  </section>`;
+}
+
+function honorGroupFor(row) {
+  const key = recordSearchKey(row);
+  if (key.includes("best paper") || key.includes("scientific research excellence") || key.includes("research award")) return "research";
+  if (key.includes("rank") || key.includes("academic distinction") || key.includes("academic achievement") || key.includes("english subject achievement")) return "academic";
+  if (key.includes("physics laboratory") || key.includes("teaching excellence") || key.includes("student appreciation")) return "teaching";
+  if (String(row.category || "") === "community_engagement" || key.includes("founding member") || key.includes("taiz stars") || key.includes("active participation")) return "community";
+  return "institutional";
+}
+
 async function renderAwards() {
   const root = $("#awardsList");
   if (!root) return;
   const data = await loadData();
+
+  const awardRows = mergeTaizResearchExcellenceAward((data.awards || []).filter(approvedRow).filter(isHonorRecord))
+    .map(row => sourceRecord(row, "awards"));
+  const credentialRecognition = credentialRowsForDisplay(data)
+    .filter(isCommunityRecognitionCredential)
+    .map(row => sourceRecord(row, "credentials"));
   let rows = uniqueRows(
-    mergeRassamTextOnlyHonors(mergeTaizResearchExcellenceAward((data.awards || []).filter(approvedRow).filter(isHonorRecord))),
+    mergeRassamTextOnlyHonors([...awardRows, ...credentialRecognition]),
     row => row.asset_id || normalizedKey(row.title)
   );
   if (!rows.length) return renderError(root);
+
   rows = [...rows].sort((a, b) => Number(asBool(b.featured)) - Number(asBool(a.featured)) || (Number(b.year) || 0) - (Number(a.year) || 0));
-  root.className = "asset-gallery-grid portfolio-gallery-grid";
-  root.innerHTML = rows.map(award => award.text_only
-    ? honorTextCard(award)
-    : portfolioMediaCard(data, award, {
-        collection: "awards", title: award.title, institution: award.issuer || "",
-        description: award.description || "", year: award.year || "",
-        categoryLabel: prettyCategory(award.category || "Honor"), fallbackCategory: "Honor",
-        extraClass: asBool(award.featured) ? "portfolio-media-card--featured" : ""
-      })
-  ).join("");
+  const groups = {
+    research: rows.filter(row => honorGroupFor(row) === "research"),
+    academic: rows.filter(row => honorGroupFor(row) === "academic"),
+    teaching: rows.filter(row => honorGroupFor(row) === "teaching"),
+    institutional: rows.filter(row => honorGroupFor(row) === "institutional"),
+    community: rows.filter(row => honorGroupFor(row) === "community")
+  };
+
+  root.className = "credential-sections";
+  root.innerHTML = [
+    groupedPortfolioSection(data, "research-awards", "Research Recognition", "Research Awards & Recognition", "Competitive and institutional recognition for research quality, scholarly contribution, and academic impact.", groups.research, { fallbackCategory: "Research Recognition" }),
+    groupedPortfolioSection(data, "academic-distinction", "Academic Excellence", "Academic Distinction & Ranking", "Documented academic distinction, ranking, and achievement across university and technical education.", groups.academic, { fallbackCategory: "Academic Distinction" }),
+    groupedPortfolioSection(data, "teaching-recognition", "Education", "Teaching & Educational Recognition", "Recognition for teaching quality, laboratory development, practical learning, and educational contribution.", groups.teaching, { fallbackCategory: "Teaching Recognition" }),
+    groupedPortfolioSection(data, "institutional-recognition", "Professional Recognition", "Professional & Institutional Recognition", "Institutional appreciation for professional service, laboratory development, research mentorship, and technical contribution.", groups.institutional, { fallbackCategory: "Professional Recognition" }),
+    groupedPortfolioSection(data, "community-recognition", "Leadership & Service", "Leadership & Community Recognition", "Recognition for leadership, founding membership, community participation, and active institutional engagement.", groups.community, { fallbackCategory: "Community Recognition" })
+  ].join("");
+
   const summary = $("#awardsSummary");
-  if (summary) summary.innerHTML = `<span><strong>${rows.length}</strong> honors & awards</span><span><strong>${rows.filter(row => asBool(row.featured)).length}</strong> featured distinctions</span>`;
+  if (summary) summary.innerHTML = `<span><strong>${rows.length}</strong> honors & distinctions</span><span><strong>${groups.research.length}</strong> research recognitions</span><span><strong>${groups.academic.length}</strong> academic distinctions</span>`;
   bindAssetButtons(data);
 }
 
 function currentCredentialRecords() {
   return [
+    {
+      $id: "site:english-basic-3-al-kindi",
+      slug: "english-language-basic-3-al-kindi",
+      title: "English Language — Basic 3",
+      issuer: "Al-Kindi Institute for Languages & Computer",
+      year: "2012",
+      category: "education_language_training",
+      description: "60-hour English Language Basic 3 course completed from May 16 to July 16, 2012, with an Excellent grade (96%).",
+      visibility: "public",
+      sort_order: 15.2
+    },
+    {
+      $id: "site:english-beginner-1a-global",
+      slug: "english-beginner-1a-global-language-institute",
+      title: "English Language — Beginner 1-A",
+      issuer: "Global Language Institute",
+      year: "2017",
+      category: "education_language_training",
+      description: "50-hour Beginner 1-A English course completed from November 26 to December 25, 2017, with 93/100 and an Excellent grade.",
+      visibility: "public",
+      sort_order: 15.3
+    },
+    {
+      $id: "site:english-subject-achievement",
+      slug: "english-subject-achievement",
+      title: "English Subject Achievement Certificate",
+      issuer: "Technical Industrial Institute — Baghdad Street",
+      year: "2015/2016",
+      category: "academic_recognition",
+      description: "Certificate of appreciation for outstanding achievement in the English subject during the second vocational level.",
+      visibility: "public",
+      sort_order: 15.4
+    },
+    {
+      $id: "site:taiz-academic-achievement-appreciation",
+      slug: "taiz-university-academic-achievement-appreciation",
+      title: "Certificate of Appreciation — Academic Achievement",
+      issuer: "Taiz University · Al-Saeed Faculty for Engineering & Information Technology",
+      year: "2024–2025",
+      category: "academic_recognition",
+      description: "Graduation-related recognition for academic effort and achievement throughout the Mechatronics and Robotics Engineering program.",
+      visibility: "public",
+      sort_order: 15.5
+    },
+    {
+      $id: "site:al-haseb-library-appreciation",
+      slug: "al-haseb-technical-institute-library-appreciation",
+      title: "Certificate of Appreciation — Al-Hasab Technical Institute Library",
+      issuer: "Technical Industrial Institute — Al-Hasab Library",
+      year: "",
+      category: "professional_recognition",
+      description: "Recognition for initiative in reading, research, self-development, and using the institute library to strengthen technical knowledge and skills.",
+      visibility: "public",
+      sort_order: 15.6
+    },
     {
       $id: "site:ieee-authorship-open-access-october-2026",
       slug: "ieee-authorship-open-access-symposium-october-2026",
@@ -1859,32 +2022,159 @@ function mergeCurrentCredentialRecords(rows = []) {
   return sortRows(merged);
 }
 
-async function renderCredentials() {
-  const root = $("#credentialsList");
-  if (!root) return;
-  const data = await loadData();
-  const awardAssetIds = new Set((data.awards || []).map(row => row.asset_id).filter(Boolean));
-  const awardTitles = new Set((data.awards || []).map(row => normalizedKey(row.title)).filter(Boolean));
-  let rows = mergeCurrentCredentialRecords((data.credentials || []).filter(approvedRow))
-    .filter(row => !awardAssetIds.has(row.asset_id) && !awardTitles.has(normalizedKey(row.title)));
-  rows = uniqueRows(rows, row => row.asset_id || normalizedKey(row.title));
-  if (!rows.length) return renderError(root);
+function latestCredentialMatch(rows, predicate) {
+  return [...rows].filter(predicate).sort((a, b) =>
+    (Number(b.year) || 0) - (Number(a.year) || 0) ||
+    (Number(b.sort_order) || 0) - (Number(a.sort_order) || 0)
+  )[0] || null;
+}
 
-  root.className = "asset-gallery-grid portfolio-gallery-grid";
-  root.innerHTML = rows.map(credential => portfolioMediaCard(data, credential, {
-    collection: "credentials",
-    title: credential.title,
-    institution: credential.issuer || "",
-    description: credential.description || "",
-    year: credential.year || "",
-    categoryLabel: prettyCategory(credential.category || "Credential"),
-    dataCategory: credential.category || "other",
-    fallbackCategory: "Credential",
-    filterable: true
-  })).join("");
+function selectedCredentialHighlights(data) {
+  const honors = uniqueRows(
+    mergeRassamTextOnlyHonors(
+      mergeTaizResearchExcellenceAward((data.awards || []).filter(approvedRow).filter(isHonorRecord))
+    ).map(row => sourceRecord(row, "awards")),
+    row => row.asset_id || normalizedKey(row.title)
+  );
+  const credentials = credentialRowsForDisplay(data).map(row => sourceRecord(row, "credentials"));
+  const pick = (rows, tokens) => latestCredentialMatch(rows, row => {
+    const key = recordSearchKey(row);
+    return tokens.every(token => key.includes(token));
+  });
+  const selected = [
+    pick(honors, ["best paper"]),
+    pick(honors, ["scientific research excellence"]),
+    pick(honors, ["second nationally"]),
+    pick(credentials, ["esmarta 2026"]),
+    pick(credentials, ["nadfood"]),
+    pick(credentials, ["ycic"]),
+    credentials.find(row => String(row.asset_id || "") === "local:credential:ieee-authorship-oct-2026") || pick(credentials, ["ieee", "authorship"]),
+    pick(credentials, ["train", "trainer"])
+  ].filter(Boolean);
+  return uniqueRows(selected, row => row.asset_id || normalizedKey(row.title));
+}
+
+async function renderCredentials() {
+  const highlightsRoot = $("#credentialOverviewHighlights");
+  const directoryRoot = $("#credentialDirectory");
+  const legacyRoot = $("#credentialsList");
+  if (!highlightsRoot && !directoryRoot && !legacyRoot) return;
+  const data = await loadData();
+
+  if (legacyRoot) {
+    const rows = credentialRowsForDisplay(data);
+    legacyRoot.className = "asset-gallery-grid portfolio-gallery-grid";
+    legacyRoot.innerHTML = rows.map(row => portfolioRecordCard(data, sourceRecord(row, "credentials"))).join("");
+  }
+
+  if (highlightsRoot) {
+    const highlights = selectedCredentialHighlights(data);
+    highlightsRoot.className = "asset-gallery-grid portfolio-gallery-grid";
+    highlightsRoot.innerHTML = highlights.map(row => portfolioRecordCard(data, row, { featured: true })).join("");
+  }
+
+  if (directoryRoot) {
+    const credentials = credentialRowsForDisplay(data);
+    const honorsCount = uniqueRows(
+      mergeRassamTextOnlyHonors(mergeTaizResearchExcellenceAward((data.awards || []).filter(approvedRow).filter(isHonorRecord))),
+      row => row.asset_id || normalizedKey(row.title)
+    ).length;
+    const researchCount = credentials.filter(isResearchConferenceCredential).length;
+    const industrialCount = credentials.filter(isIndustrialTrainingCredential).length;
+    const professionalCount = credentials.filter(row =>
+      !isResearchConferenceCredential(row) &&
+      !isIndustrialTrainingCredential(row) &&
+      !isCommunityRecognitionCredential(row)
+    ).length;
+    directoryRoot.innerHTML = [
+      ["/awards/", "Honors & Distinctions", "Awards, academic ranking, teaching recognition, institutional appreciation, and community distinction.", honorsCount],
+      ["/research-conferences/", "Research, Conferences & Scholarly Engagement", "Conference participation, paper-presentation certificates, IEEE symposia, and scholarly development.", researchCount],
+      ["/industrial-training/", "Industrial Training & Engineering Practice", "Documented industrial placements and hands-on engineering practice in production, maintenance, control, and plant systems.", industrialCount],
+      ["/professional-development/", "Courses & Professional Development", "Technology, teaching, leadership, language, and additional professional-development credentials.", professionalCount]
+    ].map(([href,title,description,count]) => `<a class="credential-directory-card" href="${href}">
+      <span class="credential-directory-count">${count}</span>
+      <h3>${escapeHTML(title)}</h3>
+      <p>${escapeHTML(description)}</p>
+      <span class="text-link">Explore category →</span>
+    </a>`).join("");
+
+    const metrics = $("#credentialHubMetrics");
+    if (metrics) metrics.innerHTML = `<span><strong>${honorsCount}</strong> honors</span><span><strong>${researchCount}</strong> research & conference records</span><span><strong>${industrialCount}</strong> industrial training records</span><span><strong>${professionalCount}</strong> development credentials</span>`;
+  }
 
   bindAssetButtons(data);
-  initFilters();
+}
+
+async function renderResearchConferences() {
+  const root = $("#researchConferenceContent");
+  if (!root) return;
+  const data = await loadData();
+  const rows = credentialRowsForDisplay(data)
+    .filter(isResearchConferenceCredential)
+    .map(row => sourceRecord(row, "credentials"));
+  if (!rows.length) return renderError(root);
+
+  const esmarta2026 = rows.filter(row => recordSearchKey(row).includes("esmarta 2026"));
+  const esmarta2025 = rows.filter(row => recordSearchKey(row).includes("esmarta 2025"));
+  const ieee = rows.filter(row => {
+    const key = recordSearchKey(row);
+    return key.includes("ieee") || key.includes("symposium");
+  });
+  const known = new Set([...esmarta2026, ...esmarta2025, ...ieee]);
+  const other = rows.filter(row => !known.has(row));
+
+  root.className = "credential-sections";
+  root.innerHTML = [
+    groupedPortfolioSection(data, "esmarta-2026", "Conference Portfolio · 2026", "eSmarTA-2026 — Attendance & Paper Presentations", "Attendance and research-presentation certificates from the 6th International Conference on Emerging Smart Technologies and Applications.", esmarta2026, { fallbackCategory: "Conference Credential" }),
+    groupedPortfolioSection(data, "esmarta-2025", "Conference Portfolio · 2025", "eSmarTA-2025 — Attendance & Paper Presentations", "Attendance and research-presentation certificates from the 5th International Conference on Emerging Smart Technologies and Applications.", esmarta2025, { fallbackCategory: "Conference Credential" }),
+    groupedPortfolioSection(data, "scholarly-symposia", "Scholarly Development", "IEEE Authorship & Open Access Symposia", "Professional scholarly-development participation focused on authorship, open access, publication practice, and guidance from IEEE editors.", ieee, { fallbackCategory: "Scholarly Engagement" }),
+    groupedPortfolioSection(data, "other-scholarly-engagement", "Additional Engagement", "Other Research & Conference Credentials", "", other, { fallbackCategory: "Research Credential" })
+  ].join("");
+  const summary = $("#researchConferenceSummary");
+  if (summary) summary.innerHTML = `<span><strong>${rows.length}</strong> research & conference credentials</span><span><strong>${esmarta2026.length + esmarta2025.length}</strong> eSmarTA certificates</span><span><strong>${ieee.length}</strong> IEEE symposium certificates</span>`;
+  bindAssetButtons(data);
+}
+
+async function renderIndustrialTraining() {
+  const root = $("#industrialTrainingList");
+  if (!root) return;
+  const data = await loadData();
+  const rows = credentialRowsForDisplay(data)
+    .filter(isIndustrialTrainingCredential)
+    .map(row => sourceRecord(row, "credentials"));
+  if (!rows.length) return renderError(root);
+  root.className = "asset-gallery-grid portfolio-gallery-grid";
+  root.innerHTML = rows.map(row => portfolioRecordCard(data, row, { fallbackCategory: "Industrial Training" })).join("");
+  const summary = $("#industrialTrainingSummary");
+  if (summary) summary.innerHTML = `<span><strong>${rows.length}</strong> documented training records</span><span>Production · Maintenance · Control · Engineering Practice</span>`;
+  bindAssetButtons(data);
+}
+
+async function renderProfessionalDevelopment() {
+  const root = $("#professionalDevelopmentContent");
+  if (!root) return;
+  const data = await loadData();
+  const all = credentialRowsForDisplay(data)
+    .filter(row => !isResearchConferenceCredential(row) && !isIndustrialTrainingCredential(row) && !isCommunityRecognitionCredential(row))
+    .map(row => sourceRecord(row, "credentials"));
+
+  const language = all.filter(isLanguageCredential);
+  const teaching = all.filter(row => !language.includes(row) && isTeachingLeadershipCredential(row));
+  const technology = all.filter(row => !language.includes(row) && !teaching.includes(row) && isTechnologyCredential(row));
+  const assigned = new Set([...language, ...teaching, ...technology]);
+  const other = all.filter(row => !assigned.has(row));
+
+  root.className = "credential-sections";
+  root.innerHTML = [
+    groupedPortfolioSection(data, "technology-skills", "Technical Development", "Technology & Digital Skills", "Courses in computing, artificial intelligence, IoT, digital technologies, and related engineering skills.", technology, { fallbackCategory: "Technology & Digital Skills" }),
+    groupedPortfolioSection(data, "teaching-leadership", "Professional Practice", "Teaching, Training & Leadership", "Professional-development credentials in training practice, leadership, management, and instructional capability.", teaching, { fallbackCategory: "Teaching & Leadership" }),
+    groupedPortfolioSection(data, "languages-communication", "Communication", "Languages & Communication", "Documented English-language learning, translation, and communication-oriented professional development.", language, { fallbackCategory: "Language Development" }),
+    groupedPortfolioSection(data, "additional-development", "Continuing Development", "Additional Professional Development", "Additional courses and professional-development records that complement engineering, research, and education practice.", other, { fallbackCategory: "Professional Development" })
+  ].join("");
+
+  const summary = $("#professionalDevelopmentSummary");
+  if (summary) summary.innerHTML = `<span><strong>${all.length}</strong> development credentials</span><span><strong>${technology.length}</strong> technology</span><span><strong>${teaching.length}</strong> teaching & leadership</span><span><strong>${language.length}</strong> language</span>`;
+  bindAssetButtons(data);
 }
 
 async function renderRecommendations() {
@@ -2270,8 +2560,11 @@ function initNavigation() {
     if (active) link.setAttribute("aria-current", "page"); else link.removeAttribute("aria-current");
     if (href === "/institutional-evidence/") link.textContent = "Verification & Documents";
     if (href === "/media/") link.textContent = "Media & Activities";
-    if (href === "/awards/") link.textContent = "Honors & Awards";
-    if (href === "/credentials/") link.textContent = "Certifications & Training";
+    if (href === "/awards/") link.textContent = "Honors & Distinctions";
+    if (href === "/credentials/") link.textContent = "Credentials & Recognition";
+    if (href === "/research-conferences/") link.textContent = "Research & Conferences";
+    if (href === "/industrial-training/") link.textContent = "Industrial Training";
+    if (href === "/professional-development/") link.textContent = "Professional Development";
     if (href === "/recommendations/") link.textContent = "Recommendations & References";
   });
   const menuToggle = $("#menuToggle");
@@ -2395,7 +2688,7 @@ function absorbGraduationProjectDuplicate() {
 }
 
 async function runDynamicRenderers() {
-  const jobs = [renderHome(), renderPublications(), renderProjects(), renderAwards(), renderCredentials(), renderExperiences(), renderRecommendations(), renderInstitutionalEvidence(), renderDocuments(), renderMedia()];
+  const jobs = [renderHome(), renderPublications(), renderProjects(), renderAwards(), renderCredentials(), renderResearchConferences(), renderIndustrialTraining(), renderProfessionalDevelopment(), renderExperiences(), renderRecommendations(), renderInstitutionalEvidence(), renderDocuments(), renderMedia()];
   renderProjectHardware();
   renderProjectResearchMedia();
   renderContextMedia();
