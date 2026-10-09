@@ -91,6 +91,9 @@ jobs:
       - name: Public data fallback regression test
         run: node tests/public-data-fallback.test.js
 
+      - name: IEEE October 2026 certificate regression test
+        run: node tests/ieee-october-2026-certificate.test.js
+
 
       - name: Enforce safe Appwrite rendering architecture
         shell: python

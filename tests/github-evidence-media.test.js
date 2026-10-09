@@ -22,7 +22,10 @@ for (const [folder, minimum] of Object.entries(expectedMinimums)) {
     failures.push(`${folder}: expected at least ${minimum} uploaded files, found ${files.length}`);
   }
   for (const file of files) {
-    if (!/\.(?:webp|jpe?g|png)$/i.test(file)) failures.push(`${folder}: unexpected non-image display derivative ${file}`);
+    const allowed = folder === "credentials"
+      ? /\.(?:webp|jpe?g|png|pdf)$/i.test(file)
+      : /\.(?:webp|jpe?g|png)$/i.test(file);
+    if (!allowed) failures.push(`${folder}: unexpected evidence file type ${file}`);
     const full = path.join(dir, file);
     if (fs.statSync(full).size <= 0) failures.push(`${folder}: empty file ${file}`);
   }
@@ -47,7 +50,7 @@ for (const token of [
   if (!source.includes(token)) failures.push("script.js missing: " + token);
 }
 
-const paths = [...block.matchAll(/["'](\/media\/assets\/(?:awards|credentials|recommendations|experience)\/[^"']+\.webp)["']/g)]
+const paths = [...block.matchAll(/["'](\/media\/assets\/(?:awards|credentials|recommendations|experience)\/[^"']+\.(?:webp|jpe?g|png|pdf))["']/gi)]
   .map(match => match[1]);
 
 if (!paths.length) failures.push("no GitHub evidence media paths found in LOCAL_EVIDENCE_MEDIA");

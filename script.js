@@ -78,6 +78,7 @@ const LOCAL_EVIDENCE_MEDIA = {
       "/media/assets/credentials/04_eSmarTA_2025_P156.webp",
       "/media/assets/credentials/05_eSmarTA_2025_P181.webp"
     ] },
+    { id: "ieee-authorship-oct-2026", assetIds: ["local:credential:ieee-authorship-oct-2026"], files: ["/media/assets/credentials/certificate_89785861.pdf"] },
     { id: "ieee-authorship", all: ["ieee", "authorship"], files: ["/media/assets/credentials/11_IEEE_Authorship_Symposium.webp"] },
     { id: "taiz-stars", all: ["taiz stars"], files: ["/media/assets/credentials/Community_Participation_Certificate_Taiz_Stars_Festival.webp"] },
     { id: "sinaa-founding", all: ["founding", "sinaa"], files: ["/media/assets/credentials/Founding_Member_Certificate_Sinaa_Union.webp"] },
@@ -1199,16 +1200,17 @@ function localEvidenceModels(data, row, collection, appwriteModels = []) {
     const fallbackModel = (spec.assetIds || []).length
       ? appwriteModels.find(model => spec.assetIds.includes(model.$id)) || appwriteModels[0] || null
       : appwriteModels[0] || null;
+    const directPdf = spec.files.length === 1 && String(spec.files[0]).toLowerCase().endsWith(".pdf");
     const model = {
       $id: `local:${collection}:${spec.id}`,
       title: row.title || fallbackModel?.title || "Supporting evidence",
       description: row.description || row.summary || fallbackModel?.description || "",
       alt_text: row.title || fallbackModel?.alt_text || "Supporting evidence",
       asset_type: fallbackModel?.asset_type || collection,
-      media_type: "image",
-      render_type: "pdf_pages",
+      media_type: directPdf ? "document" : "image",
+      render_type: directPdf ? "pdf_file" : "pdf_pages",
       display_file_ids: spec.files,
-      page_count: spec.files.length,
+      page_count: directPdf ? 1 : spec.files.length,
       fallback_display_file_ids: fallbackModel?.display_file_ids || [],
       _localEvidence: true
     };
@@ -1250,7 +1252,7 @@ function injectRenderingStyles() {
 
 function displayKind(model) {
   const type = String(model?.render_type || "").toLowerCase();
-  if (type === "pdf_pages") return "Document";
+  if (type.startsWith("pdf")) return "Document";
   if (type.includes("video")) return "Video";
   return "Image";
 }
@@ -1270,8 +1272,12 @@ function renderingPreviewMarkup(model, context = {}, pageIndex = 0) {
   const source = renderingFileUrl(model, pageIndex);
   const fallbackSource = renderingFallbackUrl(model, pageIndex);
   const title = context.title || model?.title || "Supporting evidence";
+  const renderType = String(model.render_type || "").toLowerCase();
   if (!source) return `<div class="asset-unavailable"><span>Preview</span><strong>${escapeHTML(title)}</strong><small>Content temporarily unavailable.</small></div>`;
-  if (String(model.render_type || "").toLowerCase().includes("video") || String(model.media_type || "").toLowerCase() === "video") {
+  if (renderType === "pdf_file") {
+    return `<div class="asset-file-panel presentation-panel"><span class="file-kind">PDF</span><strong>${escapeHTML(title)}</strong><small>Open the verified certificate PDF.</small></div>`;
+  }
+  if (renderType.includes("video") || String(model.media_type || "").toLowerCase() === "video") {
     return `<video controls preload="metadata" playsinline aria-label="${escapeAttr(title)}"><source src="${escapeAttr(source)}"></video>`;
   }
   const fallbackAttr = fallbackSource && fallbackSource !== source
@@ -1389,8 +1395,12 @@ function renderModalAsset() {
   heading.textContent = model.title || "Document preview";
 
   const itemNav = modalState.models.length > 1 ? `<div class="modal-item-nav"><button type="button" data-item-prev>← Previous item</button><span>${modalState.itemIndex + 1} / ${modalState.models.length}</span><button type="button" data-item-next>Next item →</button></div>` : "";
-  const pageNav = model.display_file_ids.length > 1 ? `<div class="document-page-nav"><button type="button" data-page-prev ${modalState.pageIndex === 0 ? "disabled" : ""}>← Previous</button><span>Page ${modalState.pageIndex + 1} / ${model.display_file_ids.length}</span><button type="button" data-page-next ${modalState.pageIndex === pageMax ? "disabled" : ""}>Next →</button></div>` : "";
-  body.innerHTML = `${itemNav}<div class="asset-preview-full">${renderingPreviewMarkup(model, {}, modalState.pageIndex)}</div>${pageNav}${model.description ? `<p class="modal-description">${escapeHTML(model.description)}</p>` : ""}`;
+  const isPdfFile = String(model.render_type || "").toLowerCase() === "pdf_file";
+  const pageNav = !isPdfFile && model.display_file_ids.length > 1 ? `<div class="document-page-nav"><button type="button" data-page-prev ${modalState.pageIndex === 0 ? "disabled" : ""}>← Previous</button><span>Page ${modalState.pageIndex + 1} / ${model.display_file_ids.length}</span><button type="button" data-page-next ${modalState.pageIndex === pageMax ? "disabled" : ""}>Next →</button></div>` : "";
+  const preview = isPdfFile
+    ? `<iframe src="${escapeAttr(renderingFileUrl(model, 0))}#toolbar=1&navpanes=0&view=FitH" title="${escapeAttr(model.title || "Certificate PDF")}" loading="lazy"></iframe>`
+    : renderingPreviewMarkup(model, {}, modalState.pageIndex);
+  body.innerHTML = `${itemNav}<div class="asset-preview-full">${preview}</div>${pageNav}${model.description ? `<p class="modal-description">${escapeHTML(model.description)}</p>` : ""}`;
 
   $("[data-page-prev]", body)?.addEventListener("click", () => { modalState.pageIndex -= 1; renderModalAsset(); });
   $("[data-page-next]", body)?.addEventListener("click", () => { modalState.pageIndex += 1; renderModalAsset(); });
@@ -1808,13 +1818,45 @@ async function renderAwards() {
   bindAssetButtons(data);
 }
 
+function currentCredentialRecords() {
+  return [
+    {
+      $id: "site:ieee-authorship-open-access-october-2026",
+      slug: "ieee-authorship-open-access-symposium-october-2026",
+      title: "IEEE Authorship and Open Access Symposium: Tips and Best Practices to Get Published from IEEE Editors — October 2026 Session",
+      issuer: "IEEE",
+      year: "2026",
+      category: "research_conference",
+      description: "Certificate of participation in the 90-minute IEEE Authorship and Open Access Symposium held on October 2, 2026.",
+      visibility: "public",
+      sort_order: 10.5,
+      asset_id: "local:credential:ieee-authorship-oct-2026"
+    }
+  ];
+}
+
+function mergeCurrentCredentialRecords(rows = []) {
+  const merged = [...rows];
+  for (const local of currentCredentialRecords()) {
+    const index = merged.findIndex(row =>
+      String(row.$id || "") === local.$id ||
+      String(row.asset_id || "") === local.asset_id ||
+      normalizedKey(row.slug || row.title) === normalizedKey(local.slug || local.title)
+    );
+    if (index >= 0) merged[index] = { ...merged[index], ...local };
+    else merged.push(local);
+  }
+  return sortRows(merged);
+}
+
 async function renderCredentials() {
   const root = $("#credentialsList");
   if (!root) return;
   const data = await loadData();
   const awardAssetIds = new Set((data.awards || []).map(row => row.asset_id).filter(Boolean));
   const awardTitles = new Set((data.awards || []).map(row => normalizedKey(row.title)).filter(Boolean));
-  let rows = (data.credentials || []).filter(approvedRow).filter(row => !awardAssetIds.has(row.asset_id) && !awardTitles.has(normalizedKey(row.title)));
+  let rows = mergeCurrentCredentialRecords((data.credentials || []).filter(approvedRow))
+    .filter(row => !awardAssetIds.has(row.asset_id) && !awardTitles.has(normalizedKey(row.title)));
   rows = uniqueRows(rows, row => row.asset_id || normalizedKey(row.title));
   if (!rows.length) return renderError(root);
 
