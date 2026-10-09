@@ -9,7 +9,9 @@ for (const token of [
   "function renderingPreviewMarkup(",
   "function portfolioMediaCard(",
   "function renderAwards()",
-  "function renderCredentials()",
+  "function renderResearchConferences()",
+  "function renderIndustrialTraining()",
+  "function renderProfessionalDevelopment()",
   "function renderRecommendations()",
   'root.className = "asset-gallery-grid portfolio-gallery-grid"',
   "github-pdf-preview-button portfolio-preview-button",
@@ -19,7 +21,7 @@ for (const token of [
   if (!source.includes(token)) failures.push(`script.js missing: ${token}`);
 }
 
-for (const renderer of ["renderAwards", "renderCredentials", "renderRecommendations"]) {
+for (const renderer of ["renderAwards", "renderResearchConferences", "renderIndustrialTraining", "renderProfessionalDevelopment", "renderRecommendations"]) {
   const start = source.indexOf(`async function ${renderer}()`);
   const next = source.indexOf("\nasync function ", start + 1);
   const block = start >= 0 ? source.slice(start, next >= 0 ? next : source.length) : "";
@@ -38,7 +40,7 @@ if (!css.includes(".portfolio-gallery-grid{") || !css.includes(".portfolio-media
   failures.push("style.css is missing Media-style portfolio gallery rules");
 }
 
-for (const page of ["awards/index.html", "credentials/index.html"]) {
+for (const page of ["awards/index.html", "research-conferences/index.html", "industrial-training/index.html", "professional-development/index.html"]) {
   const html = fs.readFileSync(page, "utf8");
   if (!/\/script\.js\?v=[^"]+/.test(html)) {
     failures.push(`${page} does not force a versioned portfolio renderer`);
@@ -48,12 +50,12 @@ for (const page of ["awards/index.html", "credentials/index.html"]) {
   }
 }
 
-const credentialsHtml = fs.readFileSync("credentials/index.html", "utf8");
-for (const token of ['id="credentialDirectory"', 'id="credentialOverviewHighlights"', "Selected Credentials & Distinctions"]) {
-  if (!credentialsHtml.includes(token)) failures.push("credentials/index.html missing structured credential hub token: " + token);
+const legacyCredentialsHtml = fs.readFileSync("credentials/index.html", "utf8");
+if (!legacyCredentialsHtml.includes('url=/professional-development/')) {
+  failures.push("legacy credentials route does not redirect to professional development");
 }
-for (const page of ["research-conferences/index.html", "industrial-training/index.html", "professional-development/index.html"]) {
-  if (!fs.existsSync(page)) failures.push("missing structured credential page: " + page);
+for (const page of ["awards/index.html", "research-conferences/index.html", "industrial-training/index.html", "professional-development/index.html"]) {
+  if (!fs.existsSync(page)) failures.push("missing independent credential page: " + page);
 }
 const recommendationsHtml = fs.readFileSync("recommendations/index.html", "utf8");
 if (!/\/script\.js\?v=[^"]+/.test(recommendationsHtml)) {
@@ -73,4 +75,4 @@ if (failures.length) {
   process.exit(1);
 }
 
-console.log("PASS|Honors, credential sections, and references use contextual portfolio evidence cards");
+console.log("PASS|Independent honors, research, industrial-training, professional-development, and reference pages use contextual evidence cards");
