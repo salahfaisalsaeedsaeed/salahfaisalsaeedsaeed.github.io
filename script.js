@@ -1939,6 +1939,61 @@ async function renderAwards() {
 function currentCredentialRecords() {
   return [
     {
+      $id: "site:english-basic-3-al-kindi",
+      slug: "english-language-basic-3-al-kindi",
+      title: "English Language — Basic 3",
+      issuer: "Al-Kindi Institute for Languages & Computer",
+      year: "2012",
+      category: "education_language_training",
+      description: "60-hour English Language Basic 3 course completed from May 16 to July 16, 2012, with an Excellent grade (96%).",
+      visibility: "public",
+      sort_order: 15.2
+    },
+    {
+      $id: "site:english-beginner-1a-global",
+      slug: "english-beginner-1a-global-language-institute",
+      title: "English Language — Beginner 1-A",
+      issuer: "Global Language Institute",
+      year: "2017",
+      category: "education_language_training",
+      description: "50-hour Beginner 1-A English course completed from November 26 to December 25, 2017, with 93/100 and an Excellent grade.",
+      visibility: "public",
+      sort_order: 15.3
+    },
+    {
+      $id: "site:english-subject-achievement",
+      slug: "english-subject-achievement",
+      title: "English Subject Achievement Certificate",
+      issuer: "Technical Industrial Institute — Baghdad Street",
+      year: "2015/2016",
+      category: "academic_recognition",
+      description: "Certificate of appreciation for outstanding achievement in the English subject during the second vocational level.",
+      visibility: "public",
+      sort_order: 15.4
+    },
+    {
+      $id: "site:taiz-academic-achievement-appreciation",
+      slug: "taiz-university-academic-achievement-appreciation",
+      title: "Certificate of Appreciation — Academic Achievement",
+      issuer: "Taiz University · Al-Saeed Faculty for Engineering & Information Technology",
+      year: "2024–2025",
+      category: "academic_recognition",
+      description: "Graduation-related recognition for academic effort and achievement throughout the Mechatronics and Robotics Engineering program.",
+      visibility: "public",
+      sort_order: 15.5
+    },
+    {
+      $id: "site:al-haseb-library-appreciation",
+      slug: "al-haseb-technical-institute-library-appreciation",
+      title: "Certificate of Appreciation — Independent Learning & Research",
+      issuer: "Technical Industrial Institute — Al-Hasab Library",
+      year: "",
+      category: "professional_recognition",
+      description: "Recognition for initiative in reading, research, self-development, and using the institute library to strengthen technical knowledge and skills.",
+      visibility: "public",
+      sort_order: 15.6
+    },
+    {
       $id: "site:ieee-authorship-open-access-october-2026",
       slug: "ieee-authorship-open-access-symposium-october-2026",
       title: "IEEE Authorship and Open Access Symposium: Tips and Best Practices to Get Published from IEEE Editors — October 2026 Session",
