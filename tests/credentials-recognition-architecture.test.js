@@ -43,6 +43,27 @@ for (const route of ["/awards/","/research-conferences/","/industrial-training/"
   if (!sitemap.includes("https://salah-faisal.vercel.app" + route)) failures.push("sitemap missing " + route);
 }
 
+
+const communityStart = source.indexOf("function isCommunityRecognitionCredential(");
+const communityEnd = source.indexOf("\nfunction isResearchConferenceCredential(", communityStart);
+const communityBlock = communityStart >= 0 ? source.slice(communityStart, communityEnd) : "";
+if (communityBlock.includes("english subject achievement")) {
+  failures.push("English Subject Achievement Certificate must not be classified under Honors & Distinctions");
+}
+
+const languageStart = source.indexOf("function isLanguageCredential(");
+const languageEnd = source.indexOf("\nfunction isTeachingLeadershipCredential(", languageStart);
+const languageBlock = languageStart >= 0 ? source.slice(languageStart, languageEnd) : "";
+if (!languageBlock.includes("education_language_achievement") || !languageBlock.includes("english subject achievement")) {
+  failures.push("English Subject Achievement Certificate must be classified under Languages & Communication");
+}
+
+const englishRecordStart = source.indexOf('site:english-subject-achievement');
+const englishRecordBlock = englishRecordStart >= 0 ? source.slice(englishRecordStart, englishRecordStart + 700) : "";
+if (!englishRecordBlock.includes('category: "education_language_achievement"')) {
+  failures.push("English Subject Achievement Certificate has the wrong credential category");
+}
+
 if (!pages.legacy.includes('url=/professional-development/') || !pages.legacy.includes('noindex,follow')) failures.push("legacy credentials route must redirect to the independent professional-development page");
 if (sitemap.includes("https://salah-faisal.vercel.app/credentials/")) failures.push("retired combined credentials hub remains in sitemap");
 if (pages.honors.includes("Honors &amp; Awards")) failures.push("legacy Honors & Awards label remains on honors page");
