@@ -37,8 +37,24 @@ for (const token of [
   if (!script.includes(token)) failures.push("script.js missing: " + token);
 }
 
-if (!projects.includes('id="projectResearchMedia"')) {
-  failures.push("projects/index.html missing projectResearchMedia container");
+if (projects.includes('id="projectResearchMedia"')) {
+  failures.push("projects/index.html should not keep a duplicate standalone projectResearchMedia gallery");
+}
+
+for (const token of [
+  "function currentResearchProjectRecords()",
+  "function mergeCurrentResearchProjects(",
+  "function projectResearchMediaForProject(",
+  "function projectInlineResearchMedia(",
+  'slug: "ev-fast-charging-system"',
+  'status: "research in progress"'
+]) {
+  if (!script.includes(token)) failures.push("script.js missing integrated research-project token: " + token);
+}
+
+const fallback = JSON.parse(fs.readFileSync("data/public-fallback.json", "utf8"));
+if (!(fallback.projects || []).some(project => project.slug === "ev-fast-charging-system" && project.status === "research in progress")) {
+  failures.push("public fallback missing ongoing EV fast-charging research project");
 }
 
 if (failures.length) {
@@ -46,4 +62,4 @@ if (failures.length) {
   process.exit(1);
 }
 
-console.log("PASS|EV1 and DRONE project media are wired into the website");
+console.log("PASS|EV1 and DRONE media are integrated into ongoing Research & Engineering Projects");
