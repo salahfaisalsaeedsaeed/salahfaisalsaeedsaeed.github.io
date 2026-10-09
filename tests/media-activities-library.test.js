@@ -9,7 +9,7 @@ for (const token of [
   "Media &amp; Activities",
   "Academic &amp; Professional Portfolio",
   'id="mediaLibrary"',
-  "/script.js?v=20260924-media-activities-v1",
+  "/script.js?v=20261009-credentials-architecture-v1",
   "/style.css?v=20261009-credentials-architecture-v1"
 ]) {
   if (!html.includes(token)) failures.push("media/index.html missing: " + token);
