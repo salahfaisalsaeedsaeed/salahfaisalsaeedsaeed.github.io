@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - 'media/assets/student-videos-and-conference-presentations/*.pdf'
+      - 'media/assets/credentials/certificate_89785861.pdf'
       - 'scripts/generate_pdf_previews.py'
       - '.github/workflows/generate-pdf-previews.yml'
   workflow_dispatch:
@@ -31,6 +32,7 @@ jobs:
       - name: Commit generated previews
         run: |
           git add media/assets/student-videos-and-conference-presentations/*_preview.webp
+          git add media/assets/credentials/certificate_89785861_preview.webp
           if git diff --cached --quiet; then
             echo "Preview images are already up to date."
             exit 0
@@ -38,4 +40,6 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git commit -m "Generate PDF first-page previews"
-          git push
+          # A code change may land while previews are rendering; rebase before publishing.
+          git pull --rebase origin "$GITHUB_REF_NAME"
+          git push origin "HEAD:$GITHUB_REF_NAME"

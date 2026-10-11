@@ -7,11 +7,26 @@ const failures = [];
 const pdfPath = "media/assets/credentials/certificate_89785861.pdf";
 if (!fs.existsSync(pdfPath)) failures.push("missing uploaded IEEE certificate PDF: " + pdfPath);
 
+const previewPath = "media/assets/credentials/certificate_89785861_preview.webp";
+if (!fs.existsSync(previewPath)) {
+  failures.push("missing generated IEEE certificate preview: " + previewPath);
+} else {
+  const bytes = fs.readFileSync(previewPath);
+  if (bytes.length < 1024 || bytes.toString("ascii", 0, 4) !== "RIFF" ||
+      bytes.toString("ascii", 8, 12) !== "WEBP") {
+    failures.push("IEEE first-page preview is not a valid WebP image");
+  }
+}
+
+
 for (const token of [
   "site:ieee-authorship-open-access-october-2026",
   "local:credential:ieee-authorship-oct-2026",
   "/media/assets/credentials/certificate_89785861.pdf",
+  "/media/assets/credentials/certificate_89785861_preview.webp",
   "October 2, 2026",
+  'preview_file_id: directPdf ? (spec.preview || spec.files[0].replace(/\\.pdf$/i, "_preview.webp")) : ""',
+  "const previewPath = String(model.preview_file_id || \"\")",
   'render_type: directPdf ? "pdf_file" : "pdf_pages"',
   'if (renderType === "pdf_file")',
   'const isPdfFile = String(model.render_type || "").toLowerCase() === "pdf_file"',

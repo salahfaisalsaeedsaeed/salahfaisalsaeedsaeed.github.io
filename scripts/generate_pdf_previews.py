@@ -5,6 +5,7 @@ import subprocess
 from PIL import Image
 
 MEDIA_DIR = Path("media/assets/student-videos-and-conference-presentations")
+ADDITIONAL_PDFS = [Path("media/assets/credentials/certificate_89785861.pdf")]
 MAX_WIDTH = 1200
 QUALITY = 78
 
@@ -36,7 +37,7 @@ def render_preview(pdf_path: Path) -> Path:
     return output_path
 
 def main() -> None:
-    pdfs = sorted(MEDIA_DIR.glob("*.pdf"))
+    pdfs = sorted(MEDIA_DIR.glob("*.pdf")) + [pdf for pdf in ADDITIONAL_PDFS if pdf.is_file()]
     if not pdfs:
         raise SystemExit("No PDF presentations found.")
     for pdf_path in pdfs:
