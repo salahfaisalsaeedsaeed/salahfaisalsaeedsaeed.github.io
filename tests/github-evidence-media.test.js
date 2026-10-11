@@ -1,5 +1,6 @@
 const fs = require("fs");
 const path = require("path");
+const vm = require("vm");
 
 const source = fs.readFileSync("script.js", "utf8");
 const failures = [];
@@ -82,6 +83,58 @@ for (const token of [
   "image.dataset.fallbackIndex"
 ]) {
   if (!source.includes(token)) failures.push("missing backup image preview behavior: " + token);
+}
+
+// Regression: the public Union certificates have filenames spelling "Sinaa",
+// while the displayed issuer spells "Sina’a". Use the actual site matcher to
+// verify both awards work with or without an Appwrite asset ID.
+const normalizedStart = source.indexOf("const normalizedKey =");
+const normalizedEnd = source.indexOf("\nconst sortRows", normalizedStart);
+const evidenceTextStart = source.indexOf("function localEvidenceText(");
+const matcherStart = source.indexOf("function localEvidenceSpecMatches(");
+const matcherEnd = source.indexOf("\nfunction localEvidenceModels(", matcherStart);
+if ([normalizedStart, normalizedEnd, evidenceTextStart, matcherStart, matcherEnd].some(x => x < 0)) {
+  failures.push("cannot locate actual credential media-matching functions");
+} else {
+  const fixtures = [
+    { title: "Founding Member Certificate — Sina’a Union", issuer: "Sina’a Union", category: "community_engagement" },
+    { title: "Training and Active Participation Certificate — Sina’a Union", issuer: "Sina’a Union", category: "community_engagement" },
+    { title: "Founding Member Certificate — Sinaa Union", issuer: "Sinaa Union", category: "community_engagement", asset_id: "local:credential:founding" },
+    { title: "Training and Active Participation Certificate — Sinaa Union", issuer: "Sinaa Union", category: "community_engagement", asset_id: "local:credential:training-participation" },
+    { title: "Unrelated Community Certificate", issuer: "Another Organization", category: "community_engagement" }
+  ];
+  const matcherCode = [
+    source.slice(normalizedStart, normalizedEnd),
+    "const assetIdsFromRecord = row => row.asset_id ? [row.asset_id] : [];",
+    source.slice(evidenceTextStart, matcherStart),
+    source.slice(matcherStart, matcherEnd),
+    block,
+    'this.matches = fixtures.map(row => LOCAL_EVIDENCE_MEDIA.credentials.filter(spec => spec.id.startsWith("sinaa-") && localEvidenceSpecMatches(spec, row)).map(spec => spec.id));'
+  ].join("\n");
+  try {
+    const context = { fixtures };
+    vm.runInNewContext(matcherCode, context);
+    const expected = [
+      ["sinaa-founding"], ["sinaa-training"],
+      ["sinaa-founding"], ["sinaa-training"], []
+    ];
+    expected.forEach((want, index) => {
+      const got = context.matches[index] || [];
+      if (JSON.stringify(Array.from(got)) !== JSON.stringify(want)) {
+        failures.push("Sina’a certificate matcher failed fixture " + index + ": " + JSON.stringify(got));
+      }
+    });
+  } catch (error) {
+    failures.push("Sina’a certificate matcher threw: " + error.message);
+  }
+}
+for (const asset of [
+  "Founding_Member_Certificate_Sinaa_Union.webp",
+  "Training_and_Active_Participation_Certificate_Sinaa_Union.webp"
+]) {
+  if (!fs.existsSync(path.join("media", "assets", "credentials", asset))) {
+    failures.push("missing public Union certificate image: " + asset);
+  }
 }
 
 if (failures.length) {
