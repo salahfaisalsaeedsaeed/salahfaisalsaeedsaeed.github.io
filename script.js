@@ -80,7 +80,7 @@ const LOCAL_EVIDENCE_MEDIA = {
       "/media/assets/credentials/04_eSmarTA_2025_P156.webp",
       "/media/assets/credentials/05_eSmarTA_2025_P181.webp"
     ] },
-    { id: "ieee-authorship-oct-2026", assetIds: ["local:credential:ieee-authorship-oct-2026"], files: ["/media/assets/credentials/certificate_89785861.pdf"] },
+    { id: "ieee-authorship-oct-2026", assetIds: ["local:credential:ieee-authorship-oct-2026"], files: ["/media/assets/credentials/certificate_89785861.pdf"], preview: "/media/assets/credentials/certificate_89785861_preview.webp" },
     { id: "ieee-authorship", all: ["ieee", "authorship"], files: ["/media/assets/credentials/11_IEEE_Authorship_Symposium.webp"] },
     { id: "taiz-stars", all: ["taiz stars"], files: ["/media/assets/credentials/Community_Participation_Certificate_Taiz_Stars_Festival.webp"] },
     { id: "sinaa-founding", assetIds: ["local:credential:founding"], all: ["founding", "sina"], files: ["/media/assets/credentials/Founding_Member_Certificate_Sinaa_Union.webp"] },
@@ -1222,7 +1222,7 @@ function localEvidenceModels(data, row, collection, appwriteModels = []) {
       media_type: directPdf ? "document" : "image",
       render_type: directPdf ? "pdf_file" : "pdf_pages",
       // Keep the source PDF for modal viewing, but use a pre-rendered WebP cover in cards.
-      preview_file_id: directPdf ? spec.files[0].replace(/\.pdf$/i, "_preview.webp") : "",
+      preview_file_id: directPdf ? (spec.preview || spec.files[0].replace(/\.pdf$/i, "_preview.webp")) : "",
       display_file_ids: spec.files,
       page_count: directPdf ? 1 : spec.files.length,
       fallback_display_file_ids: fallbackModel?.display_file_ids || [],
