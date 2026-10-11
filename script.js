@@ -1221,6 +1221,8 @@ function localEvidenceModels(data, row, collection, appwriteModels = []) {
       asset_type: fallbackModel?.asset_type || collection,
       media_type: directPdf ? "document" : "image",
       render_type: directPdf ? "pdf_file" : "pdf_pages",
+      // Keep the source PDF for modal viewing, but use a pre-rendered WebP cover in cards.
+      preview_file_id: directPdf ? spec.files[0].replace(/\.pdf$/i, "_preview.webp") : "",
       display_file_ids: spec.files,
       page_count: directPdf ? 1 : spec.files.length,
       fallback_display_file_ids: fallbackModel?.display_file_ids || [],
@@ -1296,6 +1298,12 @@ function renderingPreviewMarkup(model, context = {}, pageIndex = 0) {
   const renderType = String(model.render_type || "").toLowerCase();
   if (!source) return `<div class="asset-unavailable"><span>Preview</span><strong>${escapeHTML(title)}</strong><small>Content temporarily unavailable.</small></div>`;
   if (renderType === "pdf_file") {
+    const previewPath = String(model.preview_file_id || "");
+    if (previewPath.startsWith("/media/assets/") && !previewPath.includes("..")) {
+      const previewSource = storageFileView(previewPath);
+      const githubPreviewSource = "https://raw.githubusercontent.com/salahfaisalsaeedsaeed/salahfaisalsaeedsaeed.github.io/main" + previewPath;
+      return `<img src="${escapeAttr(previewSource)}" alt="${escapeAttr(model.alt_text || title)}" loading="lazy" decoding="async" data-rendering-preview data-github-fallback-src="${escapeAttr(githubPreviewSource)}">`;
+    }
     return `<div class="asset-file-panel presentation-panel"><span class="file-kind">PDF</span><strong>${escapeHTML(title)}</strong><small>Open the verified certificate PDF.</small></div>`;
   }
   if (renderType.includes("video") || String(model.media_type || "").toLowerCase() === "video") {
