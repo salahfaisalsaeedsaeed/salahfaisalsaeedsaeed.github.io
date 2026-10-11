@@ -60,6 +60,30 @@ for (const publicPath of new Set(paths)) {
   if (!fs.existsSync(fsPath)) failures.push("manifest path missing from repository: " + publicPath);
 }
 
+const certificatePath = "/media/assets/credentials/Student_Appreciation_for_Teaching_Excellence.webp";
+const awardsStart = block.indexOf("  awards: [");
+const credentialsStart = block.indexOf("  credentials: [");
+const recommendationStart = block.indexOf("  recommendations: [");
+const awardSpecs = block.slice(awardsStart, credentialsStart);
+const credentialSpecs = block.slice(credentialsStart, recommendationStart);
+for (const [scope, specs] of [["awards", awardSpecs], ["credentials", credentialSpecs]]) {
+  if (!specs.includes('all: ["student", "teaching excellence"]') ||
+      !specs.includes(certificatePath)) {
+    failures.push("student teaching-excellence recognition lacks a local media mapping in " + scope);
+  }
+}
+if (!fs.existsSync(certificatePath.slice(1))) {
+  failures.push("student teaching-excellence certificate asset is missing");
+}
+for (const token of [
+  "function renderingGithubBackupUrl(",
+  "data-github-fallback-src",
+  "image.dataset.githubFallbackSrc",
+  "image.dataset.fallbackIndex"
+]) {
+  if (!source.includes(token)) failures.push("missing backup image preview behavior: " + token);
+}
+
 if (failures.length) {
   console.error(failures.map(item => "FAIL|" + item).join("\n"));
   process.exit(1);

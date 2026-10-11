@@ -62,6 +62,8 @@ const LOCAL_EVIDENCE_MEDIA = {
     { id: "english-instruction-taiz", all: ["english language instruction", "taiz university"], files: ["/media/assets/awards/English_Language_Instruction_Certificate_Taiz_University.webp"] },
     { id: "academic-achievement-taiz", all: ["academic achievement", "taiz university"], files: ["/media/assets/credentials/Certificate_of_Appreciation_Academic_Achievement_Taiz_University.webp"] },
     { id: "physics-laboratory", all: ["physics", "laboratory"], files: ["/media/assets/credentials/Physics_Laboratory_Development_Appreciation.webp"] },
+    // This award may come from either the awards or credentials Appwrite table.
+    { id: "student-teaching", all: ["student", "teaching excellence"], files: ["/media/assets/credentials/Student_Appreciation_for_Teaching_Excellence.webp"] },
   ],
   credentials: [
     { id: "esmarta-2026", all: ["esmarta 2026"], files: [
@@ -1278,9 +1280,18 @@ function renderingFallbackUrl(model, pageIndex = 0) {
   return fileId ? storageFileView(fileId) : "";
 }
 
+// A trusted public GitHub source is a second route for same-origin evidence images
+// when a Vercel asset request fails. This never exposes private originals.
+function renderingGithubBackupUrl(model, pageIndex = 0) {
+  const relativePath = String(model?._localEvidence ? model?.display_file_ids?.[pageIndex] || "" : "");
+  if (!relativePath.startsWith("/media/assets/") || relativePath.includes("..")) return "";
+  return "https://raw.githubusercontent.com/salahfaisalsaeedsaeed/salahfaisalsaeedsaeed.github.io/main" + relativePath;
+}
+
 function renderingPreviewMarkup(model, context = {}, pageIndex = 0) {
   const source = renderingFileUrl(model, pageIndex);
   const fallbackSource = renderingFallbackUrl(model, pageIndex);
+  const githubBackupSource = renderingGithubBackupUrl(model, pageIndex);
   const title = context.title || model?.title || "Supporting evidence";
   const renderType = String(model.render_type || "").toLowerCase();
   if (!source) return `<div class="asset-unavailable"><span>Preview</span><strong>${escapeHTML(title)}</strong><small>Content temporarily unavailable.</small></div>`;
@@ -1293,17 +1304,22 @@ function renderingPreviewMarkup(model, context = {}, pageIndex = 0) {
   const fallbackAttr = fallbackSource && fallbackSource !== source
     ? ` data-fallback-src="${escapeAttr(fallbackSource)}"`
     : "";
-  return `<img src="${escapeAttr(source)}" alt="${escapeAttr(model.alt_text || title)}" loading="lazy" decoding="async" data-rendering-preview${fallbackAttr}>`;
+  const githubFallbackAttr = githubBackupSource && githubBackupSource !== source
+    ? ` data-github-fallback-src="${escapeAttr(githubBackupSource)}"`
+    : "";
+  return `<img src="${escapeAttr(source)}" alt="${escapeAttr(model.alt_text || title)}" loading="lazy" decoding="async" data-rendering-preview${githubFallbackAttr}${fallbackAttr}>`;
 }
 
 function initRenderingImageFallbacks() {
   document.addEventListener("error", event => {
     const image = event.target;
     if (!(image instanceof HTMLImageElement) || !image.matches("[data-rendering-preview]")) return;
-    const fallbackSource = image.dataset.fallbackSrc || "";
-    if (fallbackSource && image.dataset.fallbackTried !== "1") {
-      image.dataset.fallbackTried = "1";
-      image.src = fallbackSource;
+    const fallbackSources = [image.dataset.githubFallbackSrc, image.dataset.fallbackSrc]
+      .filter((source, index, all) => source && all.indexOf(source) === index);
+    const nextIndex = Number(image.dataset.fallbackIndex || "0");
+    if (nextIndex < fallbackSources.length) {
+      image.dataset.fallbackIndex = String(nextIndex + 1);
+      image.src = fallbackSources[nextIndex];
       return;
     }
     const fallback = document.createElement("div");
