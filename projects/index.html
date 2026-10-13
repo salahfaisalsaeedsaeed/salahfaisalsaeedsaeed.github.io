@@ -16,7 +16,7 @@
   <meta name="twitter:card" content="summary" />
   <meta name="theme-color" content="#143B5C" />
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-  <link rel="stylesheet" href="/style.css?v=20261009-credentials-architecture-v1" />
+  <link rel="stylesheet" href="/style.css?v=20261014-academic-project-portfolio-v1" />
 </head>
 <body data-page="research-projects">
 <a class="skip-link" href="#main">Skip to main content</a>
@@ -31,7 +31,22 @@
 <div class="sidebar-actions"><a class="button button-primary cv-link" href="/Salah_Faisal_CV.pdf" target="_blank" rel="noopener">Download CV</a><button class="theme-toggle" type="button" id="themeToggle" aria-label="Switch color theme"><span aria-hidden="true">◐</span><span>Theme</span></button></div>
 </div></aside>
 <main class="content" id="main">
-<header class="page-header reveal"><nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a><span>/</span><span aria-current="page">Research &amp; Engineering Projects</span></nav><p class="page-kicker">Academic Output</p><h2>Research &amp; Engineering Projects</h2><p>Selected research and engineering projects highlighting objectives, methods, implementation, technical scope, results, and validation.</p></header>
+<header class="page-header reveal">
+  <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a><span>/</span><span aria-current="page">Research &amp; Engineering Projects</span></nav>
+  <p class="page-kicker">Academic Output</p>
+  <h2>Research &amp; Engineering Projects</h2>
+  <p>Selected advanced engineering developments, research-based modeling and simulation, experimental prototypes, and educational engineering work. Descriptions distinguish design, simulation, physical implementation, and ongoing research.</p>
+</header>
+<nav class="section-jump-nav project-taxonomy-nav reveal" aria-label="Browse project portfolio">
+  <a href="#research-advanced-projects">01 — Research &amp; Advanced Engineering</a>
+  <a href="#applied-experimental-projects">02 — Applied &amp; Experimental Engineering</a>
+  <a href="#educational-prototyping-projects">03 — Educational Engineering &amp; Prototyping</a>
+</nav>
+
+<section class="section-block project-taxonomy-section reveal" id="research-advanced-projects" aria-labelledby="research-advanced-title">
+  <div class="project-taxonomy-heading"><span class="project-taxonomy-index">01</span><div><p class="section-label">Selected Major Projects</p><h3 id="research-advanced-title">Research &amp; Advanced Engineering Projects</h3><p>Integrated engineering design and research-driven computational work, distinguished from routine laboratory exercises.</p></div></div>
+  <div class="project-taxonomy-subsection" id="advanced-engineering-implementation">
+    <div class="project-subsection-heading"><span>1.1</span><div><h4>Advanced Engineering Design &amp; Implementation Projects</h4><p>Integrated robotic and mechatronic systems, including physical prototype development and competition-oriented design.</p></div></div>
 <article class="project-case-study reveal" id="graduation-project">
 <div class="case-study-heading"><div><p class="section-label">Featured B.Sc. Graduation Project</p><h3>Manipulator Robot Error Correction Using Computer Vision</h3><p>A six-degree-of-freedom robotic manipulator integrating computer vision with embedded control to estimate positioning error using YOLOv11 marker detection and OpenCV SolvePnP. The project combined mechanical design, embedded electronics, camera calibration, object detection, geometric pose estimation, and engineering validation within a single robotic system.</p></div><div class="case-study-meta"><strong>Taiz University · 2025</strong>B.Sc. Mechatronics &amp; Robotics Engineering Graduation Project</div></div>
 <div class="project-stat-band" aria-label="Selected project metrics"><div><strong>6-DOF</strong><span>robotic manipulator</span></div><div><strong>50</strong><span>training epochs</span></div><div><strong>4,305</strong><span>images in the augmented training pipeline</span></div><div><strong>95.0%</strong><span>reported final-epoch precision</span></div><div><strong>96.7%</strong><span>reported final-epoch recall</span></div><div><strong>97.0%</strong><span>reported mAP@0.5</span></div></div>
@@ -39,8 +54,76 @@
 <section class="case-study-section case-study-two-col"><div><h4>System implementation</h4><dl><div><dt>Vision hardware</dt><dd>Raspberry Pi 5; Arducam HQ camera with 12.3 MP sensor and 6 mm lens mounted on Link 5.</dd></div><div><dt>Embedded control</dt><dd>ESP32, six A4988 stepper-motor drivers, NEMA17 motors, sensors, emergency-stop circuitry, and a 12 V power supply.</dd></div><div><dt>Software</dt><dd>Python · OpenCV · YOLOv11 · Roboflow · Google Colab · MATLAB · SolidWorks</dd></div><div><dt>Data split</dt><dd>85% training · 5% validation · 10% testing, with rotation, noise, brightness, and shear augmentation.</dd></div></dl></div><div><h4>Measured outcomes</h4><dl><div><dt>mAP@0.5:0.95</dt><dd>84.3% at the final reported training epoch.</dd></div><div><dt>Reprojection</dt><dd>Reported below 0.02 pixels in the SolvePnP verification.</dd></div><div><dt>Positioning</dt><dd>Overall positional error reported within a few millimeters in the evaluated setup.</dd></div><div><dt>Application scope</dt><dd>Potential use in pick-and-place, assembly, medical robotics, education, and research platforms.</dd></div></dl></div></section>
 <div class="credibility-note"><strong>Validation scope.</strong> The project validated the vision-based correction approach through simulation and offline analysis. Full real-time physical error correction was not completed because of hardware constraints. The system relies on fixed visual reference markers and line of sight, and the prototype did not yet integrate actuator or encoder feedback with the external vision loop. Full load-handling implementation remained future work.</div><div class="case-study-actions" id="graduationProjectActions" aria-live="polite"></div>
 </article>
+    <article class="project-development-record" id="sumo-robot-development">
+      <div><p class="record-type">Design &amp; Development</p><h5>Autonomous Sumo Robot — Competition-Oriented Design</h5><p>Robot architecture and strategy development for autonomous sumo competition, addressing sensing, locomotion, edge detection and rule-aware system design. Physical build and competition outcomes are not presented as validated results.</p></div>
+      <span class="project-development-status">Development in progress</span>
+    </article>
+  </div>
+  <div class="project-taxonomy-subsection" id="research-modeling-simulation">
+    <div class="project-subsection-heading"><span>1.2</span><div><h4>Research-Based Modeling, Simulation &amp; Optimization Projects</h4><p>System-level MATLAB/Simulink and computational modeling projects, with related research reviews clearly identified as evidence-synthesis studies rather than simulated prototypes.</p></div></div>
+    <div class="filter-toolbar" data-filter-target="projectsList" aria-label="Filter research projects">
+      <button class="filter-btn active" type="button" data-filter="all">All</button>
+      <button class="filter-btn" type="button" data-filter="robotics">Robotics</button>
+      <button class="filter-btn" type="button" data-filter="ev_charging">EV Charging</button>
+      <button class="filter-btn" type="button" data-filter="control_systems">Control Systems</button>
+      <button class="filter-btn" type="button" data-filter="renewable_energy">Renewable Energy</button>
+    </div>
+    <div id="projectsList" class="project-records" aria-live="polite"></div>
+  </div>
+</section>
+
+<section class="section-block project-taxonomy-section reveal" id="applied-experimental-projects" aria-labelledby="applied-experimental-title">
+  <div class="project-taxonomy-heading"><span class="project-taxonomy-index">02</span><div><p class="section-label">Practical Engineering Portfolio</p><h3 id="applied-experimental-title">Applied Engineering &amp; Experimental Projects</h3><p>Representative areas of hands-on circuit implementation, embedded-system prototyping, instrumentation and academic laboratory simulation.</p></div></div>
+  <div class="project-portfolio-grid">
+<article class="project-portfolio-card" id="embedded-iot-projects">
+  <p class="project-portfolio-number">2.1</p>
+  <h4>Robotics, Embedded Systems &amp; IoT Prototypes</h4>
+  <p>Applied work across mobile robotics, Arduino/ESP32-based control, sensor interfacing, automation and connected monitoring systems. Related small-scale prototypes are presented as a technical portfolio rather than separate research studies.</p>
+  <ul class="project-portfolio-topics" aria-label="Selected technical areas"><li>Mobile &amp; Sensor-Based Robots</li><li>Arduino / ESP32</li><li>Home &amp; Smart Automation</li><li>IoT Monitoring</li><li>Safety &amp; Security Systems</li></ul>
+</article>
+<article class="project-portfolio-card" id="electronics-power-projects">
+  <p class="project-portfolio-number">2.2</p>
+  <h4>Electronic Circuits &amp; Power Engineering Projects</h4>
+  <p>Design, assembly and functional testing of electronic circuits, including DC power supplies, switching and motor-control circuits, electrical protection, and analog/digital circuit applications.</p>
+  <ul class="project-portfolio-topics" aria-label="Selected technical areas"><li>DC Power Supplies</li><li>Battery Protection</li><li>Relay &amp; Motor Control</li><li>Analog &amp; Digital Circuits</li><li>Electronic Test Circuits</li></ul>
+</article>
+<article class="project-portfolio-card" id="instrumentation-projects">
+  <p class="project-portfolio-number">2.3</p>
+  <h4>Sensors, Measurement &amp; Instrumentation Projects</h4>
+  <p>Experimental measurement and sensor-integration activities involving electrical variables, temperature, distance, motion, force and level, with instrumentation and data-acquisition applications.</p>
+  <ul class="project-portfolio-topics" aria-label="Selected technical areas"><li>Voltage &amp; Current</li><li>Temperature &amp; Environment</li><li>Distance &amp; Motion</li><li>Force / Load / RPM</li><li>Calibration &amp; Acquisition</li></ul>
+</article>
+<article class="project-portfolio-card" id="circuit-simulation-labs">
+  <p class="project-portfolio-number">2.4</p>
+  <h4>Engineering Simulation &amp; Circuit Design Laboratories</h4>
+  <p>A collection of circuit-design and laboratory simulations using NI Multisim, Logisim, Proteus and MATLAB/Simulink. Archived examples include digital-logic exercises, a 4-bit calculator design and buck/boost converter models.</p>
+  <ul class="project-portfolio-topics" aria-label="Selected technical areas"><li>NI Multisim</li><li>Digital Logic / Logisim</li><li>Proteus</li><li>Buck / Boost Modeling</li><li>MATLAB / Simulink</li></ul>
+</article>
+  </div>
+  <p class="project-portfolio-note">These grouped portfolios describe technical work areas and selected examples; they do not imply that every listed application is a separately validated or published project.</p>
+</section>
+
+<section class="section-block project-taxonomy-section reveal" id="educational-prototyping-projects" aria-labelledby="educational-prototyping-title">
+  <div class="project-taxonomy-heading"><span class="project-taxonomy-index">03</span><div><p class="section-label">Technical Teaching &amp; Prototyping</p><h3 id="educational-prototyping-title">Educational Engineering &amp; Prototyping Projects</h3><p>Applied laboratory activities and prototype-development resources connecting engineering practice with physics and STEM education.</p></div></div>
+  <div class="project-portfolio-grid">
+<article class="project-portfolio-card" id="physics-stem-projects">
+  <p class="project-portfolio-number">3.1</p>
+  <h4>Physics, Electronics &amp; STEM Educational Projects</h4>
+  <p>Development and facilitation of practical learning activities in electricity, electronic circuits, electrical measurement, electromagnetism and sensor-based experiments, supporting technical education and project-based STEM instruction.</p>
+  <ul class="project-portfolio-topics" aria-label="Selected technical areas"><li>Circuit Training Boards</li><li>Ohm’s Law &amp; Circuit Experiments</li><li>Electromagnetism</li><li>Measurement Demonstrations</li><li>Robotics &amp; STEM Activities</li></ul>
+</article>
+<article class="project-portfolio-card" id="fabrication-prototyping">
+  <p class="project-portfolio-number">3.2</p>
+  <h4>3D Printing, Fabrication &amp; Engineering Prototyping</h4>
+  <p>Hands-on prototyping and laboratory preparation, including the assembly and technical setup of an Original Prusa MK4S 3D printer and the integration of electronic components, sensors and motion-system hardware.</p>
+  <ul class="project-portfolio-topics" aria-label="Selected technical areas"><li>Original Prusa MK4S Assembly</li><li>Rapid Prototyping</li><li>Electronics Integration</li><li>Laboratory Setup &amp; Tools</li></ul>
+</article>
+  </div>
+  <div class="project-resource-section">
+  <details class="project-resource-details">
+    <summary>Browse engineering components, tools &amp; prototyping media</summary>
 <section class="section-block project-hardware-showcase reveal" id="engineering-components-and-tools">
-<div class="section-title-row"><div><p class="section-label">Hands-on Engineering Resources</p><h3>Engineering Components, Tools &amp; Prototyping</h3></div></div>
+<div class="section-title-row"><div><p class="section-label">Supporting Project Resources</p><h3>Engineering Components, Tools &amp; Prototyping</h3></div></div>
 <div class="media-library-intro project-hardware-intro">
   <div>
     <p>A selection of the hardware, electronic components, and laboratory tools I use for engineering prototyping and experimental development. The collection supports embedded systems, robotics, IoT, control, sensor integration, motion systems, 3D-printed prototypes, circuit testing, troubleshooting, and hardware–software integration.</p>
@@ -49,9 +132,11 @@
 </div>
 <div id="projectHardwareGallery" class="asset-gallery-grid project-hardware-grid" aria-live="polite"></div>
 </section>
-<section class="section-block reveal"><div class="section-title-row"><div><p class="section-label">Project Portfolio</p><h3>Additional research &amp; engineering projects</h3></div></div><div class="filter-toolbar" data-filter-target="projectsList"><button class="filter-btn active" type="button" data-filter="all">All</button><button class="filter-btn" type="button" data-filter="robotics">Robotics</button><button class="filter-btn" type="button" data-filter="ev_charging">EV Charging</button><button class="filter-btn" type="button" data-filter="control_systems">Control Systems</button><button class="filter-btn" type="button" data-filter="renewable_energy">Renewable Energy</button></div><div id="projectsList" class="project-records" aria-live="polite"></div></section>
+  </details>
+  </div>
+</section>
 <footer class="site-footer"><p>© <span id="year"></span> Salah Faisal Saeed Saeed. Academic and professional profile.</p><p><a href="https://orcid.org/0009-0000-9485-7467" target="_blank" rel="noopener">ORCID</a> · <a href="https://scholar.google.com/citations?hl=ar&user=kV3STigAAAAJ" target="_blank" rel="noopener">Google Scholar</a></p></footer>
 </main></div>
 <button class="back-to-top" id="backToTop" type="button" aria-label="Back to top">↑</button><div class="toast" id="toast" role="status" aria-live="polite"></div><div class="media-modal" id="mediaModal" aria-hidden="true"><div class="media-modal-backdrop" data-close-modal></div><div class="media-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="mediaModalTitle"><button class="modal-close" type="button" data-close-modal aria-label="Close preview">×</button><h2 id="mediaModalTitle">Document preview</h2><div id="mediaModalBody"></div></div></div>
-<script src="/script.js?v=20261009-independent-credential-pages-v1" defer></script>
+<script src="/script.js?v=20261014-academic-project-portfolio-v1" defer></script>
 </body></html>
