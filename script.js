@@ -1711,13 +1711,23 @@ async function renderProjects() {
     row => normalizedKey(row.slug || row.title)
   );
   if (!rows.length) return renderError(root);
-  root.innerHTML = rows.map((project, index) => {
+
+  // Evidence-synthesis research is scholarly work, not a validated system simulation.
+  const evidenceStudyTitle = /systematic review|systematic diagnosis|taxonomic synthesis/i;
+  const modelRows = rows.filter(project => !evidenceStudyTitle.test(String(project.title || "")));
+  const evidenceRows = rows.filter(project => evidenceStudyTitle.test(String(project.title || "")));
+  const renderCards = projectRows => projectRows.map((project) => {
+    const index = rows.indexOf(project);
     const assets = recordAssets(data, project, "projects");
     const technologies = asArray(project.technologies);
     const tags = technologies.length ? technologies : [prettyCategory(project.category || "Project")];
     const projectMedia = projectInlineResearchMedia(project);
     return `<article class="project-record filter-item" id="${escapeAttr(project.slug || "")}" data-category="${escapeAttr(project.category || "other")}"><div class="project-index">${String(index + 1).padStart(2, "0")}</div><div class="project-main"><div class="project-top"><div><p class="record-type">${escapeHTML(prettyCategory(project.status || "Project"))}</p><h3>${escapeHTML(project.title)}</h3></div>${project.year ? `<time>${escapeHTML(project.year)}</time>` : ""}</div><p class="project-summary">${escapeHTML(project.short_description || project.overview || "")}</p><div class="project-tags">${tags.filter(Boolean).slice(0, 7).map(tag => `<span>${escapeHTML(tag)}</span>`).join("")}</div>${projectMedia}${inlineAssetStrip(data, assets, { description: project.short_description || project.overview || "" }, { compact: true, max: 3 })}<details class="project-details"><summary>Project details</summary><dl>${project.role ? `<div><dt>Role</dt><dd>${escapeHTML(project.role)}</dd></div>` : ""}${project.objectives ? `<div><dt>Objectives</dt><dd>${escapeHTML(project.objectives)}</dd></div>` : ""}${project.methodology ? `<div><dt>Methodology</dt><dd>${escapeHTML(project.methodology)}</dd></div>` : ""}${project.results ? `<div><dt>Results / status</dt><dd>${escapeHTML(project.results)}</dd></div>` : ""}</dl></details></div></article>`;
   }).join("");
+  root.innerHTML = [
+    modelRows.length ? `<div class="research-project-group"><h5>System Modeling, Control &amp; Optimization</h5><p>Selected control, energy, power-electronics and robotic-system development projects; individual records retain their stated research status.</p><div class="project-records">${renderCards(modelRows)}</div></div>` : "",
+    evidenceRows.length ? `<div class="research-project-group"><h5>Related Research Reviews &amp; Evidence Synthesis</h5><p>Research reviews and analytical studies are presented separately from executed simulation models.</p><div class="project-records">${renderCards(evidenceRows)}</div></div>` : ""
+  ].join("");
   bindAssetButtons(data);
   initFilters();
 }
