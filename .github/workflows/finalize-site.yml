@@ -55,6 +55,9 @@ jobs:
       - name: Media and Activities library regression test
         run: node tests/media-activities-library.test.js
 
+      - name: Academic project portfolio classification regression test
+        run: node tests/academic-project-taxonomy.test.js
+
       - name: Projects hardware gallery regression test
         run: node tests/project-hardware-gallery.test.js
 
